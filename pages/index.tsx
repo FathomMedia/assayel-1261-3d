@@ -66,14 +66,13 @@ export default function Home() {
           scene="https://prod.spline.design/EfGfaXj5QgqH7co7/scene.splinecode"
         />
         {isLoaded && (
-          <div className="absolute flex items-end justify-end gap-5 bottom-5 right-5 left-5">
+          <div className="absolute left-0 right-0 flex flex-col items-end justify-end gap-5 px-5 md:flex-row bottom-5">
             {
-              <div className="grow">
-                {selectedBuilding && (
+              <div className="flex w-full overflow-x-scroll border rounded-lg grow border-slate-500">
+                {selectedBuilding ? (
                   <BuildingCard building={selectedBuilding}></BuildingCard>
-                )}
-                {!selectedBuilding && (
-                  <div>
+                ) : (
+                  <div className="flex p-3 duration-300 grow animate-in slide-in-from-left-20">
                     <ListOfBuildings
                       buildings={buildingsData}
                       onClickBuilding={focusOnBuilding}
@@ -82,12 +81,14 @@ export default function Home() {
                 )}
               </div>
             }
-            <button
-              className="p-3 rounded-lg h-fit min-w-fit bg-slate-200"
-              onClick={resetCamera}
-            >
-              Mall Camera
-            </button>
+            {selectedBuilding && (
+              <button
+                className="w-full px-3 py-2 text-white bg-blue-500 rounded-lg md:w-auto h-fit min-w-fit"
+                onClick={resetCamera}
+              >
+                Mall Camera
+              </button>
+            )}
           </div>
         )}
         {!isLoaded && (
