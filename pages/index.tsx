@@ -5,6 +5,7 @@ import { MutableRefObject, Ref, useRef, useState } from "react";
 import { Building, buildingsData } from "@/src/data";
 import { BuildingCard } from "@/components/buildingCard";
 import { ListOfBuildings } from "@/components/ListOfBuildings";
+import { PanoramaView } from "@/components/PanoView";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,6 +20,7 @@ export default function Home() {
   );
 
   const [isLoaded, setIsLoaded] = useState(false);
+  const [showPano, setShowPano] = useState(false);
 
   function onLoad(spline: Application) {
     splineRef.current = spline;
@@ -70,7 +72,10 @@ export default function Home() {
             {
               <div className="flex w-full overflow-x-scroll border rounded-lg grow border-slate-500">
                 {selectedBuilding ? (
-                  <BuildingCard building={selectedBuilding}></BuildingCard>
+                  <BuildingCard
+                    building={selectedBuilding}
+                    openPano={() => setShowPano(true)}
+                  ></BuildingCard>
                 ) : (
                   <div className="flex p-3 duration-300 grow animate-in slide-in-from-left-20">
                     <ListOfBuildings
@@ -95,6 +100,26 @@ export default function Home() {
           <div className="absolute top-0 bottom-0 left-0 right-0 animate-pulse bg-green-950"></div>
         )}
       </div>
+      {showPano && selectedBuilding && selectedBuilding.panorama && (
+        <div className="absolute top-0 bottom-0 left-0 right-0 z-20 flex flex-col items-center justify-center p-10 ">
+          <div
+            className="absolute top-0 bottom-0 left-0 right-0 bg-black/20"
+            onClick={() => {
+              setShowPano(false);
+            }}
+          ></div>
+
+          <PanoramaView panorama={selectedBuilding.panorama}></PanoramaView>
+          <button
+            onClick={() => {
+              setShowPano(false);
+            }}
+            className="bg-slate-50 absolute top-5 left-5 rounded-full w-10 h-10 flex justify-center items-center"
+          >
+            x
+          </button>
+        </div>
+      )}
     </main>
   );
 }
