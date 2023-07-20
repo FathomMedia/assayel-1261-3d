@@ -97,7 +97,9 @@ export default function Home() {
           </div>
         )}
         {!isLoaded && (
-          <div className="absolute top-0 bottom-0 left-0 right-0 animate-pulse bg-green-950"></div>
+          <div className="absolute top-0 bottom-0 left-0 right-0 animate-pulse bg-green-950 flex flex-col justify-center items-center">
+            <p className="text-white text-xl font-semibold">Loading 3D...</p>
+          </div>
         )}
       </div>
       {showPano && selectedBuilding && selectedBuilding.buildingName && (
