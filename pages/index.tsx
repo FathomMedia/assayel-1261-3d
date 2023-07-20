@@ -70,7 +70,7 @@ export default function Home() {
         {isLoaded && (
           <div className="absolute left-0 right-0 flex flex-col items-end justify-end gap-5 px-5 md:flex-row bottom-5">
             {
-              <div className="flex w-full overflow-x-scroll border grow border-slate-500">
+              <div className="flex w-full overflow-x-scroll border rounded-lg grow border-slate-500">
                 {selectedBuilding ? (
                   <BuildingCard
                     building={selectedBuilding}
