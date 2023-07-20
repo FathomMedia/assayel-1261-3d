@@ -1,7 +1,7 @@
 import { Inter } from "next/font/google";
 import Spline, { SPEObject, SplineEvent } from "@splinetool/react-spline";
 import { Application } from "@splinetool/runtime";
-import { MutableRefObject, Ref, useRef, useState } from "react";
+import { MutableRefObject, useRef, useState } from "react";
 import { Building, buildingsData } from "@/src/data";
 import { BuildingCard } from "@/components/buildingCard";
 import { ListOfBuildings } from "@/components/ListOfBuildings";
@@ -60,7 +60,7 @@ export default function Home() {
 
   return (
     <main className={`flex h-screen flex-col items-center justify-between`}>
-      <div className="relative w-full h-full rounded-2xl overflow-clip">
+      <div className="relative w-full h-full ">
         <Spline
           className="w-full h-full"
           onLoad={onLoad}
@@ -70,7 +70,7 @@ export default function Home() {
         {isLoaded && (
           <div className="absolute left-0 right-0 flex flex-col items-end justify-end gap-5 px-5 md:flex-row bottom-5">
             {
-              <div className="flex w-full overflow-x-scroll border rounded-lg grow border-slate-500">
+              <div className="flex w-full overflow-x-scroll border grow border-slate-500">
                 {selectedBuilding ? (
                   <BuildingCard
                     building={selectedBuilding}
@@ -100,7 +100,7 @@ export default function Home() {
           <div className="absolute top-0 bottom-0 left-0 right-0 animate-pulse bg-green-950"></div>
         )}
       </div>
-      {showPano && selectedBuilding && selectedBuilding.panorama && (
+      {showPano && selectedBuilding && selectedBuilding.buildingName && (
         <div className="absolute top-0 bottom-0 left-0 right-0 z-20 flex flex-col items-center justify-center p-10 ">
           <div
             className="absolute top-0 bottom-0 left-0 right-0 bg-black/20"
@@ -109,7 +109,10 @@ export default function Home() {
             }}
           ></div>
 
-          <PanoramaView panorama={selectedBuilding.panorama}></PanoramaView>
+          <PanoramaView
+            buildingName={selectedBuilding.buildingName}
+          ></PanoramaView>
+
           <button
             onClick={() => {
               setShowPano(false);

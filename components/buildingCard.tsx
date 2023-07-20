@@ -21,7 +21,7 @@ export const BuildingCard: FC<Props> = ({ building, openPano }) => {
           {building?.description}
         </p>
       </div>
-      {openPano && building?.panorama && (
+      {openPano && building?.buildingName && (
         <button
           className="bg-blue-500 text-white rounded-lg px-3 py-2"
           type="button"

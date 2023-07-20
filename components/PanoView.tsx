@@ -1,33 +1,47 @@
-import React, { FC, useEffect, useRef, useState } from "react";
-import dynamic from "next/dynamic";
+import React, { FC, useEffect, useRef } from "react";
 
-// import { ReactPhotoSphereViewer } from "react-photo-sphere-viewer";
-
-const ReactPhotoSphereViewer = dynamic(
-  () =>
-    import("react-photo-sphere-viewer").then(
-      (mod) => mod.ReactPhotoSphereViewer
-    ),
-  {
-    ssr: false,
-  }
-);
+import { Viewer } from "@photo-sphere-viewer/core";
+import {
+  EquirectangularTilesAdapterConfig,
+  EquirectangularTilesAdapter,
+} from "@photo-sphere-viewer/equirectangular-tiles-adapter";
 
 interface Props {
-  panorama: string;
+  buildingName: string;
 }
 
-export const PanoramaView: FC<Props> = ({ panorama }) => {
+export const PanoramaView: FC<Props> = ({ buildingName }) => {
+  const sphereElementRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const ac: EquirectangularTilesAdapterConfig = {
+      baseBlur: true,
+      showErrorTile: true,
+    };
+    const spherePlayerInstance = new Viewer({
+      adapter: [EquirectangularTilesAdapter, ac],
+      container: sphereElementRef.current ?? "",
+      panorama: {
+        width: 8000,
+        cols: 16,
+        rows: 8,
+        baseUrl: `/panorama/${buildingName}/resize_${buildingName}.jpg`,
+        tileUrl: (col: any, row: any) => {
+          return `/panorama/${buildingName}/tiles/${buildingName}_${col}_${row}.jpg`;
+        },
+      },
+    });
+
+    return () => {
+      spherePlayerInstance.destroy();
+    };
+  }, [sphereElementRef, buildingName]);
+
   return (
     <div
-      className={`w-full h-full animate-in fade-in zoom-in rounded-2xl overflow-clip duration-300`}
+      className={`w-full relative h-full animate-in fade-in zoom-in rounded-2xl overflow-clip duration-300`}
     >
-      <ReactPhotoSphereViewer
-        src={panorama}
-        height="100%"
-        width="100%"
-        container={""}
-      ></ReactPhotoSphereViewer>
+      <div ref={sphereElementRef} className="w-full h-full"></div>
     </div>
   );
 };

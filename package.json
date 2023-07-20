@@ -9,8 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@photo-sphere-viewer/autorotate-plugin": "^5.1.7",
-    "@photo-sphere-viewer/virtual-tour-plugin": "^5.1.7",
+    "@photo-sphere-viewer/equirectangular-tiles-adapter": "^5.1.7",
     "@splinetool/react-spline": "^2.2.6",
     "@types/node": "20.4.2",
     "@types/react": "18.2.15",
@@ -22,11 +21,13 @@
     "postcss": "8.4.26",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-photo-sphere-viewer": "^3.3.5-psv5.1.4",
     "tailwindcss": "3.3.3",
     "typescript": "5.1.6"
   },
   "devDependencies": {
+    "@babel/core": "^7.22.9",
+    "@babel/plugin-transform-modules-commonjs": "^7.22.5",
+    "@babel/preset-env": "^7.22.9",
     "tailwindcss-animate": "^1.0.6"
   }
 }
