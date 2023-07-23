@@ -17,14 +17,16 @@ export const buildingsData: Building[] = [
     buildingName: "b1",
   },
   {
-    id: "5baa6924-7c37-47d7-bb3f-1c6e505ed291",
+    // id: "5baa6924-7c37-47d7-bb3f-1c6e505ed291",
+    id: "9bad7819-d298-4b7a-b10c-2f7bcadec164",
     cameraId: "d0cb9205-4af3-4535-ad3a-bf669ac3159e",
     name: "The basic building",
     description: "This is just a place to sleep",
     buildingName: "b2",
   },
   {
-    id: "4ef536c7-d152-4c9a-9cae-e9731a4222e4",
+    // id: "4ef536c7-d152-4c9a-9cae-e9731a4222e4",
+    id: "dbf527d2-ee0f-4584-b832-0c6abe3a43b1",
     cameraId: "7ad36e58-431f-4efb-b1a1-9b7bb140a7d9",
     name: "The school",
     description:
