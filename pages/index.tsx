@@ -76,8 +76,10 @@ export default function Home({ folders }: Props) {
   }, [selectedBuilding]);
 
   function focusOnBuilding(building: Building) {
-    splineRef.current?.emitEvent("mouseDown", building.id);
-    setSelectedBuilding(building);
+    try {
+      setSelectedBuilding(building);
+      splineRef.current?.emitEvent("mouseDown", building.id);
+    } catch (error) {}
   }
 
   return (
@@ -90,37 +92,39 @@ export default function Home({ folders }: Props) {
           scene="https://prod.spline.design/EfGfaXj5QgqH7co7/scene.splinecode"
         />
         {isLoaded && (
-          <div className="absolute left-0 right-0 flex flex-col items-end justify-end gap-5 px-5 md:flex-row bottom-5">
-            {
-              <div className="flex w-full overflow-x-scroll border rounded-lg grow border-slate-500">
-                {selectedBuilding ? (
-                  <BuildingCard
-                    building={selectedBuilding}
-                    openPano={() => setShowPano(true)}
-                    enable360={
-                      selectedBuilding.buildingName && folders
-                        ? folders.includes(selectedBuilding.buildingName)
-                        : false
-                    }
-                  ></BuildingCard>
-                ) : (
-                  <div className="flex p-3 duration-300 grow animate-in slide-in-from-left-20">
-                    <ListOfBuildings
-                      buildings={buildingsData}
-                      onClickBuilding={focusOnBuilding}
-                    ></ListOfBuildings>
-                  </div>
-                )}
-              </div>
-            }
-            {selectedBuilding && (
-              <button
-                className="w-full px-3 py-2 text-white bg-blue-500 rounded-lg md:w-auto h-fit min-w-fit"
-                onClick={resetCamera}
-              >
-                Mall Camera
-              </button>
-            )}
+          <div className="absolute left-0 right-0 flex flex-col items-end justify-end px-5 md:flex-row bottom-5">
+            <div className="relative w-full h-full">
+              {
+                <div className="flex w-full overflow-x-scroll border rounded-lg grow border-slate-500">
+                  {selectedBuilding ? (
+                    <BuildingCard
+                      building={selectedBuilding}
+                      openPano={() => setShowPano(true)}
+                      enable360={
+                        selectedBuilding.buildingName && folders
+                          ? folders.includes(selectedBuilding.buildingName)
+                          : false
+                      }
+                    ></BuildingCard>
+                  ) : (
+                    <div className="flex p-3 duration-300 grow animate-in slide-in-from-left-20">
+                      <ListOfBuildings
+                        buildings={buildingsData}
+                        onClickBuilding={focusOnBuilding}
+                      ></ListOfBuildings>
+                    </div>
+                  )}
+                </div>
+              }
+              {selectedBuilding && (
+                <button
+                  className="w-full px-4 py-2 absolute -top-6 right-5 text-black bg-slate-300 border rounded-lg md:w-auto h-fit min-w-fit"
+                  onClick={resetCamera}
+                >
+                  x
+                </button>
+              )}
+            </div>
           </div>
         )}
         {!isLoaded && (
@@ -130,7 +134,7 @@ export default function Home({ folders }: Props) {
         )}
       </div>
       {showPano && selectedBuilding && selectedBuilding.buildingName && (
-        <div className="absolute top-0 bottom-0 left-0 right-0 z-20 flex flex-col items-center justify-center p-10 ">
+        <div className="absolute top-0 bottom-0 left-0 right-0 z-20 flex flex-col items-center justify-center md:p-10 py-10 ">
           <div
             className="absolute top-0 bottom-0 left-0 right-0 bg-black/20"
             onClick={() => {
