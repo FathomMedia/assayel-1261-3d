@@ -16,21 +16,23 @@ export const BuildingCard: FC<Props> = ({ building, openPano, enable360 }) => {
           : " animate-out slide-out-to-left-20 "
       }`}
     >
-      <div className="flex flex-col justify-start grow">
-        <h2 className="text-xl font-bold">{building?.name}</h2>
+      <div className="flex flex-col justify-start grow gap-2">
+        <div className="flex gap-3 items-center">
+          <h2 className="text-xl font-bold">{building?.name}</h2>
+          {openPano && building?.buildingName && enable360 && (
+            <button
+              className="bg-[#AE9344] text-white rounded-lg px-3 py-1"
+              type="button"
+              onClick={openPano}
+            >
+              360
+            </button>
+          )}
+        </div>
         <p className="overflow-y-scroll text-sm text-slate-500 max-h-20">
           {building?.description}
         </p>
       </div>
-      {openPano && building?.buildingName && enable360 && (
-        <button
-          className="bg-blue-500 text-white rounded-lg px-3 py-2"
-          type="button"
-          onClick={openPano}
-        >
-          360
-        </button>
-      )}
     </div>
   );
 };

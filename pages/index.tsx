@@ -93,32 +93,32 @@ export default function Home({ folders }: Props) {
         />
         {isLoaded && (
           <div className="absolute left-0 right-0 flex flex-col items-end justify-end px-5 md:flex-row bottom-5">
-            <div className="relative w-full h-full">
+            <div className="relative w-full h-full flex flex-col gap-3">
+              {selectedBuilding && (
+                <BuildingCard
+                  building={selectedBuilding}
+                  openPano={() => setShowPano(true)}
+                  enable360={
+                    selectedBuilding.buildingName && folders
+                      ? folders.includes(selectedBuilding.buildingName)
+                      : false
+                  }
+                ></BuildingCard>
+              )}
               {
-                <div className="flex w-full overflow-x-scroll border rounded-lg grow border-slate-500">
-                  {selectedBuilding ? (
-                    <BuildingCard
-                      building={selectedBuilding}
-                      openPano={() => setShowPano(true)}
-                      enable360={
-                        selectedBuilding.buildingName && folders
-                          ? folders.includes(selectedBuilding.buildingName)
-                          : false
-                      }
-                    ></BuildingCard>
-                  ) : (
-                    <div className="flex p-3 duration-300 grow animate-in slide-in-from-left-20">
-                      <ListOfBuildings
-                        buildings={buildingsData}
-                        onClickBuilding={focusOnBuilding}
-                      ></ListOfBuildings>
-                    </div>
-                  )}
+                <div className="flex w-full overflow-x-scroll  rounded-lg grow  bg-slate-100/30">
+                  <div className="flex p-3 duration-300 grow animate-in slide-in-from-left-20">
+                    <ListOfBuildings
+                      buildings={buildingsData}
+                      onClickBuilding={focusOnBuilding}
+                      selected={selectedBuilding}
+                    ></ListOfBuildings>
+                  </div>
                 </div>
               }
               {selectedBuilding && (
                 <button
-                  className="px-4 py-2 absolute -top-6 right-5 text-black bg-slate-300 border rounded-lg h-fit min-w-fit"
+                  className="px-4 py-2 absolute top-2 right-2 text-black bg-slate-300 border rounded-lg h-fit min-w-fit"
                   onClick={resetCamera}
                 >
                   x
