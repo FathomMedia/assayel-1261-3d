@@ -18,6 +18,10 @@ export const PanoramaView: FC<Props> = ({ buildingName }) => {
       baseBlur: true,
       showErrorTile: true,
     };
+
+    const baseUrl =
+      "https://res.cloudinary.com/dnuy6byev/image/upload/v1690108260/360";
+
     const spherePlayerInstance = new Viewer({
       adapter: [EquirectangularTilesAdapter, ac],
       container: sphereElementRef.current ?? "",
@@ -25,9 +29,9 @@ export const PanoramaView: FC<Props> = ({ buildingName }) => {
         width: 8000,
         cols: 16,
         rows: 8,
-        baseUrl: `/panorama/${buildingName}/resize_${buildingName}.jpg`,
+        baseUrl: `${baseUrl}/${buildingName}/resize_${buildingName}.jpg`,
         tileUrl: (col: any, row: any) => {
-          return `/panorama/${buildingName}/tiles/${buildingName}_${col}_${row}.jpg`;
+          return `${baseUrl}/${buildingName}/tiles/${buildingName}_${col}_${row}.jpg`;
         },
       },
     });

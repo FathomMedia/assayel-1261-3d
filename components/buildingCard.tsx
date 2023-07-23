@@ -4,9 +4,10 @@ import React, { FC } from "react";
 interface Props {
   building: Building | null;
   openPano?: () => void;
+  enable360: boolean;
 }
 
-export const BuildingCard: FC<Props> = ({ building, openPano }) => {
+export const BuildingCard: FC<Props> = ({ building, openPano, enable360 }) => {
   return (
     <div
       className={`flex p-6 duration-300 w-full rounded-lg min-h-[6rem] ${
@@ -21,7 +22,7 @@ export const BuildingCard: FC<Props> = ({ building, openPano }) => {
           {building?.description}
         </p>
       </div>
-      {openPano && building?.buildingName && (
+      {openPano && building?.buildingName && enable360 && (
         <button
           className="bg-blue-500 text-white rounded-lg px-3 py-2"
           type="button"

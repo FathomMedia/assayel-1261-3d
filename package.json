@@ -9,12 +9,15 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@cloudinary/react": "^1.11.2",
+    "@cloudinary/url-gen": "^1.10.2",
     "@photo-sphere-viewer/equirectangular-tiles-adapter": "^5.1.7",
     "@splinetool/react-spline": "^2.2.6",
     "@types/node": "20.4.2",
     "@types/react": "18.2.15",
     "@types/react-dom": "18.2.7",
     "autoprefixer": "10.4.14",
+    "cloudinary": "^1.38.0",
     "eslint": "8.45.0",
     "eslint-config-next": "13.4.10",
     "next": "13.4.10",

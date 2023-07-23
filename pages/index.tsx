@@ -6,10 +6,28 @@ import { Building, buildingsData } from "@/src/data";
 import { BuildingCard } from "@/components/buildingCard";
 import { ListOfBuildings } from "@/components/ListOfBuildings";
 import { PanoramaView } from "@/components/PanoView";
+import { Cloudinary } from "@cloudinary/url-gen";
 
-const inter = Inter({ subsets: ["latin"] });
+// You should use getServerSideProps when:
+// - Only if you need to pre-render a page whose data must be fetched at request time
+import { GetServerSideProps } from "next";
+import { getAllFoldersInFolder } from "./api/getCloudinaryFolders";
 
-export default function Home() {
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const res = await getAllFoldersInFolder("360");
+
+  return {
+    props: {
+      folders: res,
+    },
+  };
+};
+
+interface Props {
+  folders: string[] | undefined;
+}
+
+export default function Home({ folders }: Props) {
   const splineRef = useRef<Application>();
 
   const defaultCameraId = "3B695796-4617-4F45-BF86-E0B33A41DF6B";
@@ -75,6 +93,11 @@ export default function Home() {
                   <BuildingCard
                     building={selectedBuilding}
                     openPano={() => setShowPano(true)}
+                    enable360={
+                      selectedBuilding.buildingName && folders
+                        ? folders.includes(selectedBuilding.buildingName)
+                        : false
+                    }
                   ></BuildingCard>
                 ) : (
                   <div className="flex p-3 duration-300 grow animate-in slide-in-from-left-20">

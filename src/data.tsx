@@ -8,7 +8,8 @@ export interface Building {
 
 export const buildingsData: Building[] = [
   {
-    id: "978c52c9-1e06-4349-826c-aa81251206db",
+    // id: "978c52c9-1e06-4349-826c-aa81251206db",
+    id: "cc2086fb-82c9-4303-b7b5-7b232fa1c6b7",
     cameraId: "4ef2ff6b-af48-46e7-8d54-4faa38d04051",
     name: "The mighty hotel",
     description:
