@@ -118,7 +118,7 @@ export default function Home({ folders }: Props) {
               }
               {selectedBuilding && (
                 <button
-                  className="w-full px-4 py-2 absolute -top-6 right-5 text-black bg-slate-300 border rounded-lg md:w-auto h-fit min-w-fit"
+                  className="px-4 py-2 absolute -top-6 right-5 text-black bg-slate-300 border rounded-lg h-fit min-w-fit"
                   onClick={resetCamera}
                 >
                   x
