@@ -1,7 +1,7 @@
 import { Inter } from "next/font/google";
 import Spline, { SPEObject, SplineEvent } from "@splinetool/react-spline";
 import { Application } from "@splinetool/runtime";
-import { MutableRefObject, useRef, useState } from "react";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { Building, buildingsData } from "@/src/data";
 import { BuildingCard } from "@/components/buildingCard";
 import { ListOfBuildings } from "@/components/ListOfBuildings";
@@ -71,8 +71,12 @@ export default function Home({ folders }: Props) {
     }
   }
 
+  useEffect(() => {
+    return () => {};
+  }, [selectedBuilding]);
+
   function focusOnBuilding(building: Building) {
-    splineRef.current?.emitEvent("mouseDown", building.cameraId);
+    splineRef.current?.emitEvent("mouseDown", building.id);
     setSelectedBuilding(building);
   }
 
