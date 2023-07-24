@@ -34,10 +34,10 @@ export const ListOfBuildings: FC<Props> = ({
   }
 
   useEffect(() => {
-    itemsRef.current[currentIndex]?.scrollIntoView({ behavior: "smooth" });
+    // itemsRef.current[currentIndex]?.scrollIntoView({ behavior: "smooth" });
 
     return () => {};
-  }, [currentIndex]);
+  }, []);
 
   return (
     <div className="flex justify-between items-center gap-3 px-3 rounded-lg bg-[#E2DEDC]/30">
