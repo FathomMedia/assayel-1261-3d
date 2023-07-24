@@ -7,11 +7,13 @@ import { BuildingCard } from "@/components/buildingCard";
 import { ListOfBuildings } from "@/components/ListOfBuildings";
 import { PanoramaView } from "@/components/PanoView";
 import { Cloudinary } from "@cloudinary/url-gen";
+import { LuXCircle } from "react-icons/lu";
 
 // You should use getServerSideProps when:
 // - Only if you need to pre-render a page whose data must be fetched at request time
 import { GetServerSideProps } from "next";
 import { getAllFoldersInFolder } from "./api/getCloudinaryFolders";
+import { Button } from "@/components/ui/button";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const res = await getAllFoldersInFolder("360");
@@ -45,7 +47,7 @@ export default function Home({ folders }: Props) {
     findObject(spline, defaultCameraId, defaultCamera);
     setTimeout(() => {
       setIsLoaded(true);
-    }, 2000);
+    }, 1000);
   }
 
   function findObject(
@@ -89,7 +91,7 @@ export default function Home({ folders }: Props) {
           className="w-full h-full"
           onLoad={onLoad}
           onMouseDown={onMouseDown}
-          scene="https://prod.spline.design/EfGfaXj5QgqH7co7/scene.splinecode"
+          scene="https://draft.spline.design/vWkqS-o0IRqxZUM5/scene.splinecode"
         />
         {isLoaded && (
           <div className="absolute left-0 right-0 flex flex-col items-end justify-end px-5 md:flex-row bottom-5">
@@ -106,30 +108,33 @@ export default function Home({ folders }: Props) {
                 ></BuildingCard>
               )}
               {
-                <div className="flex w-full overflow-x-scroll  rounded-lg grow  bg-slate-100/30">
-                  <div className="flex p-3 duration-300 grow animate-in slide-in-from-left-20">
-                    <ListOfBuildings
-                      buildings={buildingsData}
-                      onClickBuilding={focusOnBuilding}
-                      selected={selectedBuilding}
-                    ></ListOfBuildings>
-                  </div>
-                </div>
+                <ListOfBuildings
+                  buildings={buildingsData}
+                  onClickBuilding={focusOnBuilding}
+                  selected={selectedBuilding}
+                ></ListOfBuildings>
+                // <div className="flex w-full overflow-x-scroll  rounded-lg grow  bg-[#E2DEDC]/30">
+                //   <div className="flex p-3 duration-300 grow animate-in slide-in-from-left-20">
+                //   </div>
+                // </div>
               }
               {selectedBuilding && (
-                <button
-                  className="px-4 py-2 absolute top-2 right-2 text-black bg-slate-300 border rounded-lg h-fit min-w-fit"
+                <Button
+                  variant={"ghost"}
+                  className="absolute top-2 right-2 hover:bg-stone-200 px-2"
                   onClick={resetCamera}
                 >
-                  x
-                </button>
+                  <LuXCircle className="text-secondary w-5 h-5" />
+                </Button>
               )}
             </div>
           </div>
         )}
         {!isLoaded && (
-          <div className="absolute top-0 bottom-0 left-0 right-0 animate-pulse bg-green-950 flex flex-col justify-center items-center">
-            <p className="text-white text-xl font-semibold">Loading 3D...</p>
+          <div className="absolute top-0 bottom-0 left-0 right-0 animate-pulse bg-primary flex flex-col justify-center items-center">
+            <p className="text-white text-xl font-semibold">
+              Loading the map...
+            </p>
           </div>
         )}
       </div>
