@@ -34,6 +34,7 @@ export const ListOfBuildings: FC<Props> = ({
   }
 
   useEffect(() => {
+    //? this is removed cuz it scrolls the wordpress website to the name as well as the iframe
     // itemsRef.current[currentIndex]?.scrollIntoView({ behavior: "smooth" });
 
     return () => {};
