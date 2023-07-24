@@ -34,7 +34,7 @@ export const ListOfBuildings: FC<Props> = ({
   }
 
   useEffect(() => {
-    itemsRef.current[currentIndex]?.scrollIntoView();
+    itemsRef.current[currentIndex]?.scrollIntoView({ behavior: "smooth" });
 
     return () => {};
   }, [currentIndex]);
