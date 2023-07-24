@@ -1,5 +1,5 @@
 import { Building } from "@/src/data";
-import React, { FC } from "react";
+import React, { FC, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
 
@@ -17,6 +17,7 @@ export const ListOfBuildings: FC<Props> = ({
   const currentIndex = buildings.findIndex((b) => b.id === selected?.id);
   const canGoPrevious = currentIndex > 0 && currentIndex !== -1;
   const canGoNext = currentIndex < buildings.length - 1 && buildings.length > 0;
+  const itemsRef = useRef<(HTMLButtonElement | null)[]>([]);
   function goPrevious() {
     if (canGoPrevious) {
       onClickBuilding && onClickBuilding(buildings[currentIndex - 1]);
@@ -27,6 +28,16 @@ export const ListOfBuildings: FC<Props> = ({
       onClickBuilding && onClickBuilding(buildings[currentIndex + 1]);
     }
   }
+
+  function goTo(building: Building) {
+    onClickBuilding && onClickBuilding(building);
+  }
+
+  useEffect(() => {
+    itemsRef.current[currentIndex]?.scrollIntoView();
+
+    return () => {};
+  }, [currentIndex]);
 
   return (
     <div className="flex justify-between items-center gap-3 px-3 rounded-lg bg-[#E2DEDC]/30">
@@ -44,11 +55,12 @@ export const ListOfBuildings: FC<Props> = ({
             {...buildings.map((b, i) => (
               <Button
                 variant={selected?.id === b.id ? "default" : "secondary"}
-                className={`text-xs md:text-base px-3 w-fit whitespace-nowrap hover:bg-primary hover:text-primary-foreground ${
+                className={`text-xs font-normal md:text-base px-3 w-fit whitespace-nowrap hover:bg-primary hover:text-primary-foreground ${
                   selected?.id !== b.id && "bg-background text-foreground"
                 }`}
-                key={i}
-                onClick={() => onClickBuilding && onClickBuilding(b)}
+                ref={(element) => (itemsRef.current[i] = element)}
+                key={`b-${i}`}
+                onClick={() => onClickBuilding && goTo(b)}
               >
                 <p>{b.name}</p>
               </Button>

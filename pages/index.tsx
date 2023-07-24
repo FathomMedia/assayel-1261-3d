@@ -1,4 +1,3 @@
-import { Inter } from "next/font/google";
 import Spline, { SPEObject, SplineEvent } from "@splinetool/react-spline";
 import { Application } from "@splinetool/runtime";
 import { MutableRefObject, useEffect, useRef, useState } from "react";
@@ -6,11 +5,7 @@ import { Building, buildingsData } from "@/src/data";
 import { BuildingCard } from "@/components/buildingCard";
 import { ListOfBuildings } from "@/components/ListOfBuildings";
 import { PanoramaView } from "@/components/PanoView";
-import { Cloudinary } from "@cloudinary/url-gen";
 import { LuXCircle } from "react-icons/lu";
-
-// You should use getServerSideProps when:
-// - Only if you need to pre-render a page whose data must be fetched at request time
 import { GetServerSideProps } from "next";
 import { getAllFoldersInFolder } from "./api/getCloudinaryFolders";
 import { Button } from "@/components/ui/button";
@@ -33,6 +28,8 @@ export default function Home({ folders }: Props) {
   const splineRef = useRef<Application>();
 
   const defaultCameraId = "3B695796-4617-4F45-BF86-E0B33A41DF6B";
+  const spline3dUrl =
+    "https://draft.spline.design/vWkqS-o0IRqxZUM5/scene.splinecode";
   const defaultCamera = useRef<SPEObject | undefined>();
 
   const [selectedBuilding, setSelectedBuilding] = useState<Building | null>(
@@ -91,7 +88,7 @@ export default function Home({ folders }: Props) {
           className="w-full h-full"
           onLoad={onLoad}
           onMouseDown={onMouseDown}
-          scene="https://draft.spline.design/vWkqS-o0IRqxZUM5/scene.splinecode"
+          scene={spline3dUrl}
         />
         {isLoaded && (
           <div className="absolute left-0 right-0 flex flex-col items-end justify-end px-5 md:flex-row bottom-5">
@@ -105,6 +102,7 @@ export default function Home({ folders }: Props) {
                       ? folders.includes(selectedBuilding.buildingName)
                       : false
                   }
+                  onClose={resetCamera}
                 ></BuildingCard>
               )}
               {
@@ -113,20 +111,7 @@ export default function Home({ folders }: Props) {
                   onClickBuilding={focusOnBuilding}
                   selected={selectedBuilding}
                 ></ListOfBuildings>
-                // <div className="flex w-full overflow-x-scroll  rounded-lg grow  bg-[#E2DEDC]/30">
-                //   <div className="flex p-3 duration-300 grow animate-in slide-in-from-left-20">
-                //   </div>
-                // </div>
               }
-              {selectedBuilding && (
-                <Button
-                  variant={"ghost"}
-                  className="absolute top-2 right-2 hover:bg-stone-200 px-2"
-                  onClick={resetCamera}
-                >
-                  <LuXCircle className="text-secondary w-5 h-5" />
-                </Button>
-              )}
             </div>
           </div>
         )}
@@ -151,14 +136,15 @@ export default function Home({ folders }: Props) {
             buildingName={selectedBuilding.buildingName}
           ></PanoramaView>
 
-          <button
+          <Button
             onClick={() => {
               setShowPano(false);
             }}
-            className="bg-slate-50 absolute top-5 left-5 rounded-full w-10 h-10 flex justify-center items-center"
+            variant={"secondary"}
+            className="bg-background hover:bg-primary text-secondary hover:text-primary-foreground absolute top-5 left-5 rounded-full w-10 h-10 p-0 flex justify-center items-center"
           >
-            x
-          </button>
+            <LuXCircle className="text-inherit w-5 h-5" />
+          </Button>
         </div>
       )}
     </main>
