@@ -124,7 +124,7 @@ export default function Home({ folders }: Props) {
         )}
       </div>
       {showPano && selectedBuilding && selectedBuilding.buildingName && (
-        <div className="absolute top-0 bottom-0 left-0 right-0 z-20 flex flex-col items-center justify-center md:p-10 py-10 ">
+        <div className="absolute top-0 bottom-0 left-0 right-0 z-20 flex flex-col items-center justify-center p-5 ">
           <div
             className="absolute top-0 bottom-0 left-0 right-0 bg-black/20"
             onClick={() => {
@@ -141,7 +141,7 @@ export default function Home({ folders }: Props) {
               setShowPano(false);
             }}
             variant={"secondary"}
-            className="bg-background hover:bg-primary text-secondary hover:text-primary-foreground absolute top-5 left-5 rounded-full w-10 h-10 p-0 flex justify-center items-center"
+            className="bg-white/50 hover:bg-white/70 text-foreground hover:text-primary absolute top-8 right-8 rounded-lg w-10 h-10 p-0 flex justify-center items-center"
           >
             <LuXCircle className="text-inherit w-5 h-5" />
           </Button>
