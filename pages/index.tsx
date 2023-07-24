@@ -29,7 +29,7 @@ export default function Home({ folders }: Props) {
 
   const defaultCameraId = "3B695796-4617-4F45-BF86-E0B33A41DF6B";
   const spline3dUrl =
-    "https://draft.spline.design/vWkqS-o0IRqxZUM5/scene.splinecode";
+    "https://draft.spline.design/myf8tXDn7ylVbxLi/scene.splinecode";
   const defaultCamera = useRef<SPEObject | undefined>();
 
   const [selectedBuilding, setSelectedBuilding] = useState<Building | null>(
