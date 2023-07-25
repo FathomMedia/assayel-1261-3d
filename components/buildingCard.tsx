@@ -4,12 +4,14 @@ import React, { FC } from "react";
 import { Button } from "@/components/ui/button";
 import { Icon360 } from "@/components/icons/Icon360";
 import { LuXCircle } from "react-icons/lu";
+import { cn } from "@/src/utils";
 
 interface Props {
   building: Building | null;
   openPano?: () => void;
   onClose?: () => void;
   enable360: boolean;
+  className?: string;
 }
 
 export const BuildingCard: FC<Props> = ({
@@ -17,18 +19,21 @@ export const BuildingCard: FC<Props> = ({
   openPano,
   enable360,
   onClose,
+  className,
 }) => {
   return (
     <div
-      className={`flex px-6 py-5 duration-300 w-full rounded-lg min-h-[6rem] ${
-        building
-          ? "animate-in slide-in-from-left-20  bg-background "
-          : " animate-out slide-out-to-left-20 "
-      }`}
+      className={cn(
+        `flex px-6 py-5 duration-300 w-full rounded-lg min-h-[6rem] ${
+          building
+            ? "animate-in slide-in-from-left-20  bg-background "
+            : " animate-out slide-out-to-left-20 "
+        } ${className}`
+      )}
     >
-      <div className="flex flex-col justify-start grow gap-2">
+      <div className="flex flex-col justify-start gap-2 grow">
         <div className="flex items-center justify-between">
-          <div className="flex gap-3 items-center">
+          <div className="flex items-center gap-3">
             <h2 className="text-2xl font-dax">{building?.name}</h2>
             {openPano && building?.buildingName && enable360 && (
               <Button
@@ -44,10 +49,10 @@ export const BuildingCard: FC<Props> = ({
           {building && (
             <Button
               variant={"ghost"}
-              className="absolute top-2 right-2 hover:bg-stone-200 px-2"
+              className="absolute px-2 top-2 right-2 hover:bg-stone-200"
               onClick={onClose}
             >
-              <LuXCircle className="text-secondary w-5 h-5" />
+              <LuXCircle className="w-5 h-5 text-secondary" />
             </Button>
           )}
         </div>

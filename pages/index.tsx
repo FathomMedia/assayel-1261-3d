@@ -29,7 +29,7 @@ export default function Home({ folders }: Props) {
 
   const defaultCameraId = "3B695796-4617-4F45-BF86-E0B33A41DF6B";
   const spline3dUrl =
-    "https://draft.spline.design/QzoV22-4c11XV-ne/scene.splinecode";
+    "https://draft.spline.design/vjyQIWPKirClyG-p/scene.splinecode";
   const defaultCamera = useRef<SPEObject | undefined>();
 
   const [selectedBuilding, setSelectedBuilding] = useState<Building | null>(
@@ -156,20 +156,21 @@ export default function Home({ folders }: Props) {
           </Button>
         </div>
       )}
+      {/* Zoom Controls */}
       {!selectedBuilding && isLoaded && (
         <div className="absolute flex flex-col justify-center my-auto rounded-full h-fit top-14 bottom-14 right-5">
-          <div className="flex flex-col gap-1 p-0 rounded-full bg-[#4A4640]">
+          <div className="flex flex-col  p-0 rounded-full bg-[#4A4640]">
             <Button
-              className="p-0 rounded-full shadow-none aspect-square bg-white/0 hover:bg-white/20"
+              className="h-16 p-3 rounded-t-full shadow-none w-14 aspect-square bg-white/0 hover:bg-white/20"
               onClick={zoomIn}
             >
-              <LuPlusCircle className="w-5 h-5" />
+              <LuPlusCircle className="w-full h-full" />
             </Button>
             <Button
-              className="p-0 rounded-full shadow-none aspect-square bg-white/0 hover:bg-white/20"
+              className="h-16 p-3 rounded-b-full shadow-none w-14 aspect-square bg-white/0 hover:bg-white/20"
               onClick={zoomOut}
             >
-              <LuMinusCircle className="w-5 h-5" />
+              <LuMinusCircle className="w-full h-full" />
             </Button>
           </div>
         </div>

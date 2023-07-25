@@ -2,17 +2,20 @@ import { Building } from "@/src/data";
 import React, { FC, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
+import { cn } from "@/src/utils";
 
 interface Props {
   buildings: Building[];
   selected?: Building | null;
   onClickBuilding?: (building: Building) => void;
+  className?: string;
 }
 
 export const ListOfBuildings: FC<Props> = ({
   buildings,
   onClickBuilding,
   selected,
+  className,
 }) => {
   const currentIndex = buildings.findIndex((b) => b.id === selected?.id);
   const canGoPrevious = currentIndex > 0 && currentIndex !== -1;
@@ -41,16 +44,20 @@ export const ListOfBuildings: FC<Props> = ({
   }, []);
 
   return (
-    <div className="flex justify-between items-center gap-3 px-3 rounded-lg bg-[#E2DEDC]/30">
+    <div
+      className={cn(
+        `flex justify-between items-center gap-3 px-3 rounded-lg bg-[#E2DEDC]/30 ${className}`
+      )}
+    >
       <Button
         variant={"ghost"}
         disabled={!canGoPrevious}
-        className="hover:bg-black/10 px-2"
+        className="px-2 hover:bg-black/10"
         onClick={goPrevious}
       >
-        <LuChevronLeft className="text-foreground w-6 h-6" />
+        <LuChevronLeft className="w-6 h-6 text-foreground" />
       </Button>
-      <div className="flex w-full overflow-x-scroll   grow  ">
+      <div className="flex w-full overflow-x-scroll grow ">
         <div className="flex p-3 duration-300 grow animate-in slide-in-from-left-20">
           <div className="flex w-full gap-3">
             {...buildings.map((b, i) => (
@@ -71,11 +78,11 @@ export const ListOfBuildings: FC<Props> = ({
       </div>
       <Button
         variant={"ghost"}
-        className="hover:bg-black/10 px-2"
+        className="px-2 hover:bg-black/10"
         disabled={!canGoNext}
         onClick={goNext}
       >
-        <LuChevronRight className="text-foreground w-6 h-6" />
+        <LuChevronRight className="w-6 h-6 text-foreground" />
       </Button>
     </div>
   );
