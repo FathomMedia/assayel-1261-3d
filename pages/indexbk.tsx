@@ -5,7 +5,7 @@ import { Building, buildingsData } from "@/src/data";
 import { BuildingCard } from "@/components/buildingCard";
 import { ListOfBuildings } from "@/components/ListOfBuildings";
 import { PanoramaView } from "@/components/PanoView";
-import { LuMinusCircle, LuPlusCircle, LuXCircle } from "react-icons/lu";
+import { LuXCircle } from "react-icons/lu";
 import { GetServerSideProps } from "next";
 import { getAllFoldersInFolder } from "./api/getCloudinaryFolders";
 import { Button } from "@/components/ui/button";
@@ -29,7 +29,7 @@ export default function Home({ folders }: Props) {
 
   const defaultCameraId = "3B695796-4617-4F45-BF86-E0B33A41DF6B";
   const spline3dUrl =
-    "https://draft.spline.design/QzoV22-4c11XV-ne/scene.splinecode";
+    "https://draft.spline.design/myf8tXDn7ylVbxLi/scene.splinecode";
   const defaultCamera = useRef<SPEObject | undefined>();
 
   const [selectedBuilding, setSelectedBuilding] = useState<Building | null>(
@@ -81,15 +81,6 @@ export default function Home({ folders }: Props) {
     } catch (error) {}
   }
 
-  function zoomIn() {
-    splineRef.current?.setZoom(1);
-    splineRef.current?.setZoom(1.2);
-  }
-  function zoomOut() {
-    splineRef.current?.setZoom(1);
-    splineRef.current?.setZoom(0.8);
-  }
-
   return (
     <main className={`flex h-screen flex-col items-center justify-between`}>
       <div className="relative w-full h-full ">
@@ -101,7 +92,7 @@ export default function Home({ folders }: Props) {
         />
         {isLoaded && (
           <div className="absolute left-0 right-0 flex flex-col items-end justify-end px-5 md:flex-row bottom-5">
-            <div className="relative flex flex-col w-full h-full gap-3">
+            <div className="relative w-full h-full flex flex-col gap-3">
               {selectedBuilding && (
                 <BuildingCard
                   building={selectedBuilding}
@@ -125,8 +116,8 @@ export default function Home({ folders }: Props) {
           </div>
         )}
         {!isLoaded && (
-          <div className="absolute top-0 bottom-0 left-0 right-0 flex flex-col items-center justify-center animate-pulse bg-primary">
-            <p className="text-xl font-semibold text-white">
+          <div className="absolute top-0 bottom-0 left-0 right-0 animate-pulse bg-primary flex flex-col justify-center items-center">
+            <p className="text-white text-xl font-semibold">
               Loading the map...
             </p>
           </div>
@@ -150,28 +141,10 @@ export default function Home({ folders }: Props) {
               setShowPano(false);
             }}
             variant={"secondary"}
-            className="absolute flex items-center justify-center w-10 h-10 p-0 rounded-lg bg-white/50 hover:bg-white/70 text-foreground hover:text-primary top-8 right-8"
+            className="bg-white/50 hover:bg-white/70 text-foreground hover:text-primary absolute top-8 right-8 rounded-lg w-10 h-10 p-0 flex justify-center items-center"
           >
-            <LuXCircle className="w-5 h-5 text-inherit" />
+            <LuXCircle className="text-inherit w-5 h-5" />
           </Button>
-        </div>
-      )}
-      {!selectedBuilding && isLoaded && (
-        <div className="absolute flex flex-col justify-center my-auto rounded-full h-fit top-14 bottom-14 right-5">
-          <div className="flex flex-col gap-1 p-0 rounded-full bg-[#4A4640]">
-            <Button
-              className="p-0 rounded-full shadow-none aspect-square bg-white/0 hover:bg-white/20"
-              onClick={zoomIn}
-            >
-              <LuPlusCircle className="w-5 h-5" />
-            </Button>
-            <Button
-              className="p-0 rounded-full shadow-none aspect-square bg-white/0 hover:bg-white/20"
-              onClick={zoomOut}
-            >
-              <LuMinusCircle className="w-5 h-5" />
-            </Button>
-          </div>
         </div>
       )}
     </main>
