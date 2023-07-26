@@ -46,24 +46,25 @@ export const ListOfBuildings: FC<Props> = ({
   return (
     <div
       className={cn(
-        `flex justify-between items-center gap-3 px-3 rounded-lg bg-[#E2DEDC]/30 ${className}`
+        `flex justify-between items-center gap-0 px-0 sm:px-3 h-12 sm:h-14 sm:rounded-xl backdrop-blur-md rounded-none bg-[#E2DEDC]/30 ${className}`
       )}
     >
       <Button
+        size={"icon"}
         variant={"ghost"}
         disabled={!canGoPrevious}
-        className="px-2 hover:bg-black/10"
+        className="h-full rounded-none sm:rounded-l-lg sm:h-9 hover:bg-black/10"
         onClick={goPrevious}
       >
         <LuChevronLeft className="w-6 h-6 text-foreground" />
       </Button>
-      <div className="flex w-full overflow-x-scroll grow ">
-        <div className="flex p-3 duration-300 grow animate-in slide-in-from-left-20">
+      <div className="flex w-full py-2 overflow-x-scroll sm:py-3 grow">
+        <div className="flex duration-300 grow animate-in slide-in-from-left-20">
           <div className="flex w-full gap-3">
             {...buildings.map((b, i) => (
               <Button
                 variant={selected?.id === b.id ? "default" : "secondary"}
-                className={`text-xs font-normal md:text-base px-3 w-fit whitespace-nowrap hover:bg-primary hover:text-primary-foreground ${
+                className={`text-xs font-normal sm:text-base px-3 w-fit whitespace-nowrap hover:bg-primary hover:text-primary-foreground ${
                   selected?.id !== b.id && "bg-background text-foreground"
                 }`}
                 ref={(element) => (itemsRef.current[i] = element)}
@@ -78,7 +79,8 @@ export const ListOfBuildings: FC<Props> = ({
       </div>
       <Button
         variant={"ghost"}
-        className="px-2 hover:bg-black/10"
+        size={"icon"}
+        className="h-full rounded-none hover:bg-black/10 sm:rounded-r-lg sm:h-9"
         disabled={!canGoNext}
         onClick={goNext}
       >

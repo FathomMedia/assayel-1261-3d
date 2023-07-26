@@ -24,7 +24,7 @@ export const BuildingCard: FC<Props> = ({
   return (
     <div
       className={cn(
-        `flex px-6 py-5 duration-300 w-full rounded-lg min-h-[6rem] ${
+        `flex relative px-6 py-5 duration-300 w-full rounded-lg min-h-[6rem] ${
           building
             ? "animate-in slide-in-from-left-20  bg-background "
             : " animate-out slide-out-to-left-20 "

@@ -9,6 +9,7 @@ import { LuMinusCircle, LuPlusCircle, LuXCircle } from "react-icons/lu";
 import { GetServerSideProps } from "next";
 import { getAllFoldersInFolder } from "./api/getCloudinaryFolders";
 import { Button } from "@/components/ui/button";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const res = await getAllFoldersInFolder("360");
@@ -100,19 +101,21 @@ export default function Home({ folders }: Props) {
           scene={spline3dUrl}
         />
         {isLoaded && (
-          <div className="absolute left-0 right-0 flex flex-col items-end justify-end px-5 md:flex-row bottom-5">
+          <div className="absolute bottom-0 left-0 right-0 flex flex-col items-end justify-end px-0 sm:bottom-5 sm:px-5 md:flex-row">
             <div className="relative flex flex-col w-full h-full gap-3">
               {selectedBuilding && (
-                <BuildingCard
-                  building={selectedBuilding}
-                  openPano={() => setShowPano(true)}
-                  enable360={
-                    selectedBuilding.buildingName && folders
-                      ? folders.includes(selectedBuilding.buildingName)
-                      : false
-                  }
-                  onClose={resetCamera}
-                ></BuildingCard>
+                <div className="px-5 sm:px-0">
+                  <BuildingCard
+                    building={selectedBuilding}
+                    openPano={() => setShowPano(true)}
+                    enable360={
+                      selectedBuilding.buildingName && folders
+                        ? folders.includes(selectedBuilding.buildingName)
+                        : false
+                    }
+                    onClose={resetCamera}
+                  ></BuildingCard>
+                </div>
               )}
               {
                 <ListOfBuildings
@@ -125,10 +128,9 @@ export default function Home({ folders }: Props) {
           </div>
         )}
         {!isLoaded && (
-          <div className="absolute top-0 bottom-0 left-0 right-0 flex flex-col items-center justify-center animate-pulse bg-primary">
-            <p className="text-xl font-semibold text-white">
-              Loading the map...
-            </p>
+          <div className="absolute top-0 bottom-0 left-0 right-0 z-30 flex flex-col items-center justify-center gap-2 bg-secondary">
+            <AiOutlineLoading3Quarters className="w-5 h-5 text-white animate-spin" />
+            <p className="text-xl font-light text-white">Loading</p>
           </div>
         )}
       </div>
@@ -159,15 +161,15 @@ export default function Home({ folders }: Props) {
       {/* Zoom Controls */}
       {!selectedBuilding && isLoaded && (
         <div className="absolute flex flex-col justify-center my-auto rounded-full h-fit top-14 bottom-14 right-5">
-          <div className="flex flex-col  p-0 rounded-full bg-[#4A4640]">
+          <div className="flex flex-col  p-0 rounded-full backdrop-blur-md bg-[#4A4640]/60">
             <Button
-              className="h-16 p-3 rounded-t-full shadow-none w-14 aspect-square bg-white/0 hover:bg-white/20"
+              className="w-12 h-16 p-3 rounded-t-full shadow-none aspect-square bg-white/0 hover:bg-white/20"
               onClick={zoomIn}
             >
               <LuPlusCircle className="w-full h-full" />
             </Button>
             <Button
-              className="h-16 p-3 rounded-b-full shadow-none w-14 aspect-square bg-white/0 hover:bg-white/20"
+              className="w-12 h-16 p-3 rounded-b-full shadow-none aspect-square bg-white/0 hover:bg-white/20"
               onClick={zoomOut}
             >
               <LuMinusCircle className="w-full h-full" />
