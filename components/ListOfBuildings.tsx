@@ -32,6 +32,7 @@ export const ListOfBuildings: FC<Props> = ({
       onClickBuilding && onClickBuilding(buildings[currentIndex - 1]);
     }
   }
+
   function goNext() {
     if (canGoNext) {
       onClickBuilding && onClickBuilding(buildings[currentIndex + 1]);
@@ -41,6 +42,7 @@ export const ListOfBuildings: FC<Props> = ({
   function goTo(building: Building) {
     onClickBuilding && onClickBuilding(building);
   }
+
   useEffect(() => {
     itemsRef.current[currentIndex]?.scrollIntoView({
       behavior: "smooth",

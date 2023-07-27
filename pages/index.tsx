@@ -14,18 +14,22 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const res = await getAllFoldersInFolder("360");
 
+  const focus = ctx.query.focus ?? null;
+
   return {
     props: {
       folders: res,
+      focus,
     },
   };
 };
 
 interface Props {
   folders: string[] | undefined;
+  focus: string | null;
 }
 
-export default function Home({ folders }: Props) {
+export default function Home({ folders, focus }: Props) {
   const splineRef = useRef<Application>();
 
   const defaultCameraId = "3B695796-4617-4F45-BF86-E0B33A41DF6B";
@@ -43,6 +47,10 @@ export default function Home({ folders }: Props) {
   function onLoad(spline: Application) {
     splineRef.current = spline;
     findObject(spline, defaultCameraId, defaultCamera);
+    if (focus) {
+      const focusBuilding = buildingsData.find((b) => b.id === focus);
+      focusBuilding && focusOnBuilding(focusBuilding);
+    }
     setTimeout(() => {
       setIsLoaded(true);
     }, 1000);
