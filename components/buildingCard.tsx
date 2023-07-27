@@ -35,7 +35,7 @@ export const BuildingCard: FC<Props> = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <h2 className="text-2xl font-dax">{building?.name}</h2>
-            {openPano && building?.buildingName && enable360 && (
+            {openPano && enable360 && (
               <Button
                 variant={"ghost"}
                 className=" hover:bg-stone-200"

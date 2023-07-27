@@ -3,7 +3,7 @@ export interface Building {
   cameraId: string;
   name: string;
   description: string;
-  buildingName: string | null;
+  buildingName: string;
 }
 
 export const buildingsData: Building[] = [

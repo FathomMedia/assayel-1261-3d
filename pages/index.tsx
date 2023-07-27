@@ -52,7 +52,9 @@ export default function Home({ folders, focus }: Props) {
     setTimeout(() => {
       setIsLoaded(true);
       if (focus) {
-        const focusBuilding = buildingsData.find((b) => b.id === focus);
+        const focusBuilding = buildingsData.find(
+          (b) => b.buildingName === focus
+        );
         focusBuilding && focusOnBuilding(focusBuilding);
       }
     }, 1000);
@@ -72,9 +74,8 @@ export default function Home({ folders, focus }: Props) {
   }
 
   function onMouseDown(e: SplineEvent) {
-    console.log("🚀 ~ file: index.tsx:77 ~ onMouseDown ~ e:", e);
     const index = buildingsData.findIndex((b) => b.id === e.target.id);
-    console.log(index, "index");
+
     if (index >= 0) {
       focusOnBuilding(buildingsData[index]);
     } else {
@@ -89,7 +90,7 @@ export default function Home({ folders, focus }: Props) {
 
   function focusOnBuilding(building: Building) {
     try {
-      updateQueryPram(building.id);
+      updateQueryPram(building.buildingName);
       setSelectedBuilding(building);
       splineRef.current?.emitEvent("mouseDown", building.id);
     } catch (error) {}
@@ -138,7 +139,7 @@ export default function Home({ folders, focus }: Props) {
                     building={selectedBuilding}
                     openPano={() => setShowPano(true)}
                     enable360={
-                      selectedBuilding.buildingName && folders
+                      folders
                         ? folders.includes(selectedBuilding.buildingName)
                         : false
                     }
@@ -163,7 +164,7 @@ export default function Home({ folders, focus }: Props) {
           </div>
         )}
       </div>
-      {showPano && selectedBuilding && selectedBuilding.buildingName && (
+      {showPano && selectedBuilding && (
         <div className="absolute top-0 bottom-0 left-0 right-0 z-20 flex flex-col items-center justify-center sm:p-5 ">
           <div
             className="absolute top-0 bottom-0 left-0 right-0 bg-black/20"
