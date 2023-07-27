@@ -10,6 +10,7 @@ import { GetServerSideProps } from "next";
 import { getAllFoldersInFolder } from "./api/getCloudinaryFolders";
 import { Button } from "@/components/ui/button";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { useRouter } from "next/router";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const res = await getAllFoldersInFolder("360");
@@ -31,6 +32,7 @@ interface Props {
 
 export default function Home({ folders, focus }: Props) {
   const splineRef = useRef<Application>();
+  const router = useRouter();
 
   const defaultCameraId = "3B695796-4617-4F45-BF86-E0B33A41DF6B";
   const spline3dUrl =
@@ -70,12 +72,14 @@ export default function Home({ folders, focus }: Props) {
   }
 
   function onMouseDown(e: SplineEvent) {
+    console.log("🚀 ~ file: index.tsx:77 ~ onMouseDown ~ e:", e);
     const index = buildingsData.findIndex((b) => b.id === e.target.id);
-
+    console.log(index, "index");
     if (index >= 0) {
       focusOnBuilding(buildingsData[index]);
     } else {
       setSelectedBuilding(null);
+      removeQueryPram("focus");
     }
   }
 
@@ -85,9 +89,26 @@ export default function Home({ folders, focus }: Props) {
 
   function focusOnBuilding(building: Building) {
     try {
+      updateQueryPram(building.id);
       setSelectedBuilding(building);
       splineRef.current?.emitEvent("mouseDown", building.id);
     } catch (error) {}
+  }
+
+  function updateQueryPram(buildingId: string) {
+    router.push({
+      pathname: router.pathname,
+      query: { ...router.query, focus: buildingId },
+    });
+  }
+  function removeQueryPram(queryPramName: string) {
+    const query = { ...router.query };
+    delete query[queryPramName];
+
+    router.replace({
+      pathname: router.pathname,
+      query,
+    });
   }
 
   function zoomIn() {

@@ -44,7 +44,7 @@ export const PanoramaView: FC<Props> = ({ buildingName }) => {
 
   return (
     <div
-      className={`w-full relative h-full sm:h-[90%] mb-auto animate-in fade-in zoom-in sm:rounded-2xl overflow-clip duration-300`}
+      className={`w-full relative h-full sm:h-[90%] sm:mb-auto animate-in fade-in zoom-in sm:rounded-2xl overflow-clip duration-300`}
     >
       <div ref={sphereElementRef} className="w-full h-full"></div>
     </div>
