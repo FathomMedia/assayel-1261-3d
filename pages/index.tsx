@@ -47,12 +47,12 @@ export default function Home({ folders, focus }: Props) {
   function onLoad(spline: Application) {
     splineRef.current = spline;
     findObject(spline, defaultCameraId, defaultCamera);
-    if (focus) {
-      const focusBuilding = buildingsData.find((b) => b.id === focus);
-      focusBuilding && focusOnBuilding(focusBuilding);
-    }
     setTimeout(() => {
       setIsLoaded(true);
+      if (focus) {
+        const focusBuilding = buildingsData.find((b) => b.id === focus);
+        focusBuilding && focusOnBuilding(focusBuilding);
+      }
     }, 1000);
   }
 
