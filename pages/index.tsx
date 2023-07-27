@@ -34,7 +34,7 @@ export default function Home({ folders, focus }: Props) {
 
   const defaultCameraId = "3B695796-4617-4F45-BF86-E0B33A41DF6B";
   const spline3dUrl =
-    "https://draft.spline.design/vjyQIWPKirClyG-p/scene.splinecode";
+    "https://draft.spline.design/r85LQU52PslpFuvN/scene.splinecode";
   const defaultCamera = useRef<SPEObject | undefined>();
 
   const [selectedBuilding, setSelectedBuilding] = useState<Building | null>(
