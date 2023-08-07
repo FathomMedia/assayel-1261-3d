@@ -5,7 +5,6 @@ import { ListOfBuildings } from "@/components/ListOfBuildings";
 import { PanoramaView } from "@/components/PanoView";
 import { LuMinusCircle, LuPlusCircle, LuXCircle } from "react-icons/lu";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/router";
 import { City } from "@/components/City";
 import { Canvas } from "@react-three/fiber";
 import { useAppContext } from "@/contexts/AppContexts";
@@ -29,25 +28,19 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 };
 
 export default function Home({ folders }: Props) {
-  const router = useRouter();
   const { progress } = useProgress();
   const isLoaded = progress === 100;
 
   const [zoomedIn, setZoomedIn] = useState(false);
   const [showPano, setShowPano] = useState(false);
 
-  const { selectedBuilding, setSelectedBuilding, focusOn, cameraControlRef } =
-    useAppContext();
-
-  /**
-   * The function "resetCamera" resets the camera by removing focus on a building, deselecting the
-   * selected building, and removing the "focus" query parameter.
-   */
-  function resetCamera() {
-    focusOn("");
-    setSelectedBuilding(null);
-    removeQueryPram("focus");
-  }
+  const {
+    selectedBuilding,
+    setSelectedBuilding,
+    focusOn,
+    cameraControlRef,
+    resetCamera,
+  } = useAppContext();
 
   /**
    * The function "focusOnBuilding" updates the query parameter, sets the selected building, and focuses
@@ -61,39 +54,9 @@ export default function Home({ folders }: Props) {
    */
   function focusOnBuilding(building: Building, from3D?: boolean) {
     try {
-      updateQueryPram(building.buildingName);
       setSelectedBuilding(building);
       !from3D && focusOn(building.buildingName);
     } catch (error) {}
-  }
-
-  /**
-   * The function updates the query parameter "focus" in the URL with the provided building name and
-   * navigates to the updated URL.
-   * @param {string} buildingName - The `buildingName` parameter is a string that represents the name of
-   * a building.
-   */
-  function updateQueryPram(buildingName: string) {
-    router.push({
-      pathname: router.pathname,
-      query: { ...router.query, focus: buildingName },
-    });
-  }
-
-  /**
-   * The function removes a specified query parameter from the current URL and updates the URL in the
-   * browser.
-   * @param {string} queryPramName - The `queryPramName` parameter is a string that represents the name
-   * of the query parameter that you want to remove from the URL.
-   */
-  function removeQueryPram(queryPramName: string) {
-    const query = { ...router.query };
-    delete query[queryPramName];
-
-    router.replace({
-      pathname: router.pathname,
-      query,
-    });
   }
 
   /**
@@ -185,22 +148,24 @@ export default function Home({ folders }: Props) {
       )}
       {/* Zoom Controls */}
       <div className="absolute flex flex-col justify-center my-auto rounded-full h-fit top-14 bottom-14 right-5">
-        <div className="flex flex-col animate-in zoom-in duration-300 fade-in   p-0 rounded-full backdrop-blur-md bg-[#4A4640]/60">
-          <Button
-            className={`w-12 h-16 p-3 rounded-t-full shadow-none aspect-square bg-white/0 hover:bg-white/30 `}
-            onClick={zoomIn}
-            disabled={zoomedIn}
-          >
-            <LuPlusCircle className="w-full h-full" />
-          </Button>
-          <Button
-            className={`w-12 h-16 p-3 rounded-b-full shadow-none aspect-square bg-white/0 hover:bg-white/30 `}
-            onClick={zoomOut}
-            disabled={!zoomedIn}
-          >
-            <LuMinusCircle className="w-full h-full" />
-          </Button>
-        </div>
+        {!selectedBuilding && (
+          <div className="flex flex-col animate-in zoom-in duration-300 fade-in   p-0 rounded-full backdrop-blur-md bg-[#4A4640]/60">
+            <Button
+              className={`w-12 h-16 p-3 rounded-t-full shadow-none aspect-square bg-white/0 hover:bg-white/30 `}
+              onClick={zoomIn}
+              disabled={zoomedIn}
+            >
+              <LuPlusCircle className="w-full h-full" />
+            </Button>
+            <Button
+              className={`w-12 h-16 p-3 rounded-b-full shadow-none aspect-square bg-white/0 hover:bg-white/30 `}
+              onClick={zoomOut}
+              disabled={!zoomedIn}
+            >
+              <LuMinusCircle className="w-full h-full" />
+            </Button>
+          </div>
+        )}
       </div>
       {!isLoaded && <LoaderUI progress={progress} />}
     </main>

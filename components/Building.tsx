@@ -1,9 +1,8 @@
 import { BuildingsPosition, useAppContext } from "@/contexts/AppContexts";
 import { useGLTF } from "@react-three/drei";
-import { useFrame, ThreeEvent, useLoader } from "@react-three/fiber";
+import { useFrame, ThreeEvent } from "@react-three/fiber";
 import React, { useEffect, useRef, useState } from "react";
-import { Object3D, Mesh, LoadingManager } from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { Object3D, Mesh } from "three";
 
 interface IBuilding {
   url: string;

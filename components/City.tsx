@@ -1,13 +1,12 @@
 "use client";
 
-import React, { FC, Suspense, useEffect, useState } from "react";
+import React, { FC, Suspense, useEffect, useRef } from "react";
 
 import {
   PerspectiveCamera,
   CameraControls,
   Grid,
   Environment,
-  OrbitControls,
 } from "@react-three/drei";
 import { Object3D, Vector3 } from "three";
 import Building from "./Building";
@@ -18,50 +17,20 @@ interface Props {
   onBuildingClick: (name: string | null) => void;
 }
 export const City: FC<Props> = ({ onBuildingClick }) => {
-  const { cameraControlRef: cameraRef } = useAppContext();
-
-  const [camPos, setCamPos] = useState<[number, number, number]>([0, 100, 100]);
+  const {
+    cameraControlRef: cameraRef,
+    focusOnPosition,
+    resetCamera,
+    resetCameraPosition,
+  } = useAppContext();
 
   function handleBuildingClick(
     building: Object3D,
     buildingName: string | null
   ) {
-    const target = building;
-
-    const rotation = cameraRef?.current?.camera.rotation;
-    cameraRef?.current?.setLookAt(
-      target.position.x + 100,
-      target.position.y + 100,
-      target.position.z + -100,
-      target.position.x,
-      target.position.y,
-      target.position.z,
-      true
-    );
-    rotation && cameraRef?.current?.camera.setRotationFromEuler(rotation);
-
+    focusOnPosition(building.position);
     onBuildingClick(buildingName);
   }
-
-  function resetCamera() {
-    const rotation = cameraRef?.current?.camera.rotation;
-    cameraRef?.current?.setLookAt(
-      camPos[0],
-      camPos[1],
-      camPos[2],
-      0,
-      0,
-      0,
-      true
-    );
-    rotation && cameraRef?.current?.camera.setRotationFromEuler(rotation);
-  }
-
-  // useEffect(() => {
-  //   cameraRef?.current?.setPosition(180, 100, 80);
-
-  //   return () => {};
-  // }, [cameraRef]);
 
   function TheGrid() {
     const gridConfig = {
@@ -99,11 +68,7 @@ export const City: FC<Props> = ({ onBuildingClick }) => {
       </mesh>
 
       {/* Controls */}
-      <PerspectiveCamera
-        fov={40}
-        makeDefault
-        position={(camPos[0], camPos[1], camPos[2])}
-      />
+      <PerspectiveCamera fov={40} makeDefault position={resetCameraPosition} />
 
       <CameraControls
         enabled
