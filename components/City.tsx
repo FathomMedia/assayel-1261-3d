@@ -7,8 +7,9 @@ import {
   CameraControls,
   Grid,
   Environment,
+  OrbitControls,
 } from "@react-three/drei";
-import { Object3D } from "three";
+import { Object3D, Vector3 } from "three";
 import Building from "./Building";
 import { buildingsData } from "@/src/data";
 import { useAppContext } from "@/contexts/AppContexts";
@@ -56,13 +57,13 @@ export const City: FC<Props> = ({ onBuildingClick }) => {
     rotation && cameraRef?.current?.camera.setRotationFromEuler(rotation);
   }
 
-  useEffect(() => {
-    cameraRef?.current?.setPosition(180, 100, 80);
+  // useEffect(() => {
+  //   cameraRef?.current?.setPosition(180, 100, 80);
 
-    return () => {};
-  }, [cameraRef]);
+  //   return () => {};
+  // }, [cameraRef]);
 
-  function Ground() {
+  function TheGrid() {
     const gridConfig = {
       cellSize: 0.5,
       cellThickness: 0.5,
@@ -108,13 +109,15 @@ export const City: FC<Props> = ({ onBuildingClick }) => {
         enabled
         makeDefault
         ref={cameraRef}
-        maxDistance={300}
-        minDistance={200}
+        maxDistance={200}
+        minDistance={300}
         maxPolarAngle={Math.PI / 2.5}
       />
 
-      <Ground />
+      <TheGrid />
 
+      <ambientLight />
+      <directionalLight position={[10, 10, 10]} />
       <Environment preset="city" />
     </group>
   );

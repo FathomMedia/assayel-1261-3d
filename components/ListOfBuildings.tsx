@@ -60,7 +60,7 @@ export const ListOfBuildings: FC<Props> = ({
   return (
     <div
       className={cn(
-        `flex justify-between items-center gap-0 px-0 sm:px-3 h-12 sm:h-14 sm:rounded-xl backdrop-blur-md rounded-none bg-[#E2DEDC]/30 ${className}`
+        `animate-in zoom-in duration-300 fade-in  flex justify-between items-center gap-0 px-0 sm:px-3 h-12 sm:h-14 sm:rounded-xl backdrop-blur-md rounded-none bg-[#E2DEDC]/30 ${className}`
       )}
     >
       <Button

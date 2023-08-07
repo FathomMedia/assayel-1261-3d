@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Building, buildingsData } from "@/src/data";
 import { BuildingCard } from "@/components/buildingCard";
 import { ListOfBuildings } from "@/components/ListOfBuildings";
@@ -12,6 +12,8 @@ import { useRouter } from "next/router";
 import { City } from "@/components/City";
 import { Canvas } from "@react-three/fiber";
 import { useAppContext } from "@/contexts/AppContexts";
+import { Loader, useProgress } from "@react-three/drei";
+import { Progress } from "@/components/ui/progress";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const res = await getAllFoldersInFolder("360");
@@ -31,11 +33,43 @@ interface Props {
   focus: string | null;
 }
 
-export default function Home({ folders }: Props) {
+export default function Home({ folders, focus }: Props) {
   const router = useRouter();
+  const { active, progress, errors, item, loaded, total } = useProgress();
+  const isLoaded = progress === 100;
 
-  const { selectedBuilding, setSelectedBuilding, focusOn, cameraControlRef } =
-    useAppContext();
+  const {
+    selectedBuilding,
+    setSelectedBuilding,
+    focusOn,
+    cameraControlRef,
+    buildings,
+  } = useAppContext();
+
+  useEffect(() => {
+    if (isLoaded && focus) {
+      const focusBuilding = buildings.find((b) => b.name === focus);
+
+      if (focusBuilding) {
+        const position = focusBuilding.position;
+
+        const rotation = cameraControlRef?.current?.camera.rotation;
+        cameraControlRef?.current?.setLookAt(
+          position.x + 100,
+          position.y + 100,
+          position.z + -100,
+          position.x,
+          position.y,
+          position.z,
+          true
+        );
+        rotation &&
+          cameraControlRef?.current?.camera.setRotationFromEuler(rotation);
+      }
+    }
+
+    return () => {};
+  }, [isLoaded, focus, buildings, cameraControlRef]);
 
   const [zoomedIn, setZoomedIn] = useState(false);
   // const [isLoaded, setIsLoaded] = useState(true);
@@ -47,10 +81,6 @@ export default function Home({ folders }: Props) {
     removeQueryPram("focus");
   }
 
-  useEffect(() => {
-    return () => {};
-  }, [selectedBuilding]);
-
   function focusOnBuilding(building: Building, from3D?: boolean) {
     try {
       updateQueryPram(building.buildingName);
@@ -59,10 +89,10 @@ export default function Home({ folders }: Props) {
     } catch (error) {}
   }
 
-  function updateQueryPram(buildingId: string) {
+  function updateQueryPram(buildingName: string) {
     router.push({
       pathname: router.pathname,
-      query: { ...router.query, focus: buildingId },
+      query: { ...router.query, focus: buildingName },
     });
   }
   function removeQueryPram(queryPramName: string) {
@@ -86,8 +116,8 @@ export default function Home({ folders }: Props) {
 
   return (
     <main className={`flex h-screen flex-col items-center justify-between`}>
-      <div className="relative w-full h-full ">
-        <Canvas className="w-full h-full">
+      <div className="relative w-full h-full bg-[#F1E8DE]">
+        <Canvas className="w-full h-full" shadows={"basic"}>
           {
             <City
               onBuildingClick={(name) => {
@@ -102,6 +132,7 @@ export default function Home({ folders }: Props) {
             />
           }
         </Canvas>
+
         {
           <div className="absolute bottom-0 left-0 right-0 flex flex-col items-end justify-end px-0 sm:bottom-5 sm:px-5 md:flex-row">
             <div className="relative flex flex-col w-full h-full gap-3">
@@ -128,12 +159,6 @@ export default function Home({ folders }: Props) {
             </div>
           </div>
         }
-        {/* {!isLoaded && (
-          <div className="absolute top-0 bottom-0 left-0 right-0 z-30 flex flex-col items-center justify-center gap-2 bg-secondary">
-            <AiOutlineLoading3Quarters className="w-5 h-5 text-white animate-spin" />
-            <p className="text-xl font-light text-white">Loading</p>
-          </div>
-        )} */}
       </div>
       {showPano && selectedBuilding && (
         <div className="absolute top-0 bottom-0 left-0 right-0 z-20 flex flex-col items-center justify-center sm:p-5 ">
@@ -162,7 +187,7 @@ export default function Home({ folders }: Props) {
       {/* Zoom Controls */}
       {
         <div className="absolute flex flex-col justify-center my-auto rounded-full h-fit top-14 bottom-14 right-5">
-          <div className="flex flex-col  p-0 rounded-full backdrop-blur-md bg-[#4A4640]/60">
+          <div className="flex flex-col animate-in zoom-in duration-300 fade-in   p-0 rounded-full backdrop-blur-md bg-[#4A4640]/60">
             <Button
               className={`w-12 h-16 p-3 rounded-t-full shadow-none aspect-square bg-white/0 hover:bg-white/30 `}
               onClick={zoomIn}
@@ -180,6 +205,18 @@ export default function Home({ folders }: Props) {
           </div>
         </div>
       }
+      {!isLoaded && <LoaderUI progress={progress} />}
     </main>
+  );
+}
+
+function LoaderUI({ progress }: { progress: number }) {
+  return (
+    <div className="absolute top-5 right-5 left-5 flex">
+      <div className="w-full max-w-xs bg-[#4A4640]/60 animate-in zoom-in duration-300 fade-in rounded-full gap-3 flex items-center p-2 mx-auto">
+        <p className="text-white">Loading </p>
+        <Progress className="w-full" value={progress} />
+      </div>
+    </div>
   );
 }
