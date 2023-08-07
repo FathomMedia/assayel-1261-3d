@@ -4,10 +4,11 @@ import { Button } from "@/components/ui/button";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import { cn } from "@/src/utils";
 import { useDraggable } from "react-use-draggable-scroll";
+import { useAppContext } from "@/contexts/AppContexts";
 
 interface Props {
   buildings: Building[];
-  selected?: Building | null;
+
   onClickBuilding?: (building: Building) => void;
   className?: string;
 }
@@ -15,10 +16,14 @@ interface Props {
 export const ListOfBuildings: FC<Props> = ({
   buildings,
   onClickBuilding,
-  selected,
+
   className,
 }) => {
-  const currentIndex = buildings.findIndex((b) => b.id === selected?.id);
+  const { selectedBuilding } = useAppContext();
+
+  const currentIndex = buildings.findIndex(
+    (b) => b.name === selectedBuilding?.name
+  );
   const canGoPrevious = currentIndex > 0 && currentIndex !== -1;
   const canGoNext = currentIndex < buildings.length - 1 && buildings.length > 0;
   const itemsRef = useRef<(HTMLButtonElement | null)[]>([]);
@@ -76,9 +81,12 @@ export const ListOfBuildings: FC<Props> = ({
           <div className="flex w-full gap-3">
             {...buildings.map((b, i) => (
               <Button
-                variant={selected?.id === b.id ? "default" : "secondary"}
+                variant={
+                  selectedBuilding?.name === b.name ? "default" : "secondary"
+                }
                 className={`text-xs flex-none font-normal sm:text-base px-3 w-fit whitespace-nowrap hover:bg-primary hover:text-primary-foreground ${
-                  selected?.id !== b.id && "bg-background text-foreground"
+                  selectedBuilding?.name !== b.name &&
+                  "bg-background text-foreground"
                 }`}
                 ref={(element) => (itemsRef.current[i] = element)}
                 key={`b-${i}`}

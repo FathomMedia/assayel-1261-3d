@@ -1,6 +1,4 @@
-import Spline, { SPEObject, SplineEvent } from "@splinetool/react-spline";
-import { Application } from "@splinetool/runtime";
-import { MutableRefObject, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Building, buildingsData } from "@/src/data";
 import { BuildingCard } from "@/components/buildingCard";
 import { ListOfBuildings } from "@/components/ListOfBuildings";
@@ -11,6 +9,9 @@ import { getAllFoldersInFolder } from "./api/getCloudinaryFolders";
 import { Button } from "@/components/ui/button";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useRouter } from "next/router";
+import { City } from "@/components/City";
+import { Canvas } from "@react-three/fiber";
+import { useAppContext } from "@/contexts/AppContexts";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const res = await getAllFoldersInFolder("360");
@@ -30,69 +31,31 @@ interface Props {
   focus: string | null;
 }
 
-export default function Home({ folders, focus }: Props) {
-  const splineRef = useRef<Application>();
+export default function Home({ folders }: Props) {
   const router = useRouter();
 
-  const defaultCameraId = "3B695796-4617-4F45-BF86-E0B33A41DF6B";
-  const spline3dUrl =
-    "https://draft.spline.design/r85LQU52PslpFuvN/scene.splinecode";
-  const defaultCamera = useRef<SPEObject | undefined>();
+  const { selectedBuilding, setSelectedBuilding, focusOn, cameraControlRef } =
+    useAppContext();
 
-  const [selectedBuilding, setSelectedBuilding] = useState<Building | null>(
-    null
-  );
-
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [zoomedIn, setZoomedIn] = useState(false);
+  // const [isLoaded, setIsLoaded] = useState(true);
   const [showPano, setShowPano] = useState(false);
 
-  function onLoad(spline: Application) {
-    splineRef.current = spline;
-    findObject(spline, defaultCameraId, defaultCamera);
-    setTimeout(() => {
-      setIsLoaded(true);
-      if (focus) {
-        const focusBuilding = buildingsData.find(
-          (b) => b.buildingName === focus
-        );
-        focusBuilding && focusOnBuilding(focusBuilding);
-      }
-    }, 1000);
-  }
-
-  function findObject(
-    spline: Application,
-    id: string,
-    ref: MutableRefObject<SPEObject | undefined>
-  ) {
-    const obj = spline.findObjectById(id);
-    ref.current = obj;
-  }
-
   function resetCamera() {
-    splineRef.current?.emitEvent("mouseDown", defaultCameraId);
-  }
-
-  function onMouseDown(e: SplineEvent) {
-    const index = buildingsData.findIndex((b) => b.id === e.target.id);
-
-    if (index >= 0) {
-      focusOnBuilding(buildingsData[index]);
-    } else {
-      setSelectedBuilding(null);
-      removeQueryPram("focus");
-    }
+    focusOn("");
+    setSelectedBuilding(null);
+    removeQueryPram("focus");
   }
 
   useEffect(() => {
     return () => {};
   }, [selectedBuilding]);
 
-  function focusOnBuilding(building: Building) {
+  function focusOnBuilding(building: Building, from3D?: boolean) {
     try {
       updateQueryPram(building.buildingName);
       setSelectedBuilding(building);
-      splineRef.current?.emitEvent("mouseDown", building.id);
+      !from3D && focusOn(building.buildingName);
     } catch (error) {}
   }
 
@@ -113,24 +76,33 @@ export default function Home({ folders, focus }: Props) {
   }
 
   function zoomIn() {
-    splineRef.current?.setZoom(1);
-    splineRef.current?.setZoom(1.2);
+    cameraControlRef?.current?.zoomTo(2, true);
+    setZoomedIn(true);
   }
   function zoomOut() {
-    splineRef.current?.setZoom(1);
-    splineRef.current?.setZoom(0.8);
+    cameraControlRef?.current?.zoomTo(1, true);
+    setZoomedIn(false);
   }
 
   return (
     <main className={`flex h-screen flex-col items-center justify-between`}>
       <div className="relative w-full h-full ">
-        <Spline
-          className="w-full h-full"
-          onLoad={onLoad}
-          onMouseDown={onMouseDown}
-          scene={spline3dUrl}
-        />
-        {isLoaded && (
+        <Canvas className="w-full h-full">
+          {
+            <City
+              onBuildingClick={(name) => {
+                const foundBuilding = buildingsData.find(
+                  (b) => b.buildingName === name
+                );
+
+                foundBuilding
+                  ? focusOnBuilding(foundBuilding, true)
+                  : resetCamera();
+              }}
+            />
+          }
+        </Canvas>
+        {
           <div className="absolute bottom-0 left-0 right-0 flex flex-col items-end justify-end px-0 sm:bottom-5 sm:px-5 md:flex-row">
             <div className="relative flex flex-col w-full h-full gap-3">
               {selectedBuilding && (
@@ -151,18 +123,17 @@ export default function Home({ folders, focus }: Props) {
                 <ListOfBuildings
                   buildings={buildingsData}
                   onClickBuilding={focusOnBuilding}
-                  selected={selectedBuilding}
                 ></ListOfBuildings>
               }
             </div>
           </div>
-        )}
-        {!isLoaded && (
+        }
+        {/* {!isLoaded && (
           <div className="absolute top-0 bottom-0 left-0 right-0 z-30 flex flex-col items-center justify-center gap-2 bg-secondary">
             <AiOutlineLoading3Quarters className="w-5 h-5 text-white animate-spin" />
             <p className="text-xl font-light text-white">Loading</p>
           </div>
-        )}
+        )} */}
       </div>
       {showPano && selectedBuilding && (
         <div className="absolute top-0 bottom-0 left-0 right-0 z-20 flex flex-col items-center justify-center sm:p-5 ">
@@ -189,24 +160,26 @@ export default function Home({ folders, focus }: Props) {
         </div>
       )}
       {/* Zoom Controls */}
-      {!selectedBuilding && isLoaded && (
+      {
         <div className="absolute flex flex-col justify-center my-auto rounded-full h-fit top-14 bottom-14 right-5">
           <div className="flex flex-col  p-0 rounded-full backdrop-blur-md bg-[#4A4640]/60">
             <Button
-              className="w-12 h-16 p-3 rounded-t-full shadow-none aspect-square bg-white/0 hover:bg-white/20"
+              className={`w-12 h-16 p-3 rounded-t-full shadow-none aspect-square bg-white/0 hover:bg-white/30 `}
               onClick={zoomIn}
+              disabled={zoomedIn}
             >
               <LuPlusCircle className="w-full h-full" />
             </Button>
             <Button
-              className="w-12 h-16 p-3 rounded-b-full shadow-none aspect-square bg-white/0 hover:bg-white/20"
+              className={`w-12 h-16 p-3 rounded-b-full shadow-none aspect-square bg-white/0 hover:bg-white/30 `}
               onClick={zoomOut}
+              disabled={!zoomedIn}
             >
               <LuMinusCircle className="w-full h-full" />
             </Button>
           </div>
         </div>
-      )}
+      }
     </main>
   );
 }

@@ -10,6 +10,7 @@ interface Props {
   building: Building | null;
   openPano?: () => void;
   onClose?: () => void;
+  onInquire?: () => void;
   enable360: boolean;
   className?: string;
 }
@@ -20,6 +21,7 @@ export const BuildingCard: FC<Props> = ({
   enable360,
   onClose,
   className,
+  onInquire,
 }) => {
   return (
     <div
@@ -33,28 +35,44 @@ export const BuildingCard: FC<Props> = ({
     >
       <div className="flex flex-col justify-start gap-2 grow">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <h2 className="text-2xl font-dax">{building?.name}</h2>
-            {openPano && enable360 && (
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 w-full">
+            <h2 className="text-2xl order-2 sm:order-1 font-dax">
+              {building?.name}
+            </h2>
+            <div className="flex items-center order-1 sm:order-2 gap-3 ">
+              {/* Actions */}
+              <div className="flex items-center gap-3 w-full">
+                {openPano && enable360 && (
+                  <Button
+                    variant={"outline"}
+                    className=" hover:bg-stone-200"
+                    type="button"
+                    onClick={openPano}
+                  >
+                    <Icon360 className="w-10 h-4" />
+                  </Button>
+                )}
+                {onInquire && (
+                  <Button
+                    variant={"default"}
+                    className="  hover:bg-[#947E3A]"
+                    type="button"
+                    onClick={onInquire}
+                  >
+                    Inquire
+                  </Button>
+                )}
+              </div>
+              {/* Close */}
               <Button
                 variant={"ghost"}
-                className=" hover:bg-stone-200"
-                type="button"
-                onClick={openPano}
+                className="px-2 hover:bg-stone-200 "
+                onClick={onClose}
               >
-                <Icon360 className="w-10 h-4" />
+                <LuXCircle className="w-5 h-5 text-secondary" />
               </Button>
-            )}
+            </div>
           </div>
-          {building && (
-            <Button
-              variant={"ghost"}
-              className="absolute px-2 top-2 right-2 hover:bg-stone-200"
-              onClick={onClose}
-            >
-              <LuXCircle className="w-5 h-5 text-secondary" />
-            </Button>
-          )}
         </div>
         <p className="overflow-y-scroll text-xs text-secondary md:text-base max-h-20 font-dax ">
           {building?.description}

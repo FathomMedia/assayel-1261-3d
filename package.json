@@ -15,11 +15,14 @@
     "@photo-sphere-viewer/equirectangular-tiles-adapter": "^5.1.7",
     "@radix-ui/react-icons": "^1.3.0",
     "@radix-ui/react-slot": "^1.0.2",
+    "@react-three/drei": "^9.80.0",
+    "@react-three/fiber": "^8.13.6",
     "@splinetool/react-spline": "^2.2.6",
     "@splinetool/runtime": "^0.9.395",
     "@types/node": "20.4.2",
     "@types/react": "18.2.15",
     "@types/react-dom": "18.2.7",
+    "@types/three": "^0.155.0",
     "autoprefixer": "10.4.14",
     "class-variance-authority": "^0.7.0",
     "cloudinary": "^1.38.0",
@@ -34,6 +37,7 @@
     "react-use-draggable-scroll": "^0.4.7",
     "tailwind-merge": "^1.14.0",
     "tailwindcss": "3.3.3",
+    "three": "^0.155.0",
     "typescript": "5.1.6"
   },
   "devDependencies": {
