@@ -11,10 +11,22 @@ import { Canvas } from "@react-three/fiber";
 import { useAppContext } from "@/contexts/AppContexts";
 import { useProgress } from "@react-three/drei";
 import { Progress } from "@/components/ui/progress";
+import { GetServerSideProps } from "next";
+import { getAllFoldersInFolder } from "./api/getCloudinaryFolders";
 
 interface Props {
   folders: string[] | undefined;
 }
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const res = await getAllFoldersInFolder("360");
+
+  return {
+    props: {
+      folders: res,
+    },
+  };
+};
 
 export default function Home({ folders }: Props) {
   const router = useRouter();
