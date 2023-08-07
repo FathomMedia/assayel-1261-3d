@@ -32,22 +32,37 @@ export const ListOfBuildings: FC<Props> = ({
     useRef<HTMLDivElement>() as React.MutableRefObject<HTMLInputElement>;
   const { events } = useDraggable(ref);
 
+  /**
+   * The function "goPrevious" checks if it is possible to go to the previous building and if so, calls
+   * the "onClickBuilding" function with the previous building as an argument.
+   */
   function goPrevious() {
     if (canGoPrevious) {
       onClickBuilding && onClickBuilding(buildings[currentIndex - 1]);
     }
   }
 
+  /**
+   * The function "goNext" checks if it is possible to go to the next building and if so, calls the
+   * "onClickBuilding" function with the next building as an argument.
+   */
   function goNext() {
     if (canGoNext) {
       onClickBuilding && onClickBuilding(buildings[currentIndex + 1]);
     }
   }
 
+  /**
+   * The function "goTo" triggers the "onClickBuilding" function with the "building" parameter when it
+   * is called.
+   * @param {Building} building - The `building` parameter is of type `Building`.
+   */
   function goTo(building: Building) {
     onClickBuilding && onClickBuilding(building);
   }
 
+  /* The `useEffect` hook is used to scroll the selected building into view when the `currentIndex`
+  changes. */
   useEffect(() => {
     itemsRef.current[currentIndex]?.scrollIntoView({
       behavior: "smooth",

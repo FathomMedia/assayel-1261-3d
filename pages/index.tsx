@@ -1,86 +1,52 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { Building, buildingsData } from "@/src/data";
 import { BuildingCard } from "@/components/buildingCard";
 import { ListOfBuildings } from "@/components/ListOfBuildings";
 import { PanoramaView } from "@/components/PanoView";
 import { LuMinusCircle, LuPlusCircle, LuXCircle } from "react-icons/lu";
-import { GetServerSideProps } from "next";
-import { getAllFoldersInFolder } from "./api/getCloudinaryFolders";
 import { Button } from "@/components/ui/button";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useRouter } from "next/router";
 import { City } from "@/components/City";
 import { Canvas } from "@react-three/fiber";
 import { useAppContext } from "@/contexts/AppContexts";
-import { Loader, useProgress } from "@react-three/drei";
+import { useProgress } from "@react-three/drei";
 import { Progress } from "@/components/ui/progress";
-
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const res = await getAllFoldersInFolder("360");
-
-  const focus = ctx.query.focus ?? null;
-
-  return {
-    props: {
-      folders: res,
-      focus,
-    },
-  };
-};
 
 interface Props {
   folders: string[] | undefined;
-  focus: string | null;
 }
 
-export default function Home({ folders, focus }: Props) {
+export default function Home({ folders }: Props) {
   const router = useRouter();
-  const { active, progress, errors, item, loaded, total } = useProgress();
+  const { progress } = useProgress();
   const isLoaded = progress === 100;
 
-  const {
-    selectedBuilding,
-    setSelectedBuilding,
-    focusOn,
-    cameraControlRef,
-    buildings,
-  } = useAppContext();
-
-  useEffect(() => {
-    if (isLoaded && focus) {
-      const focusBuilding = buildings.find((b) => b.name === focus);
-
-      if (focusBuilding) {
-        const position = focusBuilding.position;
-
-        const rotation = cameraControlRef?.current?.camera.rotation;
-        cameraControlRef?.current?.setLookAt(
-          position.x + 100,
-          position.y + 100,
-          position.z + -100,
-          position.x,
-          position.y,
-          position.z,
-          true
-        );
-        rotation &&
-          cameraControlRef?.current?.camera.setRotationFromEuler(rotation);
-      }
-    }
-
-    return () => {};
-  }, [isLoaded, focus, buildings, cameraControlRef]);
-
   const [zoomedIn, setZoomedIn] = useState(false);
-  // const [isLoaded, setIsLoaded] = useState(true);
   const [showPano, setShowPano] = useState(false);
 
+  const { selectedBuilding, setSelectedBuilding, focusOn, cameraControlRef } =
+    useAppContext();
+
+  /**
+   * The function "resetCamera" resets the camera by removing focus on a building, deselecting the
+   * selected building, and removing the "focus" query parameter.
+   */
   function resetCamera() {
     focusOn("");
     setSelectedBuilding(null);
     removeQueryPram("focus");
   }
 
+  /**
+   * The function "focusOnBuilding" updates the query parameter, sets the selected building, and focuses
+   * on the building if it is not from 3D.
+   * @param {Building} building - The `building` parameter is of type `Building` and represents the
+   * building object that we want to focus on. It likely contains properties such as `buildingName`,
+   * which is used in the function.
+   * @param {boolean} [from3D] - The `from3D` parameter is a boolean flag that indicates whether the
+   * function is being called from a 3D context or not. If `from3D` is `true`, it means the function is
+   * being called from a 3D context, and if it is `false` or
+   */
   function focusOnBuilding(building: Building, from3D?: boolean) {
     try {
       updateQueryPram(building.buildingName);
@@ -89,12 +55,25 @@ export default function Home({ folders, focus }: Props) {
     } catch (error) {}
   }
 
+  /**
+   * The function updates the query parameter "focus" in the URL with the provided building name and
+   * navigates to the updated URL.
+   * @param {string} buildingName - The `buildingName` parameter is a string that represents the name of
+   * a building.
+   */
   function updateQueryPram(buildingName: string) {
     router.push({
       pathname: router.pathname,
       query: { ...router.query, focus: buildingName },
     });
   }
+
+  /**
+   * The function removes a specified query parameter from the current URL and updates the URL in the
+   * browser.
+   * @param {string} queryPramName - The `queryPramName` parameter is a string that represents the name
+   * of the query parameter that you want to remove from the URL.
+   */
   function removeQueryPram(queryPramName: string) {
     const query = { ...router.query };
     delete query[queryPramName];
@@ -105,10 +84,18 @@ export default function Home({ folders, focus }: Props) {
     });
   }
 
+  /**
+   * The function zoomIn() zooms the camera to a factor of 2 and sets the zoomedIn state to true.
+   */
   function zoomIn() {
     cameraControlRef?.current?.zoomTo(2, true);
     setZoomedIn(true);
   }
+
+  /**
+   * The function zoomOut resets the zoom level of the camera control and updates the zoomedIn state to
+   * false.
+   */
   function zoomOut() {
     cameraControlRef?.current?.zoomTo(1, true);
     setZoomedIn(false);
@@ -161,7 +148,7 @@ export default function Home({ folders, focus }: Props) {
         }
       </div>
       {showPano && selectedBuilding && (
-        <div className="absolute top-0 bottom-0 left-0 right-0 z-20 flex flex-col items-center justify-center sm:p-5 ">
+        <div className="absolute top-0 bottom-0 left-0 right-0 z-20 flex flex-col items-center justify-center  ">
           <div
             className="absolute top-0 bottom-0 left-0 right-0 bg-black/20"
             onClick={() => {
@@ -185,26 +172,24 @@ export default function Home({ folders, focus }: Props) {
         </div>
       )}
       {/* Zoom Controls */}
-      {
-        <div className="absolute flex flex-col justify-center my-auto rounded-full h-fit top-14 bottom-14 right-5">
-          <div className="flex flex-col animate-in zoom-in duration-300 fade-in   p-0 rounded-full backdrop-blur-md bg-[#4A4640]/60">
-            <Button
-              className={`w-12 h-16 p-3 rounded-t-full shadow-none aspect-square bg-white/0 hover:bg-white/30 `}
-              onClick={zoomIn}
-              disabled={zoomedIn}
-            >
-              <LuPlusCircle className="w-full h-full" />
-            </Button>
-            <Button
-              className={`w-12 h-16 p-3 rounded-b-full shadow-none aspect-square bg-white/0 hover:bg-white/30 `}
-              onClick={zoomOut}
-              disabled={!zoomedIn}
-            >
-              <LuMinusCircle className="w-full h-full" />
-            </Button>
-          </div>
+      <div className="absolute flex flex-col justify-center my-auto rounded-full h-fit top-14 bottom-14 right-5">
+        <div className="flex flex-col animate-in zoom-in duration-300 fade-in   p-0 rounded-full backdrop-blur-md bg-[#4A4640]/60">
+          <Button
+            className={`w-12 h-16 p-3 rounded-t-full shadow-none aspect-square bg-white/0 hover:bg-white/30 `}
+            onClick={zoomIn}
+            disabled={zoomedIn}
+          >
+            <LuPlusCircle className="w-full h-full" />
+          </Button>
+          <Button
+            className={`w-12 h-16 p-3 rounded-b-full shadow-none aspect-square bg-white/0 hover:bg-white/30 `}
+            onClick={zoomOut}
+            disabled={!zoomedIn}
+          >
+            <LuMinusCircle className="w-full h-full" />
+          </Button>
         </div>
-      }
+      </div>
       {!isLoaded && <LoaderUI progress={progress} />}
     </main>
   );

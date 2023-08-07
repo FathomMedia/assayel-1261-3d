@@ -36,20 +36,23 @@ export const BuildingCard: FC<Props> = ({
       <div className="flex flex-col justify-start gap-2 grow">
         <div className="flex items-center justify-between">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 w-full">
-            <h2 className="text-2xl order-2 sm:order-1 font-dax">
+            <h2 className="text:lg sm:text-2xl order-2 sm:order-1 font-dax">
               {building?.name}
             </h2>
             <div className="flex items-center order-1 sm:order-2 gap-3 ">
               {/* Actions */}
               <div className="flex items-center gap-3 w-full">
-                {openPano && enable360 && (
+                {openPano && (
                   <Button
                     variant={"outline"}
-                    className=" hover:bg-stone-200"
+                    className={` disabled:opacity-40 hover:bg-stone-200`}
                     type="button"
                     onClick={openPano}
+                    disabled={!enable360}
                   >
-                    <Icon360 className="w-10 h-4" />
+                    <Icon360
+                      className={`${!enable360 && "text-gray-400"} w-10 h-4`}
+                    />
                   </Button>
                 )}
                 {onInquire && (

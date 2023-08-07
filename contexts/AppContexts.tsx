@@ -63,10 +63,19 @@ function useProviderApp() {
     null
   );
 
+  /**
+   * The function addToBuildingList adds a new building position to the existing list of buildings.
+   * @param {BuildingsPosition} b - The parameter "b" is of type "BuildingsPosition".
+   */
   function addToBuildingList(b: BuildingsPosition) {
     setBuildings([...buildings, b]);
   }
 
+  /**
+   * The function `focusOn` takes a name parameter, finds the position of a building with that name,
+   * and adjusts the camera to focus on that position.
+   * @param {string} name - The `name` parameter is a string that represents the name of a building.
+   */
   function focusOn(name: string) {
     const position =
       buildings.find((b) => b.name === name)?.position ?? new Vector3(0, 0, 0);
