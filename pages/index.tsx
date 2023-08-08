@@ -123,7 +123,7 @@ export default function Home({ folders }: Props) {
         }
       </div>
       {showPano && selectedBuilding && (
-        <div className="absolute top-0 bottom-0 left-0 right-0 z-20 flex flex-col items-center justify-center  ">
+        <div className="absolute top-0 bottom-0 left-0 right-0 z-20 flex flex-col items-center justify-center ">
           <div
             className="absolute top-0 bottom-0 left-0 right-0 bg-black/20"
             onClick={() => {
@@ -174,7 +174,7 @@ export default function Home({ folders }: Props) {
 
 function LoaderUI({ progress }: { progress: number }) {
   return (
-    <div className="absolute top-5 right-5 left-5 flex">
+    <div className="absolute flex top-5 right-5 left-5">
       <div className="w-full max-w-xs bg-[#4A4640]/60 animate-in zoom-in duration-300 fade-in rounded-full gap-3 flex items-center p-2 mx-auto">
         <p className="text-white">Loading </p>
         <Progress className="w-full" value={progress} />

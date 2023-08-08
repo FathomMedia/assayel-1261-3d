@@ -7,6 +7,7 @@ import {
   CameraControls,
   Grid,
   Environment,
+  useGLTF,
 } from "@react-three/drei";
 import { Object3D, Vector3 } from "three";
 import Building from "./Building";
@@ -23,6 +24,9 @@ export const City: FC<Props> = ({ onBuildingClick }) => {
     resetCamera,
     resetCameraPosition,
   } = useAppContext();
+
+  //FloorGrid.glb
+  const floorObj = useGLTF("/buildings/FloorGrid.glb");
 
   function handleBuildingClick(
     building: Object3D,
@@ -79,7 +83,8 @@ export const City: FC<Props> = ({ onBuildingClick }) => {
         maxPolarAngle={Math.PI / 2.5}
       />
 
-      <TheGrid />
+      <primitive object={floorObj.scene} position={[0, -1, 0]} />
+      {/* <TheGrid /> */}
 
       <ambientLight />
       <directionalLight position={[10, 10, 10]} />
@@ -104,14 +109,14 @@ function BuildingContainer({
       fallback={
         <Building
           name={buildingName}
-          url={`/low/${buildingName}.glb`}
+          url={`/buildings/low/${buildingName}.glb`}
           onBuildingClick={(obj) => handleBuildingClick(obj, buildingName)}
         />
       }
     >
       <Building
         name={buildingName}
-        url={`/high/${buildingName}.glb`}
+        url={`/buildings/high/${buildingName}.glb`}
         onBuildingClick={(obj) => handleBuildingClick(obj, buildingName)}
       />
     </Suspense>

@@ -88,8 +88,14 @@ function useProviderApp() {
    * @param {string} name - The `name` parameter is a string that represents the name of a building.
    */
   function focusOn(name: string) {
+    console.log("🚀 ~ file: AppContexts.tsx:91 ~ focusOn ~ name:", name);
+
     const position = buildings.find((b) => b.name === name)?.position;
     position ? focusOnPosition(position) : resetCamera();
+    console.log(
+      "🚀 ~ file: AppContexts.tsx:94 ~ focusOn ~ position:",
+      position
+    );
   }
 
   function focusOnPosition(position: Vector3) {
