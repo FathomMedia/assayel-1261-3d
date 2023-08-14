@@ -1,25 +1,67 @@
 export interface Building {
   buildingName: string;
+  units: Unit[];
+}
+
+export interface Unit {
+  id: string;
   name: string;
   description: string;
+  floor: Floor;
+  panoramaFolderUrl: string | null;
+}
+
+export enum Floor {
+  GR,
+  F1,
+  F2,
 }
 
 export const buildingsData: Building[] = [
   {
     buildingName: "b1",
-    name: "The mighty hotel",
-    description:
-      "This is the best hotel in town with free of charge service, we want you to be happy!",
+    units: [
+      {
+        id: "b1u1",
+        name: "The lonely hotel",
+        description:
+          "This is the best lonely hotel in town with free of charge service, we want you to be happy!",
+        floor: Floor.GR,
+        panoramaFolderUrl: null,
+      },
+    ],
   },
   {
     buildingName: "b2",
-    name: "The basic building",
-    description: "This is just a place to sleep",
+    units: [
+      {
+        id: "b2u1",
+        name: "The mighty hotel",
+        description:
+          "This is the best hotel in town with free of charge service, we want you to be happy!",
+        floor: Floor.GR,
+        panoramaFolderUrl: null,
+      },
+      {
+        id: "b2u2",
+        name: "The mid hotel",
+        description:
+          "This is the second best hotel in town with free of charge service, we want you to be happy!",
+        floor: Floor.F1,
+        panoramaFolderUrl: null,
+      },
+      {
+        id: "b2u3",
+        name: "The small hotel",
+        description:
+          "This is the third best hotel in town with free of charge service, we want you to be happy!",
+        floor: Floor.F1,
+        panoramaFolderUrl: null,
+      },
+    ],
   },
   {
     buildingName: "b3",
-    name: "The school",
-    description:
-      "Beyond the classrooms, the school building houses a library filled with books of all genres, inviting students to explore new worlds and expand their knowledge. The library provides a tranquil retreat, with cozy reading nooks and study areas where students can delve into their studies or lose themselves in the pages of a captivating story. Adjoining the library is a well-equipped computer lab, where students can harness the power of technology for research, coding, and digital projects.",
+    units: [],
   },
 ];

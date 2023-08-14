@@ -1,4 +1,6 @@
-import { Building } from "@/src/data";
+// import { Building, Floor, Unit, buildingsData } from "@/src/data";
+import { supabase } from "@/src/database/supabase";
+
 import { CameraControls } from "@react-three/drei";
 import {
   createContext,
@@ -6,6 +8,7 @@ import {
   MutableRefObject,
   PropsWithChildren,
   useContext,
+  useEffect,
   useRef,
   useState,
 } from "react";
@@ -16,13 +19,33 @@ export interface BuildingsPosition {
   position: Vector3;
 }
 
+export interface Unit {
+  id: string;
+  buildingId: string;
+  floors: string[];
+  displayName: string;
+  description: string | null;
+  panoramaUrl: string | null;
+  readmoreUrl: string | null;
+  inquiryUrl: string | null;
+  isrented: boolean;
+  type: "shop" | "office";
+}
+
 // interface for all the values & functions
 interface IUseAppContext {
   buildings: BuildingsPosition[];
   addToBuildingList: (b: BuildingsPosition) => void;
   cameraControlRef: MutableRefObject<CameraControls | null> | undefined;
-  selectedBuilding: Building | null;
-  setSelectedBuilding: (b: Building | null) => void;
+  // selectedBuilding: Building | null;
+  unitData: Unit[];
+  // setSelectedBuilding: (b: Building | null) => void;
+  selectedBuildingId: string | null;
+  setSelectedBuildingId: (id: string | null) => void;
+  selectedFloor: string | null;
+  setSelectedFloor: (floor: string | null) => void;
+  selectedUnit: Unit | null;
+  setSelectedUnit: (unit: Unit | null) => void;
   focusOn: (name: string) => void;
   focusOnPosition: (position: Vector3) => void;
   resetCamera: () => void;
@@ -36,10 +59,10 @@ const defaultState: IUseAppContext = {
     throw new Error("Function not implemented.");
   },
   cameraControlRef: undefined,
-  selectedBuilding: null,
-  setSelectedBuilding: function (b: Building | null): void {
-    throw new Error("Function not implemented.");
-  },
+  // selectedBuilding: null,
+  // setSelectedBuilding: function (b: Building | null): void {
+  //   throw new Error("Function not implemented.");
+  // },
   focusOn: function (name: string): void {
     throw new Error("Function not implemented.");
   },
@@ -50,6 +73,19 @@ const defaultState: IUseAppContext = {
     throw new Error("Function not implemented.");
   },
   resetCameraPosition: new Vector3(),
+  selectedBuildingId: null,
+  setSelectedBuildingId: function (id: string | null): void {
+    throw new Error("Function not implemented.");
+  },
+  selectedFloor: null,
+  setSelectedFloor: function (floor: string | null): void {
+    throw new Error("Function not implemented.");
+  },
+  selectedUnit: null,
+  setSelectedUnit: function (unit: Unit | null): void {
+    throw new Error("Function not implemented.");
+  },
+  unitData: [],
 };
 
 // creating the app contexts
@@ -68,18 +104,39 @@ export const AppProvider: FC<PropsWithChildren> = ({ children }) => {
 function useProviderApp() {
   const cameraControlRef = useRef<CameraControls | null>(null);
   const [buildings, setBuildings] = useState<BuildingsPosition[]>([]);
-  const [selectedBuilding, setSelectedBuilding] = useState<Building | null>(
+
+  const bb = buildings;
+
+  const [unitData, setUnitData] = useState<Unit[]>([]);
+  const [selectedBuildingId, setSelectedBuildingId] = useState<string | null>(
     null
   );
+  const [selectedFloor, setSelectedFloor] = useState<string | null>(null);
+  const [selectedUnit, setSelectedUnit] = useState<Unit | null>(null);
 
   const resetCameraPosition = new Vector3(0, 200, 100);
+
+  useEffect(() => {
+    async function getData() {
+      await supabase
+        .from("unit")
+        .select("*")
+        .then((res) => {
+          setUnitData(res.data as Unit[]);
+        });
+    }
+
+    getData();
+
+    return () => {};
+  }, []);
 
   /**
    * The function addToBuildingList adds a new building position to the existing list of buildings.
    * @param {BuildingsPosition} b - The parameter "b" is of type "BuildingsPosition".
    */
   function addToBuildingList(b: BuildingsPosition) {
-    setBuildings([...buildings, b]);
+    buildings.push(b);
   }
 
   /**
@@ -88,14 +145,14 @@ function useProviderApp() {
    * @param {string} name - The `name` parameter is a string that represents the name of a building.
    */
   function focusOn(name: string) {
-    console.log("🚀 ~ file: AppContexts.tsx:91 ~ focusOn ~ name:", name);
-
+    // const sb = buildingsData.find((b) => b.buildingName === name);
     const position = buildings.find((b) => b.name === name)?.position;
+
+    // setSelectedBuilding(sb ?? null);
+    setSelectedBuildingId(name);
+    setSelectedFloor(null);
+    setSelectedUnit(null);
     position ? focusOnPosition(position) : resetCamera();
-    console.log(
-      "🚀 ~ file: AppContexts.tsx:94 ~ focusOn ~ position:",
-      position
-    );
   }
 
   function focusOnPosition(position: Vector3) {
@@ -124,7 +181,8 @@ function useProviderApp() {
       0,
       true
     );
-    setSelectedBuilding(null);
+    // setSelectedBuilding(null);
+    setSelectedBuildingId(null);
   }
 
   // NOTE: return all the values & functions you want to export
@@ -132,8 +190,13 @@ function useProviderApp() {
     buildings,
     addToBuildingList,
     cameraControlRef,
-    selectedBuilding,
-    setSelectedBuilding,
+    unitData,
+    selectedBuildingId,
+    setSelectedBuildingId,
+    selectedFloor,
+    setSelectedFloor,
+    selectedUnit,
+    setSelectedUnit,
     focusOn,
     focusOnPosition,
     resetCamera,

@@ -1,5 +1,5 @@
 import { BuildingsPosition, useAppContext } from "@/contexts/AppContexts";
-import { useGLTF } from "@react-three/drei";
+import { useGLTF, useProgress } from "@react-three/drei";
 import { useFrame, ThreeEvent } from "@react-three/fiber";
 import React, { useEffect, useRef, useState } from "react";
 import { Object3D, Mesh } from "three";
@@ -8,12 +8,21 @@ interface IBuilding {
   url: string;
   name: string;
   onBuildingClick: (obj: Object3D) => void;
+  addPosition: boolean;
 }
 
-export default function Building({ url, onBuildingClick, name }: IBuilding) {
+export default function Building({
+  url,
+  onBuildingClick,
+  name,
+  addPosition,
+}: IBuilding) {
   const obj = useGLTF(url);
 
-  const { addToBuildingList } = useAppContext();
+  const { progress } = useProgress();
+  const isLoaded = progress === 100;
+
+  const { addToBuildingList, selectedBuildingId } = useAppContext();
 
   const update = useRef((b: BuildingsPosition) => addToBuildingList(b));
 
@@ -21,13 +30,18 @@ export default function Building({ url, onBuildingClick, name }: IBuilding) {
   const meshRef = useRef<Mesh>(null!);
 
   useEffect(() => {
-    update.current({
-      name: name,
-      position: obj.scene.children[0].position,
-    });
+    if (addPosition && isLoaded) {
+      const o = {
+        name: name.toUpperCase(),
+        position: obj.scene.children[0].position,
+      };
+
+      console.log("add trigger", o);
+      update.current(o);
+    }
 
     return () => {};
-  }, [name, obj]);
+  }, [name, addPosition, isLoaded, obj]);
 
   // rotation of the marker
   useFrame((state, delta) => {
@@ -61,7 +75,9 @@ export default function Building({ url, onBuildingClick, name }: IBuilding) {
           ]}
         >
           <boxGeometry args={[3, 3, 3]} />
-          <meshStandardMaterial color={hover ? "hotpink" : "orange"} />
+          <meshStandardMaterial
+            color={hover || selectedBuildingId == name ? "hotpink" : "orange"}
+          />
         </mesh>
       }
     </group>

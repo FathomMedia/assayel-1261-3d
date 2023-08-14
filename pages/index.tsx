@@ -1,7 +1,4 @@
 import { useState } from "react";
-import { Building, buildingsData } from "@/src/data";
-import { BuildingCard } from "@/components/buildingCard";
-import { ListOfBuildings } from "@/components/ListOfBuildings";
 import { PanoramaView } from "@/components/PanoView";
 import { LuMinusCircle, LuPlusCircle, LuXCircle } from "react-icons/lu";
 import { Button } from "@/components/ui/button";
@@ -10,24 +7,10 @@ import { Canvas } from "@react-three/fiber";
 import { useAppContext } from "@/contexts/AppContexts";
 import { useProgress } from "@react-three/drei";
 import { Progress } from "@/components/ui/progress";
-import { GetServerSideProps } from "next";
-import { getAllFoldersInFolder } from "./api/getCloudinaryFolders";
+import { SelectionControl } from "@/components/SelectionControl";
+import { SearchBar } from "@/components/SearchBar";
 
-interface Props {
-  folders: string[] | undefined;
-}
-
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const res = await getAllFoldersInFolder("360");
-
-  return {
-    props: {
-      folders: res,
-    },
-  };
-};
-
-export default function Home({ folders }: Props) {
+export default function Home() {
   const { progress } = useProgress();
   const isLoaded = progress === 100;
 
@@ -35,27 +18,17 @@ export default function Home({ folders }: Props) {
   const [showPano, setShowPano] = useState(false);
 
   const {
-    selectedBuilding,
-    setSelectedBuilding,
+    selectedBuildingId,
+    setSelectedBuildingId,
+    selectedUnit,
     focusOn,
     cameraControlRef,
-    resetCamera,
   } = useAppContext();
 
-  /**
-   * The function "focusOnBuilding" updates the query parameter, sets the selected building, and focuses
-   * on the building if it is not from 3D.
-   * @param {Building} building - The `building` parameter is of type `Building` and represents the
-   * building object that we want to focus on. It likely contains properties such as `buildingName`,
-   * which is used in the function.
-   * @param {boolean} [from3D] - The `from3D` parameter is a boolean flag that indicates whether the
-   * function is being called from a 3D context or not. If `from3D` is `true`, it means the function is
-   * being called from a 3D context, and if it is `false` or
-   */
-  function focusOnBuilding(building: Building, from3D?: boolean) {
+  function focusOnBuilding(buildingName: string) {
     try {
-      setSelectedBuilding(building);
-      !from3D && focusOn(building.buildingName);
+      setSelectedBuildingId(buildingName);
+      focusOn(buildingName);
     } catch (error) {}
   }
 
@@ -78,18 +51,12 @@ export default function Home({ folders }: Props) {
 
   return (
     <main className={`flex h-screen flex-col items-center justify-between`}>
-      <div className="relative w-full h-full bg-[#F1E8DE]">
+      <div className="relative w-full h-full bg-[#F1F1F3]">
         <Canvas className="w-full h-full" shadows={"basic"}>
           {
             <City
               onBuildingClick={(name) => {
-                const foundBuilding = buildingsData.find(
-                  (b) => b.buildingName === name
-                );
-
-                foundBuilding
-                  ? focusOnBuilding(foundBuilding, true)
-                  : resetCamera();
+                name && focusOnBuilding(name);
               }}
             />
           }
@@ -97,32 +64,13 @@ export default function Home({ folders }: Props) {
 
         {
           <div className="absolute bottom-0 left-0 right-0 flex flex-col items-end justify-end px-0 sm:bottom-5 sm:px-5 md:flex-row">
-            <div className="relative flex flex-col w-full h-full gap-3">
-              {selectedBuilding && (
-                <div className="px-5 sm:px-0">
-                  <BuildingCard
-                    building={selectedBuilding}
-                    openPano={() => setShowPano(true)}
-                    enable360={
-                      folders
-                        ? folders.includes(selectedBuilding.buildingName)
-                        : false
-                    }
-                    onClose={resetCamera}
-                  ></BuildingCard>
-                </div>
-              )}
-              {
-                <ListOfBuildings
-                  buildings={buildingsData}
-                  onClickBuilding={focusOnBuilding}
-                ></ListOfBuildings>
-              }
+            <div className="relative flex flex-col w-full gap-3 h-fit">
+              <SelectionControl openPano={() => setShowPano(true)} />
             </div>
           </div>
         }
       </div>
-      {showPano && selectedBuilding && (
+      {showPano && selectedUnit?.panoramaUrl && (
         <div className="absolute top-0 bottom-0 left-0 right-0 z-20 flex flex-col items-center justify-center ">
           <div
             className="absolute top-0 bottom-0 left-0 right-0 bg-black/20"
@@ -131,9 +79,7 @@ export default function Home({ folders }: Props) {
             }}
           ></div>
 
-          <PanoramaView
-            buildingName={selectedBuilding.buildingName}
-          ></PanoramaView>
+          <PanoramaView baseUrl={selectedUnit?.panoramaUrl}></PanoramaView>
 
           <Button
             onClick={() => {
@@ -148,7 +94,7 @@ export default function Home({ folders }: Props) {
       )}
       {/* Zoom Controls */}
       <div className="absolute flex flex-col justify-center my-auto rounded-full h-fit top-14 bottom-14 right-5">
-        {!selectedBuilding && (
+        {!selectedBuildingId && (
           <div className="flex flex-col animate-in zoom-in duration-300 fade-in   p-0 rounded-full backdrop-blur-md bg-[#4A4640]/60">
             <Button
               className={`w-12 h-16 p-3 rounded-t-full shadow-none aspect-square bg-white/0 hover:bg-white/30 `}
@@ -167,18 +113,20 @@ export default function Home({ folders }: Props) {
           </div>
         )}
       </div>
-      {!isLoaded && <LoaderUI progress={progress} />}
+
+      <div className="absolute left-0 right-0 flex flex-col items-center justify-center gap-2 duration-300 top-6 animate-in zoom-in fade-in">
+        <SearchBar />
+        {!isLoaded && <LoaderUI progress={progress} />}
+      </div>
     </main>
   );
 }
 
 function LoaderUI({ progress }: { progress: number }) {
   return (
-    <div className="absolute flex top-5 right-5 left-5">
-      <div className="w-full max-w-xs bg-[#4A4640]/60 animate-in zoom-in duration-300 fade-in rounded-full gap-3 flex items-center p-2 mx-auto">
-        <p className="text-white">Loading </p>
-        <Progress className="w-full" value={progress} />
-      </div>
+    <div className="w-full max-w-xs bg-[#4A4640]/60 rounded-full gap-3 flex items-center p-2 mx-auto">
+      <p className="text-white">Loading </p>
+      <Progress className="w-full" value={progress} />
     </div>
   );
 }

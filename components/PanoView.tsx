@@ -7,10 +7,10 @@ import {
 } from "@photo-sphere-viewer/equirectangular-tiles-adapter";
 
 interface Props {
-  buildingName: string;
+  baseUrl: string;
 }
 
-export const PanoramaView: FC<Props> = ({ buildingName }) => {
+export const PanoramaView: FC<Props> = ({ baseUrl }) => {
   const sphereElementRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -18,9 +18,6 @@ export const PanoramaView: FC<Props> = ({ buildingName }) => {
       baseBlur: true,
       showErrorTile: true,
     };
-
-    const baseUrl =
-      "https://res.cloudinary.com/dnuy6byev/image/upload/v1690108260/360";
 
     const spherePlayerInstance = new Viewer({
       adapter: [EquirectangularTilesAdapter, ac],
@@ -30,9 +27,9 @@ export const PanoramaView: FC<Props> = ({ buildingName }) => {
         width: 8000,
         cols: 16,
         rows: 8,
-        baseUrl: `${baseUrl}/${buildingName}/resize_${buildingName}.jpg`,
+        baseUrl: `${baseUrl}/small.jpg`,
         tileUrl: (col: any, row: any) => {
-          return `${baseUrl}/${buildingName}/tiles/${buildingName}_${col}_${row}.jpg`;
+          return `${baseUrl}/tiles/row-${row + 1}-column-${col + 1}.jpg`;
         },
       },
     });
@@ -40,7 +37,7 @@ export const PanoramaView: FC<Props> = ({ buildingName }) => {
     return () => {
       spherePlayerInstance.destroy();
     };
-  }, [sphereElementRef, buildingName]);
+  }, [sphereElementRef, baseUrl]);
 
   return (
     <div
