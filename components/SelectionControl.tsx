@@ -15,6 +15,8 @@ interface Props {
 }
 
 export const SelectionControl: FC<Props> = ({ openPano }) => {
+  const inquiryBaseUrl = "http://1261.fthm.me/contact";
+
   const {
     unitData,
     selectedBuildingId,
@@ -79,17 +81,27 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
             <div className="flex flex-col h-full">
               {/* Unit Header */}
               <div className="flex flex-col justify-between gap-1 sm:flex-row">
-                <div className="flex items-center order-2 sm:order-1">
+                <div className="flex flex-wrap items-center order-2 py-2 sm:order-1">
                   <Button
                     variant={"ghost"}
-                    className="px-0 hover:bg-black/10"
+                    className="hidden px-0 hover:bg-black/10 sm:flex"
                     onClick={() => setSelectedUnit(null)}
                   >
                     <LuChevronLeft className="w-6 h-6 text-foreground" />
                   </Button>
-                  <h2 className=" text:lg sm:text-2xl font-dax">
-                    {selectedUnit?.displayName}
+                  <h2 className="text-xl sm:text-2xl font-dax">
+                    {selectedUnit?.displayName} Something up there
                   </h2>
+                  <Badge
+                    variant={"outline"}
+                    className="mx-2 bg-transparent rounded-full hover:bg-transparent border-foreground"
+                  >
+                    Floors{": "}
+                    {selectedUnit.floors.map(
+                      (f, i) =>
+                        `${f}${i < selectedUnit.floors.length - 1 ? " + " : ""}`
+                    )}
+                  </Badge>
                   <Badge
                     variant={"outline"}
                     className="mx-2 bg-transparent rounded-full hover:bg-transparent border-foreground"
@@ -98,64 +110,73 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                   </Badge>
                 </div>
                 {/* Actions */}
-                <div className="flex items-center order-1 gap-1 ml-auto sm:order-2">
-                  {selectedUnit.readmoreUrl && (
-                    <Link
-                      href={selectedUnit.readmoreUrl}
-                      target="_blank"
-                      className={`${cn(
-                        buttonVariants({ variant: "outline", size: "sm" })
-                      )} disabled:opacity-40 bg-transparent border border-zinc-700 hover:bg-black/10 px-2 py-1 gap-2`}
-                      type="button"
-                    >
-                      <span>Read more</span>
-                    </Link>
-                  )}
-                  {selectedUnit.inquiryUrl && (
-                    <Link
-                      href={selectedUnit.inquiryUrl}
-                      target="_blank"
-                      className={`${cn(
-                        buttonVariants({ variant: "ghost", size: "sm" })
-                      )} disabled:opacity-40 hover:bg-black/10 px-2 py-1 gap-2`}
-                      type="button"
-                    >
-                      <BsQuestionCircle
-                        className={`${
-                          !selectedUnit?.panoramaUrl && "text-foreground"
-                        } w-4 h-4`}
-                      />
-                      <span>Inquiry</span>
-                    </Link>
-                  )}
-                  {openPano && (
-                    <Button
-                      variant={"ghost"}
-                      size={"sm"}
-                      className={`px-2 py-0 disabled:opacity-40 hover:bg-black/10`}
-                      type="button"
-                      onClick={openPano}
-                      disabled={!selectedUnit?.panoramaUrl}
-                    >
-                      <Icon360
-                        className={`${
-                          !selectedUnit?.panoramaUrl && "text-gray-400"
-                        } w-10 h-4`}
-                      />
-                    </Button>
-                  )}
-                  {/* Close */}
+                <div className="flex items-center justify-between order-1 gap-1 sm:order-2">
                   <Button
                     variant={"ghost"}
-                    className="px-2 hover:bg-black/10 "
-                    onClick={resetCamera}
+                    className="flex px-0 mr-auto sm:hidden hover:bg-black/10"
+                    onClick={() => setSelectedUnit(null)}
                   >
-                    <LuXCircle className="w-5 h-5 text-secondary" />
+                    <LuChevronLeft className="w-6 h-6 text-foreground" />
                   </Button>
+                  <div className="flex items-center">
+                    {selectedUnit.readmoreUrl && (
+                      <Link
+                        href={selectedUnit.readmoreUrl}
+                        target="_blank"
+                        className={`${cn(
+                          buttonVariants({ variant: "outline", size: "sm" })
+                        )} disabled:opacity-40 bg-transparent border border-zinc-700 hover:bg-black/10 px-2 py-1 gap-2`}
+                        type="button"
+                      >
+                        <span>Read more</span>
+                      </Link>
+                    )}
+                    {!selectedUnit.isrented && (
+                      <Link
+                        href={`${inquiryBaseUrl}/?your-message=Inquiry+for:+${selectedUnit.buildingId}-${selectedFloor}-${selectedUnit.id}`}
+                        target="_blank"
+                        className={`${cn(
+                          buttonVariants({ variant: "outline", size: "sm" })
+                        )} disabled:opacity-40 bg-transparent border border-zinc-700 hover:bg-black/10 px-2 py-1 gap-2`}
+                        type="button"
+                      >
+                        <BsQuestionCircle
+                          className={`${
+                            !selectedUnit?.panoramaUrl && "text-foreground"
+                          } w-4 h-4`}
+                        />
+                        <span>Inquiry</span>
+                      </Link>
+                    )}
+                    {openPano && (
+                      <Button
+                        variant={"ghost"}
+                        size={"sm"}
+                        className={`px-2 py-0 disabled:opacity-40 hover:bg-black/10`}
+                        type="button"
+                        onClick={openPano}
+                        disabled={!selectedUnit?.panoramaUrl}
+                      >
+                        <Icon360
+                          className={`${
+                            !selectedUnit?.panoramaUrl && "text-gray-400"
+                          } w-10 h-4`}
+                        />
+                      </Button>
+                    )}
+                    {/* Close */}
+                    <Button
+                      variant={"ghost"}
+                      className="px-2 hover:bg-black/10 "
+                      onClick={resetCamera}
+                    >
+                      <LuXCircle className="w-5 h-5 text-secondary" />
+                    </Button>
+                  </div>
                 </div>
               </div>
               {/* content */}
-              <div className="px-6 overflow-y-scroll grow">
+              <div className="overflow-y-scroll sm:px-6 grow">
                 <p className="text-sm">
                   {selectedUnit.description ?? "Coming soon."}
                 </p>
