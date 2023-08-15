@@ -1,5 +1,3 @@
-"use client";
-
 import React, { FC, Suspense } from "react";
 
 import {
@@ -9,31 +7,18 @@ import {
   Environment,
   useGLTF,
 } from "@react-three/drei";
-import { Object3D } from "three";
 import Building from "./Building";
-import { buildingsData } from "@/src/data";
 import { useAppContext } from "@/contexts/AppContexts";
 
 interface Props {
   onBuildingClick: (name: string | null) => void;
 }
 export const City: FC<Props> = ({ onBuildingClick }) => {
-  const {
-    cameraControlRef: cameraRef,
-    focusOn,
-    resetCameraPosition,
-  } = useAppContext();
+  const { cameraControlRef: cameraRef, resetCameraPosition } = useAppContext();
 
-  //FloorGrid.glb
   const floorObj = useGLTF("/buildings/FloorGrid.glb");
 
-  function handleBuildingClick(
-    building: Object3D,
-    buildingName: string | null
-  ) {
-    // focusOnPosition(building.position);
-    console.log(buildingName);
-    // buildingName && focusOn(buildingName.toUpperCase());
+  function handleBuildingClick(buildingName: string | null) {
     onBuildingClick(buildingName?.toUpperCase() ?? null);
   }
 
@@ -66,12 +51,6 @@ export const City: FC<Props> = ({ onBuildingClick }) => {
         />
       ))}
 
-      {/* Helper pink cube */}
-      {/* <mesh onClick={resetCamera} position={[0, 0, 0]}>
-        <boxGeometry args={[3, 3, 3]} />
-        <meshStandardMaterial color={"hotpink"} />
-      </mesh> */}
-
       {/* Controls */}
       <PerspectiveCamera fov={40} makeDefault position={resetCameraPosition} />
 
@@ -96,10 +75,7 @@ export const City: FC<Props> = ({ onBuildingClick }) => {
 
 interface IBuildingContainer {
   buildingName: string;
-  handleBuildingClick: (
-    building: Object3D,
-    buildingName: string | null
-  ) => void;
+  handleBuildingClick: (buildingName: string | null) => void;
 }
 function BuildingContainer({
   buildingName,
@@ -112,7 +88,7 @@ function BuildingContainer({
           addPosition={false}
           name={buildingName}
           url={`/buildings/low/${buildingName.toLowerCase()}.glb`}
-          onBuildingClick={(obj) => handleBuildingClick(obj, buildingName)}
+          onBuildingClick={() => handleBuildingClick(buildingName)}
         />
       }
     >
@@ -120,7 +96,7 @@ function BuildingContainer({
         addPosition={true}
         name={buildingName}
         url={`/buildings/high/${buildingName.toLowerCase()}.glb`}
-        onBuildingClick={(obj) => handleBuildingClick(obj, buildingName)}
+        onBuildingClick={() => handleBuildingClick(buildingName)}
       />
     </Suspense>
   );

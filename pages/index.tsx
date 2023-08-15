@@ -124,7 +124,7 @@ export default function Home() {
 
 function LoaderUI({ progress }: { progress: number }) {
   return (
-    <div className="w-full max-w-xs bg-[#4A4640]/60 rounded-full gap-3 flex items-center p-2 mx-auto">
+    <div className="w-full max-w-xs bg-[#4A4640]/60 rounded-full gap-3 flex items-center p-2 px-4 mx-auto">
       <p className="text-white">Loading </p>
       <Progress className="w-full" value={progress} />
     </div>

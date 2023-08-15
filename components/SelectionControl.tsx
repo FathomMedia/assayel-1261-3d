@@ -25,6 +25,7 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
     setSelectedFloor,
     selectedUnit,
     setSelectedUnit,
+    setSelectedBuildingId,
     focusOn,
   } = useAppContext();
 
@@ -289,6 +290,7 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
         selectedItemId={selectedBuildingId?.toUpperCase() ?? null}
         onSelect={(buildingId) => {
           focusOn(buildingId);
+          setSelectedBuildingId(buildingId);
         }}
       />
     </div>

@@ -7,7 +7,7 @@ import { Object3D, Mesh } from "three";
 interface IBuilding {
   url: string;
   name: string;
-  onBuildingClick: (obj: Object3D) => void;
+  onBuildingClick: () => void;
   addPosition: boolean;
 }
 
@@ -49,7 +49,7 @@ export default function Building({
   });
 
   function handleClick(event: ThreeEvent<MouseEvent>) {
-    onBuildingClick(obj.scene.children[0]);
+    onBuildingClick();
     event.stopPropagation();
   }
 

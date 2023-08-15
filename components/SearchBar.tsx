@@ -22,8 +22,14 @@ import { useAppContext } from "@/contexts/AppContexts";
 export function SearchBar() {
   const [open, setOpen] = React.useState(false);
 
-  const { unitData, setSelectedUnit, selectedUnit, setSelectedFloor, focusOn } =
-    useAppContext();
+  const {
+    unitData,
+    setSelectedUnit,
+    selectedUnit,
+    setSelectedFloor,
+    focusOn,
+    setSelectedBuildingId,
+  } = useAppContext();
   const searchData: { value: string; label: string }[] = unitData.map((u) => ({
     value: u.id,
     label: `${u.buildingId} - ${u.displayName}`,
@@ -52,9 +58,12 @@ export function SearchBar() {
                 key={unit.value}
                 onSelect={() => {
                   const tempUnit = unitData.find((u) => u.id === unit.value);
-                  tempUnit && focusOn(tempUnit.buildingId);
-                  tempUnit && setSelectedFloor(tempUnit.floors[0]);
-                  tempUnit && setSelectedUnit(tempUnit);
+                  if (tempUnit) {
+                    focusOn(tempUnit.buildingId);
+                    setSelectedBuildingId(tempUnit.buildingId);
+                    setSelectedFloor(tempUnit.floors[0]);
+                    setSelectedUnit(tempUnit);
+                  }
                   setOpen(false);
                 }}
               >

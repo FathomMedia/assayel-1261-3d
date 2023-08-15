@@ -181,8 +181,9 @@ function useProviderApp() {
       0,
       true
     );
-    // setSelectedBuilding(null);
     setSelectedBuildingId(null);
+    setSelectedFloor(null);
+    setSelectedUnit(null);
   }
 
   // NOTE: return all the values & functions you want to export
