@@ -35,8 +35,6 @@ export default function Building({
         name: name.toUpperCase(),
         position: obj.scene.children[0].position,
       };
-
-      console.log("add trigger", o);
       update.current(o);
     }
 
