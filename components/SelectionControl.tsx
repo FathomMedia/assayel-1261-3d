@@ -134,7 +134,6 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                     {!selectedUnit.isrented && (
                       <Link
                         href={`${inquiryBaseUrl}/?your-message=Inquiry+for:+${selectedUnit.buildingId}-${selectedFloor}-${selectedUnit.id}`}
-                        target="_blank"
                         className={`${cn(
                           buttonVariants({ variant: "outline", size: "sm" })
                         )} disabled:opacity-40 bg-transparent border border-zinc-700 hover:bg-black/10 px-2 py-1 gap-2`}
