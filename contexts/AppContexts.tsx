@@ -1,4 +1,3 @@
-// import { Building, Floor, Unit, buildingsData } from "@/src/data";
 import { supabase } from "@/src/database/supabase";
 
 import { CameraControls } from "@react-three/drei";
@@ -14,38 +13,51 @@ import {
 } from "react";
 import { Vector3 } from "three";
 
-export interface BuildingsPosition {
-  name: string;
-  position: Vector3;
+export interface IUnit {
+  id: string;
+  building_id: string;
+  floors: string[];
+  tenants_id: string | null;
+  description: string | null;
+  details: string[] | null;
+  type: string | null;
 }
 
-export interface Unit {
+export interface IBuilding {
   id: string;
-  buildingId: string;
+  lowpoly_glb_url: string | null;
+  glb_url: string | null;
+  position_x: number | null;
+  position_y: number | null;
+  position_z: number | null;
+}
+
+export interface ITenant {
+  id: string;
+  name: string;
   floors: string[];
-  displayName: string;
+  buildings: string[];
+  opening_times: string | null;
   description: string | null;
-  panoramaUrl: string | null;
-  readmoreUrl: string | null;
-  inquiryUrl: string | null;
-  isrented: boolean;
-  type: "shop" | "office";
+  panorama_url: string | null;
+  readmore_url: string | null;
+  type: string | null;
 }
 
 // interface for all the values & functions
 interface IUseAppContext {
-  buildings: BuildingsPosition[];
-  addToBuildingList: (b: BuildingsPosition) => void;
   cameraControlRef: MutableRefObject<CameraControls | null> | undefined;
-  // selectedBuilding: Building | null;
-  unitData: Unit[];
-  // setSelectedBuilding: (b: Building | null) => void;
+  units: IUnit[];
+  buildings: IBuilding[];
+  tenants: ITenant[];
   selectedBuildingId: string | null;
   setSelectedBuildingId: (id: string | null) => void;
   selectedFloor: string | null;
   setSelectedFloor: (floor: string | null) => void;
-  selectedUnit: Unit | null;
-  setSelectedUnit: (unit: Unit | null) => void;
+  selectedUnit: IUnit | null;
+  setSelectedUnit: (unit: IUnit | null) => void;
+  selectedTenant: ITenant | null;
+  setSelectedTenant: (tenant: ITenant | null) => void;
   focusOn: (name: string) => void;
   focusOnPosition: (position: Vector3) => void;
   resetCamera: () => void;
@@ -55,14 +67,8 @@ interface IUseAppContext {
 // the default state for all the values & functions
 const defaultState: IUseAppContext = {
   buildings: [],
-  addToBuildingList: function (b: BuildingsPosition): void {
-    throw new Error("Function not implemented.");
-  },
   cameraControlRef: undefined,
-  // selectedBuilding: null,
-  // setSelectedBuilding: function (b: Building | null): void {
-  //   throw new Error("Function not implemented.");
-  // },
+
   focusOn: function (name: string): void {
     throw new Error("Function not implemented.");
   },
@@ -82,10 +88,15 @@ const defaultState: IUseAppContext = {
     throw new Error("Function not implemented.");
   },
   selectedUnit: null,
-  setSelectedUnit: function (unit: Unit | null): void {
+  setSelectedUnit: function (unit: IUnit | null): void {
     throw new Error("Function not implemented.");
   },
-  unitData: [],
+  units: [],
+  tenants: [],
+  selectedTenant: null,
+  setSelectedTenant: function (tenant: ITenant | null): void {
+    throw new Error("Function not implemented.");
+  },
 };
 
 // creating the app contexts
@@ -103,41 +114,74 @@ export const AppProvider: FC<PropsWithChildren> = ({ children }) => {
 //NOTE: declare vars and functions here
 function useProviderApp() {
   const cameraControlRef = useRef<CameraControls | null>(null);
-  const [buildings, setBuildings] = useState<BuildingsPosition[]>([]);
 
-  const bb = buildings;
+  const [units, setUnits] = useState<IUnit[]>([]);
+  const [buildings, setBuildings] = useState<IBuilding[]>([]);
+  const [tenants, setTenants] = useState<ITenant[]>([]);
 
-  const [unitData, setUnitData] = useState<Unit[]>([]);
   const [selectedBuildingId, setSelectedBuildingId] = useState<string | null>(
     null
   );
   const [selectedFloor, setSelectedFloor] = useState<string | null>(null);
-  const [selectedUnit, setSelectedUnit] = useState<Unit | null>(null);
+  const [selectedUnit, setSelectedUnit] = useState<IUnit | null>(null);
+  const [selectedTenant, setSelectedTenant] = useState<ITenant | null>(null);
 
   const resetCameraPosition = new Vector3(0, 200, 100);
 
   useEffect(() => {
-    async function getData() {
-      await supabase
-        .from("unit")
-        .select("*")
-        .then((res) => {
-          setUnitData(res.data as Unit[]);
-        });
-    }
+    supabase
+      .from("buildings")
+      .select("*")
+      .then((res) => {
+        const b = res.data as IBuilding[];
+        b.sort((a, b) => a.id.localeCompare(b.id));
+        setBuildings(b);
+      });
 
-    getData();
+    supabase
+      .from("units")
+      .select("*")
+      .is("tenants_id", null)
+      .then((res) => {
+        setUnits(res.data as IUnit[]);
+      });
+
+    supabase
+      .from("tenants")
+      .select(
+        `
+      *,
+      units (
+        floors,
+        building_id
+      )
+      `
+      )
+      .then((res) => {
+        const dataFromCall = res.data;
+        if (dataFromCall) {
+          const tempTenants: ITenant[] = dataFromCall.map((d) => {
+            const tempFloors = [...d.units.map((u: any) => u.floors)].flat();
+            const tempBuildings = [...d.units.map((u: any) => u.building_id)];
+
+            return {
+              id: d.id,
+              name: d.name,
+              description: d.description,
+              opening_times: d.opening_times,
+              panorama_url: d.panorama_url,
+              readmore_url: d.readmore_url,
+              type: d.type,
+              floors: Array.from(new Set(tempFloors)),
+              buildings: Array.from(new Set(tempBuildings)),
+            } as ITenant;
+          });
+          setTenants(tempTenants);
+        }
+      });
 
     return () => {};
   }, []);
-
-  /**
-   * The function addToBuildingList adds a new building position to the existing list of buildings.
-   * @param {BuildingsPosition} b - The parameter "b" is of type "BuildingsPosition".
-   */
-  function addToBuildingList(b: BuildingsPosition) {
-    buildings.push(b);
-  }
 
   /**
    * The function `focusOn` takes a name parameter, finds the position of a building with that name,
@@ -146,13 +190,18 @@ function useProviderApp() {
    */
   function focusOn(name: string) {
     // const sb = buildingsData.find((b) => b.buildingName === name);
-    const position = buildings.find((b) => b.name === name)?.position;
+    const b = buildings.find((b) => b.id === name);
 
     // setSelectedBuilding(sb ?? null);
     setSelectedBuildingId(name);
     setSelectedFloor(null);
     setSelectedUnit(null);
-    position ? focusOnPosition(position) : resetCamera();
+    setSelectedTenant(null);
+    b
+      ? focusOnPosition(
+          new Vector3(b.position_x ?? 0, b.position_y ?? 0, b.position_z ?? 0)
+        )
+      : resetCamera();
   }
 
   function focusOnPosition(position: Vector3) {
@@ -171,7 +220,6 @@ function useProviderApp() {
   }
 
   function resetCamera() {
-    resetCameraPosition;
     cameraControlRef?.current?.setLookAt(
       resetCameraPosition.x,
       resetCameraPosition.y,
@@ -184,14 +232,17 @@ function useProviderApp() {
     setSelectedBuildingId(null);
     setSelectedFloor(null);
     setSelectedUnit(null);
+    setSelectedTenant(null);
   }
 
   // NOTE: return all the values & functions you want to export
   return {
     buildings,
-    addToBuildingList,
+    units,
+    tenants,
+    selectedTenant,
+    setSelectedTenant,
     cameraControlRef,
-    unitData,
     selectedBuildingId,
     setSelectedBuildingId,
     selectedFloor,

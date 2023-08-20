@@ -8,18 +8,22 @@ import {
   useGLTF,
 } from "@react-three/drei";
 import Building from "./Building";
-import { useAppContext } from "@/contexts/AppContexts";
+import { IBuilding, useAppContext } from "@/contexts/AppContexts";
 
 interface Props {
-  onBuildingClick: (name: string | null) => void;
+  onBuildingClick: (building: IBuilding | null) => void;
 }
 export const City: FC<Props> = ({ onBuildingClick }) => {
-  const { cameraControlRef: cameraRef, resetCameraPosition } = useAppContext();
+  const {
+    cameraControlRef: cameraRef,
+    resetCameraPosition,
+    buildings,
+  } = useAppContext();
 
   const floorObj = useGLTF("/buildings/FloorGrid.glb");
 
-  function handleBuildingClick(buildingName: string | null) {
-    onBuildingClick(buildingName?.toUpperCase() ?? null);
+  function handleBuildingClick(building: IBuilding | null) {
+    onBuildingClick(building);
   }
 
   function TheGrid() {
@@ -43,10 +47,10 @@ export const City: FC<Props> = ({ onBuildingClick }) => {
   return (
     <group>
       {/* Buildings */}
-      {["B10", "B11", "B12"].map((b, i) => (
+      {buildings.map((b, i) => (
         <BuildingContainer
           key={i}
-          buildingName={b}
+          building={b}
           handleBuildingClick={handleBuildingClick}
         />
       ))}
@@ -74,30 +78,39 @@ export const City: FC<Props> = ({ onBuildingClick }) => {
 };
 
 interface IBuildingContainer {
-  buildingName: string;
-  handleBuildingClick: (buildingName: string | null) => void;
+  building: IBuilding;
+  handleBuildingClick: (building: IBuilding) => void;
 }
 function BuildingContainer({
-  buildingName,
+  building,
   handleBuildingClick,
 }: IBuildingContainer) {
   return (
-    <Suspense
-      fallback={
-        <Building
-          addPosition={false}
-          name={buildingName}
-          url={`/buildings/low/${buildingName.toLowerCase()}.glb`}
-          onBuildingClick={() => handleBuildingClick(buildingName)}
-        />
-      }
-    >
+    building.lowpoly_glb_url && (
       <Building
-        addPosition={true}
-        name={buildingName}
-        url={`/buildings/high/${buildingName.toLowerCase()}.glb`}
-        onBuildingClick={() => handleBuildingClick(buildingName)}
+        id={building.id}
+        url={building.lowpoly_glb_url}
+        onBuildingClick={() => handleBuildingClick(building)}
       />
-    </Suspense>
+    )
+    // <Suspense
+    //   fallback={
+    //     building.lowpoly_glb_url && (
+    //       <Building
+    //         id={building.id}
+    //         url={building.lowpoly_glb_url}
+    //         onBuildingClick={() => handleBuildingClick(building)}
+    //       />
+    //     )
+    //   }
+    // >
+    //   {building.glb_url && (
+    //     <Building
+    //       id={building.id}
+    //       url={building.glb_url}
+    //       onBuildingClick={() => handleBuildingClick(building)}
+    //     />
+    //   )}
+    // </Suspense>
   );
 }

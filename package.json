@@ -23,6 +23,7 @@
     "@splinetool/react-spline": "^2.2.6",
     "@splinetool/runtime": "^0.9.395",
     "@supabase/supabase-js": "^2.32.0",
+    "@tailwindcss/container-queries": "^0.1.1",
     "@types/node": "20.4.2",
     "@types/react": "18.2.15",
     "@types/react-dom": "18.2.7",

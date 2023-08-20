@@ -19,8 +19,8 @@ export default function Home() {
 
   const {
     selectedBuildingId,
+    selectedTenant,
     setSelectedBuildingId,
-    selectedUnit,
     focusOn,
     cameraControlRef,
   } = useAppContext();
@@ -55,8 +55,8 @@ export default function Home() {
         <Canvas className="w-full h-full" shadows={"basic"}>
           {
             <City
-              onBuildingClick={(name) => {
-                name && focusOnBuilding(name);
+              onBuildingClick={(building) => {
+                building && focusOnBuilding(building.id);
               }}
             />
           }
@@ -70,7 +70,7 @@ export default function Home() {
           </div>
         }
       </div>
-      {showPano && selectedUnit?.panoramaUrl && (
+      {showPano && selectedTenant?.panorama_url && (
         <div className="absolute top-0 bottom-0 left-0 right-0 z-20 flex flex-col items-center justify-center ">
           <div
             className="absolute top-0 bottom-0 left-0 right-0 bg-black/20"
@@ -79,32 +79,32 @@ export default function Home() {
             }}
           ></div>
 
-          <PanoramaView baseUrl={selectedUnit?.panoramaUrl}></PanoramaView>
+          <PanoramaView baseUrl={selectedTenant?.panorama_url}></PanoramaView>
 
           <Button
             onClick={() => {
               setShowPano(false);
             }}
             variant={"secondary"}
-            className="absolute flex items-center justify-center w-10 h-10 p-0 rounded-lg bg-white/50 hover:bg-white/70 text-foreground hover:text-primary top-8 right-8"
+            className="absolute flex items-center justify-center w-10 h-10 p-0 rounded-none bg-white/50 hover:bg-white/70 text-foreground hover:text-primary top-8 right-8"
           >
             <LuXCircle className="w-5 h-5 text-inherit" />
           </Button>
         </div>
       )}
       {/* Zoom Controls */}
-      <div className="absolute flex flex-col justify-center my-auto rounded-full h-fit top-14 bottom-14 right-5">
+      <div className="absolute flex flex-col justify-center my-auto rounded-none h-fit top-14 bottom-14 right-5">
         {!selectedBuildingId && (
-          <div className="flex flex-col animate-in zoom-in duration-300 fade-in   p-0 rounded-full backdrop-blur-md bg-[#4A4640]/60">
+          <div className="flex flex-col animate-in zoom-in duration-300 fade-in   p-0 rounded-none backdrop-blur-md bg-[#4A4640]/60">
             <Button
-              className={`w-12 h-16 p-3 rounded-t-full shadow-none aspect-square bg-white/0 hover:bg-white/30 `}
+              className={`w-12 h-16 p-3 rounded-none shadow-none aspect-square bg-white/0 hover:bg-white/30 `}
               onClick={zoomIn}
               disabled={zoomedIn}
             >
               <LuPlusCircle className="w-full h-full" />
             </Button>
             <Button
-              className={`w-12 h-16 p-3 rounded-b-full shadow-none aspect-square bg-white/0 hover:bg-white/30 `}
+              className={`w-12 h-16 p-3 rounded-none shadow-none aspect-square bg-white/0 hover:bg-white/30 `}
               onClick={zoomOut}
               disabled={!zoomedIn}
             >
@@ -124,9 +124,9 @@ export default function Home() {
 
 function LoaderUI({ progress }: { progress: number }) {
   return (
-    <div className="w-full max-w-xs bg-[#4A4640]/60 rounded-full gap-3 flex items-center p-2 px-4 mx-auto">
+    <div className="w-full max-w-xs bg-[#4A4640]/60 rounded-none gap-3 flex items-center p-2 px-4 mx-auto">
       <p className="text-white">Loading </p>
-      <Progress className="w-full" value={progress} />
+      <Progress className="w-full rounded-none" value={progress} />
     </div>
   );
 }
