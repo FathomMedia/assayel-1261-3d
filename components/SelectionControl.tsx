@@ -9,7 +9,6 @@ import { Icon360 } from "./icons/Icon360";
 import Link from "next/link";
 import { cn } from "@/src/utils";
 import { Badge } from "./ui/badge";
-import { useDraggable } from "react-use-draggable-scroll";
 
 interface Props {
   openPano?: () => void;
@@ -99,16 +98,16 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
   return (
     <div className="flex flex-col justify-end w-full sm:gap-3 font-dax">
       {selectedBuildingId && (
-        <div className="w-full p-6 bg-[#E2DEDC] max-w-xl text-foreground @container flex flex-col ">
+        <div className="w-full p-6 bg-[#E2DEDC] max-w-2xl mx-auto text-foreground @container animate-in fade-in flex flex-col ">
           {/* Unit Card */}
           {selectedUnit && (
-            <div className="flex flex-col h-full">
+            <div className="flex flex-col h-full gap-1">
               {/* Unit Header */}
-              <div className="flex flex-col justify-between gap-1 sm:flex-row">
-                <div className="flex flex-wrap items-center order-2 py-2 sm:order-1">
+              <div className="flex flex-row justify-between gap-1">
+                <div className="flex flex-wrap items-center">
                   <Button
                     variant={"ghost"}
-                    className="hidden px-0 hover:bg-black/10 sm:flex"
+                    className="px-0 rounded-none hover:bg-black/10"
                     onClick={() => setSelectedUnit(null)}
                   >
                     <LuChevronLeft className="w-6 h-6 text-foreground" />
@@ -116,9 +115,28 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                   <h2 className="text-xl sm:text-2xl font-dax">
                     {selectedUnit?.id}
                   </h2>
+                </div>
+                {/* Actions */}
+                <div className="flex items-center justify-between gap-1 ">
+                  <div className="flex items-center">
+                    {/* Close */}
+                    <Button
+                      variant={"ghost"}
+                      size={"sm"}
+                      className="px-2 rounded-none hover:bg-black/10 "
+                      onClick={resetCamera}
+                    >
+                      <LuXCircle className="w-5 h-5 text-secondary" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              {/* Badges */}
+              <div className="flex overflow-x-scroll">
+                <div className="flex gap-2">
                   <Badge
                     variant={"outline"}
-                    className="mx-2 bg-transparent rounded-none hover:bg-transparent border-foreground"
+                    className="bg-transparent rounded-none min-w-fit hover:bg-transparent border-foreground"
                   >
                     Floors{": "}
                     {selectedUnit.floors.map(
@@ -129,89 +147,47 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                   {selectedUnit.type && (
                     <Badge
                       variant={"outline"}
-                      className="mx-2 bg-transparent rounded-none hover:bg-transparent border-foreground"
+                      className="bg-transparent rounded-none min-w-fit hover:bg-transparent border-foreground"
                     >
                       {selectedUnit.type}
                     </Badge>
                   )}
-                </div>
-                {/* Actions */}
-                <div className="flex items-center justify-between order-1 gap-1 sm:order-2">
-                  <Button
-                    variant={"ghost"}
-                    className="flex px-0 mr-auto sm:hidden hover:bg-black/10"
-                    onClick={() => setSelectedUnit(null)}
-                  >
-                    <LuChevronLeft className="w-6 h-6 text-foreground" />
-                  </Button>
-                  <div className="flex items-center">
-                    {/* {selectedUnit.readmoreUrl && (
-                      <Link
-                        href={selectedUnit.readmoreUrl}
-                        target="_blank"
-                        className={`${cn(
-                          buttonVariants({ variant: "outline", size: "sm" })
-                        )} disabled:opacity-40 bg-transparent border border-zinc-700 hover:bg-black/10 px-2 py-1 gap-2`}
-                        type="button"
-                      >
-                        <span>Read more</span>
-                      </Link>
-                    )} */}
-                    {
-                      <Link
-                        href={`${inquiryBaseUrl}/?your-message=Inquiry+for:+${selectedUnit.id}`}
-                        target="_blank"
-                        className={`${cn(
-                          buttonVariants({ variant: "outline", size: "sm" })
-                        )} disabled:opacity-40 bg-transparent border border-zinc-700 hover:bg-black/10 px-2 py-1 gap-2`}
-                        type="button"
-                      >
-                        <BsQuestionCircle
-                          className={`${"text-foreground"} w-4 h-4`}
-                        />
-                        <span>Inquiry</span>
-                      </Link>
-                    }
-                    {/* {openPano && (
-                      <Button
-                        variant={"ghost"}
-                        size={"sm"}
-                        className={`px-2 py-0 disabled:opacity-40 hover:bg-black/10`}
-                        type="button"
-                        onClick={openPano}
-                        disabled={!selectedUnit?.panoramaUrl}
-                      >
-                        <Icon360
-                          className={`${
-                            !selectedUnit?.panoramaUrl && "text-gray-400"
-                          } w-10 h-4`}
-                        />
-                      </Button>
-                    )} */}
-                    {/* Close */}
-                    <Button
-                      variant={"ghost"}
-                      size={"sm"}
-                      className="px-2 hover:bg-black/10 "
-                      onClick={resetCamera}
+                  {selectedUnit.details?.map((d, i) => (
+                    <Badge
+                      key={i}
+                      variant={"outline"}
+                      className="bg-transparent rounded-none min-w-fit hover:bg-transparent border-foreground"
                     >
-                      <LuXCircle className="w-5 h-5 text-secondary" />
-                    </Button>
-                  </div>
+                      {d}
+                    </Badge>
+                  ))}
                 </div>
               </div>
               {/* content */}
-              <div className="overflow-y-scroll grow">
-                <p className="text-sm line-clamp-2">
+              <div className="flex flex-col gap-2 overflow-y-scroll grow">
+                <p className="text-sm line-clamp-4">
                   {selectedUnit.description ?? "Coming soon."}
                 </p>
+                {
+                  <Link
+                    href={`${inquiryBaseUrl}/?your-message=Inquiry+for:+${selectedUnit.id}`}
+                    target="_blank"
+                    className={`${cn(
+                      buttonVariants({ variant: "default", size: "sm" })
+                    )} disabled:opacity-40 w-full bg-[#4A4640] hover:bg-[#4A4640]/80 rounded-none px-2 py-1 gap-2`}
+                    type="button"
+                  >
+                    {/* <BsQuestionCircle className={`${"text-white"} w-4 h-4`} /> */}
+                    <span>Enquire</span>
+                  </Link>
+                }
               </div>
             </div>
           )}
-          {/* selectedTenant */}
+          {/* Tenant Card */}
           {selectedTenant && (
             <div className="flex flex-col h-full gap-1">
-              {/* Unit Header */}
+              {/* Tenant Header */}
               <div className="flex flex-col">
                 <div className="flex items-center justify-between">
                   <div className="flex flex-wrap items-center">
@@ -294,7 +270,7 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
               </div>
               {/* content */}
               <div className="overflow-y-scroll grow">
-                <p className="text-sm line-clamp-2">
+                <p className="text-sm line-clamp-4">
                   {selectedTenant.description ?? "Coming soon."}
                 </p>
                 {selectedTenant.readmore_url && (
@@ -317,7 +293,7 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                 {selectedBuildingId && selectedFloor && (
                   <Button
                     variant={"ghost"}
-                    className="hidden px-0 rounded-none hover:bg-black/10 sm:flex"
+                    className="px-0 rounded-none hover:bg-black/10"
                     onClick={() => setSelectedFloor(null)}
                   >
                     <LuChevronLeft className="w-6 h-6 text-foreground" />
@@ -376,7 +352,7 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
             !selectedUnit &&
             !selectedTenant && (
               <div className="flex flex-col gap-2">
-                {
+                {availableTenants.length > 0 && (
                   // Tenants
                   <div className="grid grid-cols-1 @xs:grid-cols-2 gap-2 overflow-y-scroll @md:grid-cols-3 @xl:grid-cols-4">
                     {availableTenants.map((t, i) => (
@@ -390,11 +366,11 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                       </Button>
                     ))}
                   </div>
-                }
+                )}
                 {
                   // Units
                   availableUnits.length > 0 && (
-                    <div className="flex flex-col gap-3 mt-2 ">
+                    <div className="flex flex-col gap-3 ">
                       <div className="flex items-center gap-2">
                         <div className="w-full h-[1px] bg-zinc-400 "></div>
                         <p className="min-w-fit">Available for Inquiry</p>

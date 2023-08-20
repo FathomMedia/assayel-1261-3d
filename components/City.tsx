@@ -85,14 +85,19 @@ function BuildingContainer({
   building,
   handleBuildingClick,
 }: IBuildingContainer) {
+  const { selectedBuildingId } = useAppContext();
   return (
-    building.lowpoly_glb_url && (
-      <Building
-        id={building.id}
-        url={building.lowpoly_glb_url}
-        onBuildingClick={() => handleBuildingClick(building)}
-      />
-    )
+    // building.lowpoly_glb_url && (
+    //   <Building
+    //     id={building.id}
+    //     url={building.lowpoly_glb_url}
+    //     onBuildingClick={(pos) => {
+    //       console.log(building.id, pos);
+
+    //       handleBuildingClick(building);
+    //     }}
+    //   />
+    // )
     // <Suspense
     //   fallback={
     //     building.lowpoly_glb_url && (
@@ -104,13 +109,30 @@ function BuildingContainer({
     //     )
     //   }
     // >
-    //   {building.glb_url && (
+    //   {building.lowpoly_glb_url && (
     //     <Building
     //       id={building.id}
-    //       url={building.glb_url}
+    //       url={
+    //         selectedBuildingId === building.id && building.glb_url
+    //           ? building.glb_url
+    //           : building.lowpoly_glb_url
+    //       }
     //       onBuildingClick={() => handleBuildingClick(building)}
     //     />
     //   )}
     // </Suspense>
+    <Suspense fallback={null}>
+      {building.lowpoly_glb_url && (
+        <Building
+          id={building.id}
+          url={
+            selectedBuildingId === building.id && building.glb_url
+              ? building.glb_url
+              : building.lowpoly_glb_url
+          }
+          onBuildingClick={() => handleBuildingClick(building)}
+        />
+      )}
+    </Suspense>
   );
 }
