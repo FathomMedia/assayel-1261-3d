@@ -97,53 +97,33 @@ function BuildingContainer({
   handleBuildingClick,
 }: IBuildingContainer) {
   const { selectedBuildingId } = useAppContext();
-  return (
-    // building.lowpoly_glb_url && (
-    //   <Building
-    //     id={building.id}
-    //     url={building.lowpoly_glb_url}
-    //     onBuildingClick={(pos) => {
-    //       console.log(building.id, pos);
-
-    //       handleBuildingClick(building);
-    //     }}
-    //   />
-    // )
-    // <Suspense
-    //   fallback={
-    //     building.lowpoly_glb_url && (
-    //       <Building
-    //         id={building.id}
-    //         url={building.lowpoly_glb_url}
-    //         onBuildingClick={() => handleBuildingClick(building)}
-    //       />
-    //     )
-    //   }
-    // >
-    //   {building.lowpoly_glb_url && (
-    //     <Building
-    //       id={building.id}
-    //       url={
-    //         selectedBuildingId === building.id && building.glb_url
-    //           ? building.glb_url
-    //           : building.lowpoly_glb_url
-    //       }
-    //       onBuildingClick={() => handleBuildingClick(building)}
-    //     />
-    //   )}
-    // </Suspense>
-    <Suspense fallback={null}>
-      {building.lowpoly_glb_url && (
+  return selectedBuildingId === building.id && building.glb_url ? (
+    <Suspense
+      fallback={
+        building.lowpoly_glb_url && (
+          <Building
+            building={building}
+            url={building.lowpoly_glb_url}
+            onBuildingClick={() => handleBuildingClick(building)}
+          />
+        )
+      }
+    >
+      {building.glb_url && (
         <Building
           building={building}
-          url={
-            selectedBuildingId === building.id && building.glb_url
-              ? building.glb_url
-              : building.lowpoly_glb_url
-          }
+          url={building.glb_url}
           onBuildingClick={() => handleBuildingClick(building)}
         />
       )}
     </Suspense>
+  ) : (
+    building.lowpoly_glb_url && (
+      <Building
+        building={building}
+        url={building.lowpoly_glb_url}
+        onBuildingClick={() => handleBuildingClick(building)}
+      />
+    )
   );
 }

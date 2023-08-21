@@ -25,8 +25,6 @@ export default function Building({
   // rotation of the marker
   useFrame((state, delta) => {
     meshRef.current.rotation.y += delta;
-    // meshRef.current.rotation.x += delta;
-    // meshRef.current.rotation.z += delta;
   });
 
   function handleClick(event: ThreeEvent<MouseEvent>) {
