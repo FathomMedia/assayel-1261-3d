@@ -16,15 +16,18 @@ export default function Building({
   onBuildingClick,
 }: IBuildingLocal) {
   const obj = useGLTF(url);
+  const pointer = useGLTF("/buildings/map_pointer.glb");
 
   const { selectedBuildingId } = useAppContext();
 
   const [hover, setHover] = useState(false);
-  const meshRef = useRef<Mesh>(null!);
+  const meshRef = useRef<Mesh>(null);
 
   // rotation of the marker
   useFrame((state, delta) => {
-    meshRef.current.rotation.y += delta;
+    if (meshRef.current) {
+      meshRef.current.rotation.y += delta;
+    }
   });
 
   function handleClick(event: ThreeEvent<MouseEvent>) {
@@ -43,21 +46,19 @@ export default function Building({
       </mesh>
       {
         // position of the marker
-        <mesh
-          ref={meshRef}
-          position={[
-            building.position_x ?? 0,
-            (building.position_y ?? 0) + 15,
-            (building.position_z ?? 0) - 4,
-          ]}
-        >
-          <boxGeometry args={[3, 3, 3]} />
-          <meshStandardMaterial
-            color={
-              hover || selectedBuildingId == building.id ? "hotpink" : "orange"
+        selectedBuildingId === building.id && (
+          <primitive
+            ref={meshRef}
+            object={pointer.scene}
+            position={
+              new Vector3(
+                building.position_x ?? 0,
+                (building.position_y ?? 0) + 15,
+                building.position_z ?? 0
+              )
             }
           />
-        </mesh>
+        )
       }
     </group>
   );

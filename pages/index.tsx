@@ -93,8 +93,8 @@ export default function Home() {
         </div>
       )}
       {/* Zoom Controls */}
-      <div className="absolute flex flex-col justify-center my-auto rounded-none h-fit top-14 bottom-14 right-5">
-        {!selectedBuildingId && (
+      <div className="absolute flex flex-col justify-center mb-auto rounded-none h-fit top-20 bottom-14 right-5">
+        {
           <div className="flex flex-col animate-in zoom-in duration-300 fade-in   p-0 rounded-none backdrop-blur-md bg-[#4A4640]/60">
             <Button
               className={`w-12 h-16 p-3 rounded-none shadow-none aspect-square bg-white/0 hover:bg-white/30 `}
@@ -111,7 +111,7 @@ export default function Home() {
               <LuMinusCircle className="w-full h-full" />
             </Button>
           </div>
-        )}
+        }
       </div>
 
       <div className="absolute left-0 right-0 flex flex-col items-center justify-center gap-2 duration-300 top-6 animate-in zoom-in fade-in">

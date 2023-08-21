@@ -126,7 +126,7 @@ function useProviderApp() {
   const [selectedUnit, setSelectedUnit] = useState<IUnit | null>(null);
   const [selectedTenant, setSelectedTenant] = useState<ITenant | null>(null);
 
-  const resetCameraPosition = new Vector3(0, 200, 100);
+  const resetCameraPosition = new Vector3(100, 250, 200);
 
   useEffect(() => {
     supabase
@@ -207,9 +207,9 @@ function useProviderApp() {
   function focusOnPosition(position: Vector3) {
     const rotation = cameraControlRef?.current?.camera.rotation;
     cameraControlRef?.current?.setLookAt(
-      position.x + 100,
-      position.y + 100,
-      position.z + -100,
+      position.x - 80,
+      position.y + 150,
+      position.z + 150,
       position.x,
       position.y - 20,
       position.z,

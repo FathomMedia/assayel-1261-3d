@@ -32,6 +32,7 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
     tenants,
     buildings,
   } = useAppContext();
+  const customFloorsOrder: { [key: string]: number } = { F2: 0, F1: 1, GR: 2 };
 
   const [availableFloors, setAvailableFloors] = useState<string[]>([]);
   const [availableUnits, setAvailableUnits] = useState<IUnit[]>([]);
@@ -139,10 +140,16 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                     className="bg-transparent border-[0.5px] rounded-none min-w-fit hover:bg-transparent border-foreground"
                   >
                     Floors{": "}
-                    {selectedUnit.floors.map(
-                      (f, i) =>
-                        `${f}${i < selectedUnit.floors.length - 1 ? " + " : ""}`
-                    )}
+                    {selectedUnit.floors
+                      .sort(
+                        (a, b) => customFloorsOrder[a] - customFloorsOrder[b]
+                      )
+                      .map(
+                        (f, i) =>
+                          `${f}${
+                            i < selectedUnit.floors.length - 1 ? " + " : ""
+                          }`
+                      )}
                   </Badge>
                   {selectedUnit.type && (
                     <Badge
@@ -270,7 +277,7 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
               </div>
               {/* content */}
               <div className="overflow-y-scroll grow">
-                <p className="text-sm line-clamp-4">
+                <p className="text-sm line-clamp-3">
                   {selectedTenant.description ?? "Coming soon."}
                 </p>
                 {selectedTenant.readmore_url && (
@@ -333,16 +340,18 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
           {/* Select a floor */}
           {selectedBuildingId && !selectedFloor && (
             <div className="grid grid-cols-1 gap-2">
-              {availableFloors.map((f, i) => (
-                <Button
-                  size={"sm"}
-                  onClick={() => setSelectedFloor(f)}
-                  className="rounded-none bg-foreground hover:bg-secondary"
-                  key={i}
-                >
-                  {f}
-                </Button>
-              ))}
+              {availableFloors
+                .sort((a, b) => customFloorsOrder[a] - customFloorsOrder[b])
+                .map((f, i) => (
+                  <Button
+                    size={"sm"}
+                    onClick={() => setSelectedFloor(f)}
+                    className="rounded-none bg-foreground hover:bg-secondary"
+                    key={i}
+                  >
+                    {f}
+                  </Button>
+                ))}
             </div>
           )}
 
