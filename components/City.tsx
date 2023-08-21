@@ -6,9 +6,13 @@ import {
   Grid,
   Environment,
   useGLTF,
+  Lightformer,
+  Float,
 } from "@react-three/drei";
 import Building from "./Building";
 import { IBuilding, useAppContext } from "@/contexts/AppContexts";
+import { Sky } from "@react-three/drei";
+import { Vector3 } from "three";
 
 interface Props {
   onBuildingClick: (building: IBuilding | null) => void;
@@ -72,7 +76,14 @@ export const City: FC<Props> = ({ onBuildingClick }) => {
 
       <ambientLight />
       <directionalLight position={[10, 10, 10]} />
-      <Environment preset="city" />
+      <Environment
+        preset="apartment"
+        near={1}
+        far={1}
+        resolution={256}
+        blur={0.18}
+        background
+      />
     </group>
   );
 };
@@ -124,7 +135,7 @@ function BuildingContainer({
     <Suspense fallback={null}>
       {building.lowpoly_glb_url && (
         <Building
-          id={building.id}
+          building={building}
           url={
             selectedBuildingId === building.id && building.glb_url
               ? building.glb_url

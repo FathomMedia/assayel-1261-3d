@@ -1,16 +1,20 @@
-import { useAppContext } from "@/contexts/AppContexts";
+import { IBuilding, useAppContext } from "@/contexts/AppContexts";
 import { useGLTF } from "@react-three/drei";
 import { useFrame, ThreeEvent } from "@react-three/fiber";
 import React, { useRef, useState } from "react";
 import { Mesh, Vector3 } from "three";
 
-interface IBuilding {
-  id: string;
+interface IBuildingLocal {
+  building: IBuilding;
   url: string;
-  onBuildingClick: (pos: Vector3) => void;
+  onBuildingClick: () => void;
 }
 
-export default function Building({ id, url, onBuildingClick }: IBuilding) {
+export default function Building({
+  building,
+  url,
+  onBuildingClick,
+}: IBuildingLocal) {
   const obj = useGLTF(url);
 
   const { selectedBuildingId } = useAppContext();
@@ -26,7 +30,7 @@ export default function Building({ id, url, onBuildingClick }: IBuilding) {
   });
 
   function handleClick(event: ThreeEvent<MouseEvent>) {
-    onBuildingClick(obj.scene.children[0]?.position);
+    onBuildingClick();
     event.stopPropagation();
   }
 
@@ -44,14 +48,16 @@ export default function Building({ id, url, onBuildingClick }: IBuilding) {
         <mesh
           ref={meshRef}
           position={[
-            obj.scene.children[0]?.position.x,
-            obj.scene.children[0]?.position.y + 20,
-            obj.scene.children[0]?.position.z - 4,
+            building.position_x ?? 0,
+            (building.position_y ?? 0) + 15,
+            (building.position_z ?? 0) - 4,
           ]}
         >
           <boxGeometry args={[3, 3, 3]} />
           <meshStandardMaterial
-            color={hover || selectedBuildingId == id ? "hotpink" : "orange"}
+            color={
+              hover || selectedBuildingId == building.id ? "hotpink" : "orange"
+            }
           />
         </mesh>
       }

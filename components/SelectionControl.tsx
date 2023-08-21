@@ -136,7 +136,7 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                 <div className="flex gap-2">
                   <Badge
                     variant={"outline"}
-                    className="bg-transparent rounded-none min-w-fit hover:bg-transparent border-foreground"
+                    className="bg-transparent border-[0.5px] rounded-none min-w-fit hover:bg-transparent border-foreground"
                   >
                     Floors{": "}
                     {selectedUnit.floors.map(
@@ -147,7 +147,7 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                   {selectedUnit.type && (
                     <Badge
                       variant={"outline"}
-                      className="bg-transparent rounded-none min-w-fit hover:bg-transparent border-foreground"
+                      className="bg-transparent border-[0.5px] rounded-none min-w-fit hover:bg-transparent border-foreground"
                     >
                       {selectedUnit.type}
                     </Badge>
@@ -156,7 +156,7 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                     <Badge
                       key={i}
                       variant={"outline"}
-                      className="bg-transparent rounded-none min-w-fit hover:bg-transparent border-foreground"
+                      className="bg-transparent border-[0.5px] rounded-none min-w-fit hover:bg-transparent border-foreground"
                     >
                       {d}
                     </Badge>
@@ -174,7 +174,7 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                     target="_blank"
                     className={`${cn(
                       buttonVariants({ variant: "default", size: "sm" })
-                    )} disabled:opacity-40 w-full bg-[#4A4640] hover:bg-[#4A4640]/80 rounded-none px-2 py-1 gap-2`}
+                    )} disabled:opacity-40 w-full !bg-[#4A4640] !hover:bg-[#4A4640]/80 rounded-none px-2 py-1 gap-2`}
                     type="button"
                   >
                     {/* <BsQuestionCircle className={`${"text-white"} w-4 h-4`} /> */}

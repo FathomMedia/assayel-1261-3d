@@ -53,7 +53,7 @@ export function SearchBar() {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="justify-between w-full max-w-xs"
+          className="justify-between w-full max-w-xs rounded-none"
         >
           {selectedUnit
             ? selectedUnit.id
@@ -63,9 +63,12 @@ export function SearchBar() {
           <LuChevronsUpDown className="w-4 h-4 ml-2 opacity-50 shrink-0" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="p-0 ">
-        <Command className="max-h-96">
-          <CommandInput placeholder="Search unit..." />
+      <PopoverContent className="p-0 rounded-none">
+        <Command className="max-h-96 rounded-none">
+          <CommandInput
+            className=" rounded-none"
+            placeholder="Search unit..."
+          />
           <CommandEmpty>No unit found.</CommandEmpty>
           <CommandGroup className="overflow-y-scroll">
             {tenantsSearchData.map((tenant) => (
