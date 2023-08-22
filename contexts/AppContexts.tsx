@@ -36,9 +36,10 @@ export interface ITenant {
   id: string;
   name: string;
   floors: string[];
-  buildings: string[];
+  building_id: string | null;
   opening_times: string | null;
   description: string | null;
+  ar_description: string | null;
   panorama_url: string | null;
   readmore_url: string | null;
   type: string | null;
@@ -141,41 +142,20 @@ function useProviderApp() {
     supabase
       .from("units")
       .select("*")
-      .is("tenants_id", null)
+      .eq("is_rented", false)
       .then((res) => {
         setUnits(res.data as IUnit[]);
       });
 
     supabase
       .from("tenants")
-      .select(
-        `
-      *,
-      units (
-        floors,
-        building_id
-      )
-      `
-      )
+      .select("*")
+      .eq("active", true)
+      .neq("building_id", "null")
       .then((res) => {
         const dataFromCall = res.data;
         if (dataFromCall) {
-          const tempTenants: ITenant[] = dataFromCall.map((d) => {
-            const tempFloors = [...d.units.map((u: any) => u.floors)].flat();
-            const tempBuildings = [...d.units.map((u: any) => u.building_id)];
-
-            return {
-              id: d.id,
-              name: d.name,
-              description: d.description,
-              opening_times: d.opening_times,
-              panorama_url: d.panorama_url,
-              readmore_url: d.readmore_url,
-              type: d.type,
-              floors: Array.from(new Set(tempFloors)),
-              buildings: Array.from(new Set(tempBuildings)),
-            } as ITenant;
-          });
+          const tempTenants: ITenant[] = dataFromCall as ITenant[];
           setTenants(tempTenants);
         }
       });

@@ -31,6 +31,7 @@ export default function Building({
   });
 
   function handleClick(event: ThreeEvent<MouseEvent>) {
+    console.log(obj.scene.children[0].position);
     onBuildingClick();
     event.stopPropagation();
   }
@@ -50,6 +51,7 @@ export default function Building({
           <primitive
             ref={meshRef}
             object={pointer.scene}
+            scale={2}
             position={
               new Vector3(
                 building.position_x ?? 0,

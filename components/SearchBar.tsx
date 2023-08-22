@@ -42,7 +42,7 @@ export function SearchBar() {
   const tenantsSearchData: { value: string; label: string }[] = tenants.map(
     (t) => ({
       value: t.id,
-      label: `${t.buildings[0]} - ${t.name}`,
+      label: `${t.building_id} - ${t.name}`,
     })
   );
 
@@ -64,9 +64,9 @@ export function SearchBar() {
         </Button>
       </PopoverTrigger>
       <PopoverContent className="p-0 rounded-none">
-        <Command className="max-h-96 rounded-none">
+        <Command className="rounded-none max-h-96">
           <CommandInput
-            className=" rounded-none"
+            className="rounded-none "
             placeholder="Search unit..."
           />
           <CommandEmpty>No unit found.</CommandEmpty>
@@ -77,8 +77,8 @@ export function SearchBar() {
                 onSelect={() => {
                   const tempTenant = tenants.find((t) => t.id === tenant.value);
                   if (tempTenant) {
-                    focusOn(tempTenant.buildings[0]);
-                    setSelectedBuildingId(tempTenant.buildings[0]);
+                    tempTenant.building_id && focusOn(tempTenant.building_id);
+                    setSelectedBuildingId(tempTenant.building_id);
                     setSelectedFloor(tempTenant.floors[0]);
                     setSelectedTenant(tempTenant);
                     setSelectedUnit(null);

@@ -52,8 +52,8 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
       const tempUnits = units.filter(
         (u) => u.building_id === selectedBuildingId
       );
-      const tempTenants = tenants.filter((t) =>
-        t.buildings.includes(selectedBuildingId)
+      const tempTenants = tenants.filter(
+        (t) => t.building_id === selectedBuildingId
       );
 
       const tempFloorsList = [];
@@ -87,7 +87,7 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
       setAvailableUnits(tempUnits ?? []);
 
       const tempTenants = tenants
-        .filter((t) => t.buildings.includes(selectedBuildingId))
+        .filter((t) => t.building_id === selectedBuildingId)
         .filter((t) => t.floors.includes(selectedFloor));
 
       setAvailableTenants(tempTenants ?? []);
