@@ -15,7 +15,7 @@ export default function Building({
   url,
   onBuildingClick,
 }: IBuildingLocal) {
-  const obj = useGLTF(url);
+  const obj = useGLTF(url, true, true);
   const pointer = useGLTF("/buildings/map_pointer.glb");
 
   const { selectedBuildingId } = useAppContext();

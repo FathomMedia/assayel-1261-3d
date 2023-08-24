@@ -3,7 +3,6 @@ import React, { FC, Suspense } from "react";
 import {
   PerspectiveCamera,
   CameraControls,
-  Grid,
   Environment,
   useGLTF,
 } from "@react-three/drei";
@@ -75,35 +74,77 @@ function BuildingContainer({
 }: IBuildingContainer) {
   const { selectedBuildingId } = useAppContext();
 
-  return selectedBuildingId === building.id && building.glb_url ? (
+  return (
     <Suspense
       fallback={
-        building.lowpoly_glb_url && (
-          <Building
-            building={building}
-            url={building.lowpoly_glb_url}
-            onBuildingClick={() => handleBuildingClick(building)}
-          />
-        )
+        <Building
+          building={building}
+          url={`buildings/VeryLowPoli/${building.id}.glb`}
+          onBuildingClick={() => handleBuildingClick(building)}
+        />
       }
     >
-      {building.glb_url && (
-        <Building
-          building={building}
-          url={building.glb_url}
-          onBuildingClick={() => handleBuildingClick(building)}
-        />
-      )}
+      <Building
+        building={building}
+        url={`buildings/LowPoli/${building.id}.glb`}
+        onBuildingClick={() => handleBuildingClick(building)}
+      />
     </Suspense>
-  ) : (
-    building.lowpoly_glb_url && (
-      <group>
-        <Building
-          building={building}
-          url={building.lowpoly_glb_url}
-          onBuildingClick={() => handleBuildingClick(building)}
-        />
-      </group>
-    )
   );
+  // return selectedBuildingId === building.id ? (
+  //   <Suspense
+  //     fallback={
+  //       <Building
+  //         building={building}
+  //         url={`buildings/LowPoli/${building.id}.glb`}
+  //         onBuildingClick={() => handleBuildingClick(building)}
+  //       />
+  //     }
+  //   >
+  //     <Building
+  //       building={building}
+  //       url={`buildings/HiPoli/${building.id}.glb`}
+  //       onBuildingClick={() => handleBuildingClick(building)}
+  //     />
+  //   </Suspense>
+  // ) : (
+  //   <group>
+  //     <Building
+  //       building={building}
+  //       url={`buildings/VeryLowPoli/${building.id}.glb`}
+  //       onBuildingClick={() => handleBuildingClick(building)}
+  //     />
+  //   </group>
+  // );
+  // return selectedBuildingId === building.id && building.glb_url ? (
+  //   <Suspense
+  //     fallback={
+  //       building.lowpoly_glb_url && (
+  //         <Building
+  //           building={building}
+  //           url={building.lowpoly_glb_url}
+  //           onBuildingClick={() => handleBuildingClick(building)}
+  //         />
+  //       )
+  //     }
+  //   >
+  //     {building.glb_url && (
+  //       <Building
+  //         building={building}
+  //         url={building.glb_url}
+  //         onBuildingClick={() => handleBuildingClick(building)}
+  //       />
+  //     )}
+  //   </Suspense>
+  // ) : (
+  //   building.lowpoly_glb_url && (
+  //     <group>
+  //       <Building
+  //         building={building}
+  //         url={building.lowpoly_glb_url}
+  //         onBuildingClick={() => handleBuildingClick(building)}
+  //       />
+  //     </group>
+  //   )
+  // );
 }
