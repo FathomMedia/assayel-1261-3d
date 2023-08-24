@@ -30,8 +30,13 @@ export default function Building({
     }
   });
 
+  /**
+   * The handleClick function calls the onBuildingClick function and stops the event from propagating
+   * further.
+   * @param event - The event parameter is of type ThreeEvent<MouseEvent>. This means that it is an
+   * event object that is specific to the Three.js library and it represents a mouse event.
+   */
   function handleClick(event: ThreeEvent<MouseEvent>) {
-    console.log(obj.scene.children[0].position);
     onBuildingClick();
     event.stopPropagation();
   }

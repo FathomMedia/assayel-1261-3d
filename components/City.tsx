@@ -26,24 +26,6 @@ export const City: FC<Props> = ({ onBuildingClick }) => {
     onBuildingClick(building);
   }
 
-  function TheGrid() {
-    const gridConfig = {
-      cellSize: 0.5,
-      cellThickness: 0.5,
-      cellColor: "#6f6f6f",
-      sectionSize: 3,
-      sectionThickness: 1,
-      sectionColor: "#30C9F4",
-      fadeDistance: 300,
-      fadeStrength: 1,
-      followCamera: false,
-      infiniteGrid: true,
-    };
-    return (
-      <Grid position={[0, -0.01, 0]} args={[10.5, 10.5]} {...gridConfig} />
-    );
-  }
-
   return (
     <group>
       {/* Buildings */}

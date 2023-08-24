@@ -33,7 +33,7 @@ export interface IBuilding {
 }
 
 export interface ITenant {
-  id: string;
+  id: number;
   name: string;
   floors: string[];
   building_id: string | null;
@@ -129,7 +129,13 @@ function useProviderApp() {
 
   const resetCameraPosition = new Vector3(100, 250, 200);
 
+  /* This code block is making API calls to retrieve data from the Supabase database
+  and update the state variables `buildings`, `units`, and `tenants` with the
+  fetched data. */
   useEffect(() => {
+    /* This code block is making an API call to the Supabase database to retrieve all the data from the
+    "buildings" table. It then sorts the data based on the "id" field in ascending order. Finally,
+    it updates the state variable "buildings" with the fetched data. */
     supabase
       .from("buildings")
       .select("*")
@@ -139,6 +145,9 @@ function useProviderApp() {
         setBuildings(b);
       });
 
+    /* The code block is making an API call to the Supabase database to retrieve all the data from the
+    "units" table where the "is_rented" field is false. It then updates the state variable "units"
+    with the fetched data. */
     supabase
       .from("units")
       .select("*")
@@ -147,6 +156,9 @@ function useProviderApp() {
         setUnits(res.data as IUnit[]);
       });
 
+    /* The code block is making an API call to the Supabase database to retrieve all the data from the
+    "tenants" table where the "active" field is true and the "building_id" field is not equal to
+    "null". */
     supabase
       .from("tenants")
       .select("*")
@@ -164,15 +176,13 @@ function useProviderApp() {
   }, []);
 
   /**
-   * The function `focusOn` takes a name parameter, finds the position of a building with that name,
-   * and adjusts the camera to focus on that position.
-   * @param {string} name - The `name` parameter is a string that represents the name of a building.
+   * The focusOn function selects a building based on its name, updates the selected building ID, and
+   * focuses the camera on the building's position if it exists, otherwise it resets the camera.
+   * @param {string} name - The `name` parameter is a string that represents the ID of a building.
    */
   function focusOn(name: string) {
-    // const sb = buildingsData.find((b) => b.buildingName === name);
     const b = buildings.find((b) => b.id === name);
 
-    // setSelectedBuilding(sb ?? null);
     setSelectedBuildingId(name);
     setSelectedFloor(null);
     setSelectedUnit(null);
@@ -184,6 +194,12 @@ function useProviderApp() {
       : resetCamera();
   }
 
+  /**
+   * The function focuses the camera on a specific position in a 3D space.
+   * @param {Vector3} position - The `position` parameter is a `Vector3` object that represents the
+   * position in 3D space. It has three properties: `x`, `y`, and `z`, which correspond to the x, y,
+   * and z coordinates of the position respectively.
+   */
   function focusOnPosition(position: Vector3) {
     const rotation = cameraControlRef?.current?.camera.rotation;
     cameraControlRef?.current?.setLookAt(
@@ -199,6 +215,9 @@ function useProviderApp() {
       cameraControlRef?.current?.camera.setRotationFromEuler(rotation);
   }
 
+  /**
+   * The function resets the camera position, clears selected building, floor, unit, and tenant.
+   */
   function resetCamera() {
     cameraControlRef?.current?.setLookAt(
       resetCameraPosition.x,

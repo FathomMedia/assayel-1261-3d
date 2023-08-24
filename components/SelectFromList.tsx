@@ -30,8 +30,8 @@ export const SelectFromList: FC<Props> = ({
   const { events } = useDraggable(ref);
 
   /**
-   * The function "goPrevious" checks if it is possible to go to the previous building and if so, calls
-   * the "onClickBuilding" function with the previous building as an argument.
+   * The function "goPrevious" checks if it is possible to go to the previous item and if so, calls the
+   * "onSelect" function with the id of the previous item.
    */
   function goPrevious() {
     if (canGoPrevious) {
@@ -40,8 +40,8 @@ export const SelectFromList: FC<Props> = ({
   }
 
   /**
-   * The function "goNext" checks if it is possible to go to the next building and if so, calls the
-   * "onClickBuilding" function with the next building as an argument.
+   * The function "goNext" checks if it is possible to go to the next item and calls the "onSelect"
+   * function with the ID of the next item if it exists.
    */
   function goNext() {
     if (canGoNext) {
@@ -50,16 +50,16 @@ export const SelectFromList: FC<Props> = ({
   }
 
   /**
-   * The function "goTo" triggers the "onClickBuilding" function with the "building" parameter when it
-   * is called.
-   * @param {Building} building - The `building` parameter is of type `Building`.
+   * The function "goTo" calls the "onSelect" function with the provided "itemId" parameter if
+   * "onSelect" is defined.
+   * @param {string} itemId - The itemId parameter is a string that represents the ID of an item.
    */
   function goTo(itemId: string) {
     onSelect && onSelect(itemId);
   }
 
-  /* The `useEffect` hook is used to scroll the selected building into view when the `currentIndex`
-  changes. */
+  /* The code block is a useEffect hook that is triggered whenever the currentIndex
+  changes. It is responsible for scrolling the selected item into view smoothly. */
   useEffect(() => {
     itemsRef.current[currentIndex]?.scrollIntoView({
       behavior: "smooth",

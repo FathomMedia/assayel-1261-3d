@@ -33,15 +33,17 @@ export function SearchBar() {
     focusOn,
     setSelectedBuildingId,
   } = useAppContext();
+
   const unitsSearchData: { value: string; label: string }[] = units.map(
     (u) => ({
       value: u.id,
       label: `${u.building_id} - ${u.id}`,
     })
   );
+
   const tenantsSearchData: { value: string; label: string }[] = tenants.map(
     (t) => ({
-      value: t.id,
+      value: t.id.toString(),
       label: `${t.building_id} - ${t.name}`,
     })
   );
@@ -75,7 +77,9 @@ export function SearchBar() {
               <CommandItem
                 key={tenant.value}
                 onSelect={() => {
-                  const tempTenant = tenants.find((t) => t.id === tenant.value);
+                  const tempTenant = tenants.find(
+                    (t) => t.id.toString() === tenant.value
+                  );
                   if (tempTenant) {
                     tempTenant.building_id && focusOn(tempTenant.building_id);
                     setSelectedBuildingId(tempTenant.building_id);

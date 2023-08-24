@@ -1,10 +1,9 @@
-import React, { FC, useEffect, useRef, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { SelectFromList } from "./SelectFromList";
 import { ITenant, IUnit, useAppContext } from "@/contexts/AppContexts";
 import { Button, buttonVariants } from "./ui/button";
 
-import { LuChevronLeft, LuChevronRight, LuXCircle } from "react-icons/lu";
-import { BsQuestionCircle } from "react-icons/bs";
+import { LuChevronLeft, LuXCircle } from "react-icons/lu";
 import { Icon360 } from "./icons/Icon360";
 import Link from "next/link";
 import { cn } from "@/src/utils";
@@ -43,10 +42,10 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
     value: b.id,
   }));
 
-  // const refUnitBadges =
-  //   useRef<HTMLDivElement>() as React.MutableRefObject<HTMLInputElement>;
-  // const { events: UnitDraggableEvents } = useDraggable(refUnitBadges);
-
+  /* The bellow code is filtering units and tenants based on a selected building ID. It
+  then creates a list of floors from the filtered units and tenants. The list of
+  floors is then converted into an array of unique values and set as the available
+  floors. */
   useEffect(() => {
     if (selectedBuildingId) {
       const tempUnits = units.filter(
@@ -78,6 +77,11 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
     return () => {};
   }, [selectedBuildingId, units, tenants]);
 
+  /* The bellow code is a TypeScript React function. It checks if both `selectedFloor`
+  and `selectedBuildingId` are truthy values. If they are, it filters the `units`
+  array to get only the units that have a `building_id` equal to
+  `selectedBuildingId` and that have `floors` array that includes `selectedFloor`.
+  The filtered units are then set as the `availableUnits` state. */
   useEffect(() => {
     if (selectedFloor && selectedBuildingId) {
       const tempUnits = units
@@ -184,7 +188,6 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                     )} disabled:opacity-40 w-full !bg-[#4A4640] !hover:bg-[#4A4640]/80 rounded-none px-2 py-1 gap-2`}
                     type="button"
                   >
-                    {/* <BsQuestionCircle className={`${"text-white"} w-4 h-4`} /> */}
                     <span>Enquire</span>
                   </Link>
                 }
