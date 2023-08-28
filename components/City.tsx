@@ -5,6 +5,8 @@ import {
   CameraControls,
   Environment,
   useGLTF,
+  Sky,
+  Cloud,
 } from "@react-three/drei";
 import Building from "./Building";
 import { IBuilding, useAppContext } from "@/contexts/AppContexts";
@@ -52,13 +54,21 @@ export const City: FC<Props> = ({ onBuildingClick }) => {
 
       <ambientLight />
       <directionalLight position={[10, 50, 10]} />
+      <Sky
+        azimuth={0.1}
+        turbidity={10}
+        rayleigh={0.5}
+        inclination={0.6}
+        distance={1000}
+        sunPosition={[0, 20, 20]}
+      />
       <Environment
         preset="apartment"
         near={1}
         far={1}
         resolution={256}
-        blur={0.18}
-        background
+        blur={0.28}
+        // background
       />
     </group>
   );
@@ -74,24 +84,7 @@ function BuildingContainer({
 }: IBuildingContainer) {
   const { selectedBuildingId } = useAppContext();
 
-  return (
-    <Suspense
-      fallback={
-        <Building
-          building={building}
-          url={`buildings/VeryLowPoli/${building.id}.glb`}
-          onBuildingClick={() => handleBuildingClick(building)}
-        />
-      }
-    >
-      <Building
-        building={building}
-        url={`buildings/LowPoli/${building.id}.glb`}
-        onBuildingClick={() => handleBuildingClick(building)}
-      />
-    </Suspense>
-  );
-  // return selectedBuildingId === building.id ? (
+  // return (
   //   <Suspense
   //     fallback={
   //       <Building
@@ -107,15 +100,32 @@ function BuildingContainer({
   //       onBuildingClick={() => handleBuildingClick(building)}
   //     />
   //   </Suspense>
-  // ) : (
-  //   <group>
-  //     <Building
-  //       building={building}
-  //       url={`buildings/VeryLowPoli/${building.id}.glb`}
-  //       onBuildingClick={() => handleBuildingClick(building)}
-  //     />
-  //   </group>
   // );
+  return selectedBuildingId === building.id ? (
+    <Suspense
+      fallback={
+        <Building
+          building={building}
+          url={`buildings/LowPoli/${building.id}.glb`}
+          onBuildingClick={() => handleBuildingClick(building)}
+        />
+      }
+    >
+      <Building
+        building={building}
+        url={`buildings/HiPoli/${building.id}.glb`}
+        onBuildingClick={() => handleBuildingClick(building)}
+      />
+    </Suspense>
+  ) : (
+    <group>
+      <Building
+        building={building}
+        url={`buildings/LowPoli/${building.id}.glb`}
+        onBuildingClick={() => handleBuildingClick(building)}
+      />
+    </group>
+  );
   // return selectedBuildingId === building.id && building.glb_url ? (
   //   <Suspense
   //     fallback={

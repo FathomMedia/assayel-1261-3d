@@ -176,9 +176,11 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
               </div>
               {/* content */}
               <div className="flex flex-col gap-2 overflow-y-scroll grow">
-                <p className="text-sm line-clamp-4">
-                  {selectedUnit.description ?? "Coming soon."}
-                </p>
+                {selectedUnit.description && (
+                  <p className="text-sm line-clamp-4">
+                    {selectedUnit.description}
+                  </p>
+                )}
                 {
                   <Link
                     href={`${inquiryBaseUrl}/?your-message=Inquiry+for:+${selectedUnit.id}`}
@@ -280,9 +282,11 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
               </div>
               {/* content */}
               <div className="overflow-y-scroll grow">
-                <p className="text-sm line-clamp-3">
-                  {selectedTenant.description ?? "Coming soon."}
-                </p>
+                {selectedTenant.description && (
+                  <p className="text-sm line-clamp-3">
+                    {selectedTenant.description}
+                  </p>
+                )}
                 {selectedTenant.readmore_url && (
                   <Link
                     href={selectedTenant.readmore_url}

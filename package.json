@@ -9,8 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@cloudinary/react": "^1.11.2",
-    "@cloudinary/url-gen": "^1.10.2",
     "@next/font": "^13.4.12",
     "@photo-sphere-viewer/equirectangular-tiles-adapter": "^5.1.7",
     "@radix-ui/react-dialog": "^1.0.4",

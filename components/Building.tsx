@@ -1,5 +1,5 @@
 import { IBuilding, useAppContext } from "@/contexts/AppContexts";
-import { useGLTF } from "@react-three/drei";
+import { Text3D, useGLTF } from "@react-three/drei";
 import { useFrame, ThreeEvent } from "@react-three/fiber";
 import React, { useRef, useState } from "react";
 import { Mesh, Vector3 } from "three";
@@ -17,6 +17,7 @@ export default function Building({
 }: IBuildingLocal) {
   const obj = useGLTF(url, true, true);
   const pointer = useGLTF("/buildings/map_pointer.glb");
+  const textRef = useRef<Mesh>(null);
 
   const { selectedBuildingId } = useAppContext();
 
@@ -27,6 +28,9 @@ export default function Building({
   useFrame((state, delta) => {
     if (meshRef.current) {
       meshRef.current.rotation.y += delta;
+    }
+    if (textRef.current) {
+      textRef.current.lookAt(state.camera.position);
     }
   });
 
@@ -60,13 +64,28 @@ export default function Building({
             position={
               new Vector3(
                 building.position_x ?? 0,
-                (building.position_y ?? 0) + 15,
+                (building.position_y ?? 0) + 25,
                 building.position_z ?? 0
               )
             }
           />
         )
       }
+      <Text3D
+        ref={textRef}
+        scale={4}
+        position={
+          new Vector3(
+            (building.position_x ?? 0) - 5,
+            (building.position_y ?? 0) + 15,
+            building.position_z ?? 0
+          )
+        }
+        font={"/fonts/Dax_Regular.json"}
+      >
+        {building.id}
+        <meshStandardMaterial color={"#EF3D2F"} />
+      </Text3D>
     </group>
   );
 }

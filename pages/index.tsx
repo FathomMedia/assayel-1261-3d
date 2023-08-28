@@ -17,8 +17,7 @@ export default function Home() {
   const [zoomedIn, setZoomedIn] = useState(false);
   const [showPano, setShowPano] = useState(false);
 
-  const { selectedTenant, setSelectedBuildingId, focusOn, cameraControlRef } =
-    useAppContext();
+  const { selectedTenant, focusOn, cameraControlRef } = useAppContext();
 
   /**
    * The function "focusOnBuilding" sets the selected building ID and focuses on a specific building.
@@ -27,7 +26,6 @@ export default function Home() {
    */
   function focusOnBuilding(buildingName: string) {
     try {
-      setSelectedBuildingId(buildingName);
       focusOn(buildingName);
     } catch (error) {}
   }
@@ -93,7 +91,7 @@ export default function Home() {
         </div>
       )}
       {/* Zoom Controls */}
-      <div className="absolute flex flex-col justify-center mb-auto rounded-none h-fit top-20 bottom-14 right-5">
+      <div className="absolute flex flex-col justify-center mb-auto rounded-none h-fit top-28 bottom-14 right-5">
         {
           <div className="flex flex-col animate-in zoom-in duration-300 fade-in p-0 rounded-none backdrop-blur-md bg-[#4A4640]/60">
             <Button
