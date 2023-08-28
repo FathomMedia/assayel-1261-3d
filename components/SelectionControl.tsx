@@ -1,6 +1,11 @@
 import React, { FC, useEffect, useState } from "react";
 import { SelectFromList } from "./SelectFromList";
-import { ITenant, IUnit, useAppContext } from "@/contexts/AppContexts";
+import {
+  ITenant,
+  IUnit,
+  Language,
+  useAppContext,
+} from "@/contexts/AppContexts";
 import { Button, buttonVariants } from "./ui/button";
 
 import { LuChevronLeft, LuXCircle } from "react-icons/lu";
@@ -30,6 +35,8 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
     setSelectedTenant,
     tenants,
     buildings,
+    language,
+    setLanguage,
   } = useAppContext();
   const customFloorsOrder: { [key: string]: number } = { F2: 0, F1: 1, GR: 2 };
 
@@ -103,7 +110,7 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
   return (
     <div className="flex flex-col justify-end w-full sm:gap-3 font-dax">
       {selectedBuildingId && (
-        <div className="w-full p-6 bg-[#E2DEDC] max-w-4xl mx-auto text-foreground @container animate-in fade-in flex flex-col ">
+        <div className="w-full p-6 bg-[#E2DEDC] max-w-4xl mx-auto text-foreground @container animate-in fade-in flex flex-col shadow-lg">
           {/* Unit Card */}
           {selectedUnit && (
             <div className="flex flex-col h-full gap-1">
@@ -113,7 +120,10 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                   <Button
                     variant={"ghost"}
                     className="px-0 rounded-none hover:bg-black/10"
-                    onClick={() => setSelectedUnit(null)}
+                    onClick={() => {
+                      setSelectedUnit(null);
+                      setLanguage(Language.ENG);
+                    }}
                   >
                     <LuChevronLeft className="w-6 h-6 text-foreground" />
                   </Button>
@@ -206,8 +216,11 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                     {/* Back button */}
                     <Button
                       variant={"ghost"}
-                      className="hidden px-0 rounded-none hover:bg-black/10 sm:flex"
-                      onClick={() => setSelectedTenant(null)}
+                      className="px-0 rounded-none hover:bg-black/10"
+                      onClick={() => {
+                        setSelectedTenant(null);
+                        setLanguage(Language.ENG);
+                      }}
                     >
                       <LuChevronLeft className="w-6 h-6 text-foreground" />
                     </Button>
@@ -218,6 +231,32 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                   {/* Actions */}
                   <div className="flex items-center justify-between gap-1 ">
                     <div className="flex items-center gap-1 ">
+                      {/* Language Toggle */}
+                      {selectedTenant.description &&
+                        selectedTenant.ar_description && (
+                          <Button
+                            variant={"ghost"}
+                            size={"sm"}
+                            className={`px-2 py-0 rounded-none disabled:opacity-40 hover:bg-black/10 text-lg`}
+                            type="button"
+                            onClick={() =>
+                              setLanguage(
+                                language === Language.ENG
+                                  ? Language.ع
+                                  : Language.ENG
+                              )
+                            }
+                          >
+                            {
+                              Language[
+                                language === Language.ENG
+                                  ? Language.ع
+                                  : Language.ENG
+                              ]
+                            }
+                          </Button>
+                        )}
+
                       {openPano && (
                         <Button
                           variant={"ghost"}
@@ -282,11 +321,17 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
               </div>
               {/* content */}
               <div className="overflow-y-scroll grow">
-                {selectedTenant.description && (
-                  <p className="text-sm line-clamp-3">
-                    {selectedTenant.description}
-                  </p>
-                )}
+                {language === Language.ENG
+                  ? selectedTenant.description && (
+                      <p className="text-sm line-clamp-3">
+                        {selectedTenant.description}
+                      </p>
+                    )
+                  : selectedTenant.ar_description && (
+                      <p dir="rtl" className="text-sm line-clamp-3 ">
+                        {selectedTenant.ar_description}
+                      </p>
+                    )}
                 {selectedTenant.readmore_url && (
                   <Link
                     href={selectedTenant.readmore_url}
@@ -304,20 +349,25 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
           {!selectedUnit && !selectedTenant && (
             <div className="flex justify-between mb-3 font-dax">
               <div className="flex items-center gap-2 rounded-none">
-                {selectedBuildingId && selectedFloor && (
-                  <Button
-                    variant={"ghost"}
-                    className="px-0 rounded-none hover:bg-black/10"
-                    onClick={() => setSelectedFloor(null)}
-                  >
-                    <LuChevronLeft className="w-6 h-6 text-foreground" />
-                  </Button>
-                )}
-                {selectedBuildingId && (
-                  <h2 className="text:lg sm:text-2xl font-dax">
-                    {selectedBuildingId?.toUpperCase()}
-                  </h2>
-                )}
+                <div className="flex items-center rounded-none">
+                  {selectedBuildingId && selectedFloor && (
+                    <Button
+                      variant={"ghost"}
+                      className="px-0 rounded-none hover:bg-black/10"
+                      onClick={() => {
+                        setSelectedFloor(null);
+                        setLanguage(Language.ENG);
+                      }}
+                    >
+                      <LuChevronLeft className="w-6 h-6 text-foreground" />
+                    </Button>
+                  )}
+                  {selectedBuildingId && (
+                    <h2 className="text:lg sm:text-2xl font-dax">
+                      {selectedBuildingId?.toUpperCase()}
+                    </h2>
+                  )}
+                </div>
                 {selectedBuildingId && selectedFloor && (
                   <div className="flex items-center">
                     <span className="">-</span>
@@ -326,7 +376,10 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                       size={"default"}
                       variant={"ghost"}
                       className="px-2 rounded-none hover:bg-black/10 "
-                      onClick={() => setSelectedFloor(null)}
+                      onClick={() => {
+                        setSelectedFloor(null);
+                        setLanguage(Language.ENG);
+                      }}
                     >
                       {selectedFloor.toUpperCase()}
                     </Button>

@@ -51,9 +51,11 @@ export default function Building({
       onPointerOver={(event) => (event.stopPropagation(), setHover(true))}
       onPointerOut={(event) => (event.stopPropagation(), setHover(false))}
     >
-      <mesh>
-        <primitive object={obj.scene} />
-      </mesh>
+      {
+        <mesh>
+          <primitive object={obj.scene} />
+        </mesh>
+      }
       {
         // position of the marker
         selectedBuildingId === building.id && (

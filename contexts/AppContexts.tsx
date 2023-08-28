@@ -45,6 +45,11 @@ export interface ITenant {
   type: string | null;
 }
 
+export enum Language {
+  ENG,
+  ع,
+}
+
 // interface for all the values & functions
 interface IUseAppContext {
   cameraControlRef: MutableRefObject<CameraControls | null> | undefined;
@@ -63,6 +68,8 @@ interface IUseAppContext {
   focusOnPosition: (position: Vector3) => void;
   resetCamera: () => void;
   resetCameraPosition: Vector3;
+  language: Language;
+  setLanguage: (language: Language) => void;
 }
 
 // the default state for all the values & functions
@@ -98,6 +105,10 @@ const defaultState: IUseAppContext = {
   setSelectedTenant: function (tenant: ITenant | null): void {
     throw new Error("Function not implemented.");
   },
+  language: Language.ENG,
+  setLanguage: function (language: Language): void {
+    throw new Error("Function not implemented.");
+  },
 };
 
 // creating the app contexts
@@ -115,6 +126,8 @@ export const AppProvider: FC<PropsWithChildren> = ({ children }) => {
 //NOTE: declare vars and functions here
 function useProviderApp() {
   const cameraControlRef = useRef<CameraControls | null>(null);
+
+  const [language, setLanguage] = useState(Language.ENG);
 
   const [units, setUnits] = useState<IUnit[]>([]);
   const [buildings, setBuildings] = useState<IBuilding[]>([]);
@@ -187,6 +200,7 @@ function useProviderApp() {
     setSelectedFloor(null);
     setSelectedUnit(null);
     setSelectedTenant(null);
+    setLanguage(Language.ENG);
     b
       ? focusOnPosition(
           new Vector3(b.position_x ?? 0, b.position_y ?? 0, b.position_z ?? 0)
@@ -232,6 +246,7 @@ function useProviderApp() {
     setSelectedFloor(null);
     setSelectedUnit(null);
     setSelectedTenant(null);
+    setLanguage(Language.ENG);
   }
 
   // NOTE: return all the values & functions you want to export
@@ -252,5 +267,7 @@ function useProviderApp() {
     focusOnPosition,
     resetCamera,
     resetCameraPosition,
+    language,
+    setLanguage,
   };
 }
