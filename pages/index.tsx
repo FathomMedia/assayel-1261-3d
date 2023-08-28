@@ -112,7 +112,7 @@ export default function Home() {
         }
       </div>
 
-      <div className="absolute left-0 right-0 flex flex-col items-center justify-center gap-2 duration-300 top-6 animate-in zoom-in fade-in">
+      <div className="absolute top-0 left-0 right-0 flex flex-col items-center justify-center gap-2 duration-300 sm:top-6 animate-in zoom-in fade-in">
         <SearchBar />
         {!isLoaded && <LoaderUI progress={progress} />}
       </div>

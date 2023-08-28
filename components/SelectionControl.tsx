@@ -133,6 +133,23 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                 </div>
                 {/* Actions */}
                 <div className="flex items-center justify-between gap-1 ">
+                  <Button
+                    variant={"ghost"}
+                    size={"sm"}
+                    className={`px-2 py-0 rounded-none disabled:opacity-40 hover:bg-black/10 text-lg`}
+                    type="button"
+                    onClick={() =>
+                      setLanguage(
+                        language === Language.ENG ? Language.ع : Language.ENG
+                      )
+                    }
+                  >
+                    {
+                      Language[
+                        language === Language.ENG ? Language.ع : Language.ENG
+                      ]
+                    }
+                  </Button>
                   <div className="flex items-center">
                     {/* Close */}
                     <Button
@@ -200,7 +217,11 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                     )} disabled:opacity-40 w-full !bg-[#4A4640] !hover:bg-[#4A4640]/80 rounded-none px-2 py-1 gap-2`}
                     type="button"
                   >
-                    <span>Enquire</span>
+                    {language === Language.ENG ? (
+                      <span>Enquire</span>
+                    ) : (
+                      <span>استفسر</span>
+                    )}
                   </Link>
                 }
               </div>
@@ -320,7 +341,10 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                 </div>
               </div>
               {/* content */}
-              <div className="overflow-y-scroll grow">
+              <div
+                dir={language === Language.ENG ? "ltr" : "rtl"}
+                className={` grow`}
+              >
                 {language === Language.ENG
                   ? selectedTenant.description && (
                       <p className="text-sm line-clamp-3">
@@ -338,7 +362,11 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                     target="_blank"
                     className={`text-sm underline`}
                   >
-                    <span>Read more...</span>
+                    {language === Language.ENG ? (
+                      <span>Read more...</span>
+                    ) : (
+                      <span>إقرأ المزيد...</span>
+                    )}
                   </Link>
                 )}
               </div>

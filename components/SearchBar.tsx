@@ -55,7 +55,7 @@ export function SearchBar() {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="justify-between w-full max-w-xs rounded-none"
+          className="justify-between w-full rounded-none sm:max-w-xs"
         >
           {selectedUnit
             ? selectedUnit.id
