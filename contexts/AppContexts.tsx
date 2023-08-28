@@ -127,7 +127,7 @@ function useProviderApp() {
   const [selectedUnit, setSelectedUnit] = useState<IUnit | null>(null);
   const [selectedTenant, setSelectedTenant] = useState<ITenant | null>(null);
 
-  const resetCameraPosition = new Vector3(100, 250, 200);
+  const resetCameraPosition = new Vector3(-50, 200, 250);
 
   /* This code block is making API calls to retrieve data from the Supabase database
   and update the state variables `buildings`, `units`, and `tenants` with the

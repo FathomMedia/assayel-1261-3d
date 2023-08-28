@@ -19,6 +19,7 @@ export const City: FC<Props> = ({ onBuildingClick }) => {
     cameraControlRef: cameraRef,
     resetCameraPosition,
     buildings,
+    resetCamera,
   } = useAppContext();
 
   const floorObj = useGLTF("/buildings/FloorGrid.glb");
