@@ -72,7 +72,7 @@ export const SelectFromList: FC<Props> = ({
   return (
     <div
       className={cn(
-        `animate-in zoom-in duration-300 fade-in w-full max-w-4xl mx-auto flex justify-between items-center gap-0 px-0 sm:px-3 h-12 sm:h-14 backdrop-blur-md rounded-none bg-[#E2DEDC]/30 ${className}`
+        `animate-in zoom-in duration-300 fade-in w-full max-w-4xl mx-auto flex justify-between items-center gap-0 px-0 sm:px-3 h-12 sm:h-14  rounded-none bg-[#E2DEDC] ${className}`
       )}
     >
       <Button
@@ -102,7 +102,7 @@ export const SelectFromList: FC<Props> = ({
                   }
                   className={`text-xs flex-none font-normal rounded-none sm:text-base px-3 w-fit whitespace-nowrap hover:bg-primary hover:text-primary-foreground ${
                     items[currentIndex]?.id !== b.id &&
-                    "bg-[#E2DEDC] text-foreground"
+                    "bg-[#d7ccc7] text-foreground"
                   }`}
                   ref={(element) => (itemsRef.current[i] = element)}
                   key={`b-${i}`}

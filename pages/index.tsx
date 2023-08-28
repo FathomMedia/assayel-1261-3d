@@ -4,7 +4,7 @@ import { LuMinusCircle, LuPlusCircle, LuXCircle } from "react-icons/lu";
 import { Button } from "@/components/ui/button";
 import { City } from "@/components/City";
 import { Canvas } from "@react-three/fiber";
-import { useAppContext } from "@/contexts/AppContexts";
+import { Language, useAppContext } from "@/contexts/AppContexts";
 import { useProgress } from "@react-three/drei";
 import { Progress } from "@/components/ui/progress";
 import { SelectionControl } from "@/components/SelectionControl";
@@ -17,7 +17,8 @@ export default function Home() {
   const [zoomedIn, setZoomedIn] = useState(false);
   const [showPano, setShowPano] = useState(false);
 
-  const { selectedTenant, focusOn, cameraControlRef } = useAppContext();
+  const { selectedTenant, focusOn, cameraControlRef, language, setLanguage } =
+    useAppContext();
 
   /**
    * The function "focusOnBuilding" sets the selected building ID and focuses on a specific building.
@@ -90,26 +91,40 @@ export default function Home() {
           </Button>
         </div>
       )}
-      {/* Zoom Controls */}
-      <div className="absolute flex flex-col justify-center mb-auto rounded-none h-fit top-28 bottom-14 right-5">
-        {
-          <div className="flex flex-col animate-in zoom-in duration-300 fade-in p-0 rounded-none backdrop-blur-md bg-[#4A4640]/60">
-            <Button
-              className={`w-12 h-16 p-3 rounded-none shadow-none aspect-square bg-white/0 hover:bg-white/30 `}
-              onClick={zoomIn}
-              disabled={zoomedIn}
-            >
-              <LuPlusCircle className="w-full h-full" />
-            </Button>
-            <Button
-              className={`w-12 h-16 p-3 rounded-none shadow-none aspect-square bg-white/0 hover:bg-white/30 `}
-              onClick={zoomOut}
-              disabled={!zoomedIn}
-            >
-              <LuMinusCircle className="w-full h-full" />
-            </Button>
-          </div>
-        }
+      {/* Controls */}
+      <div className="absolute flex flex-col justify-center gap-1 mb-auto rounded-none h-fit top-28 bottom-14 right-5">
+        {/* Language */}
+        <div className="bg-[#4A4640]/60 backdrop-blur-md flex">
+          <Button
+            variant={"default"}
+            size={"icon"}
+            className={`w-12 h-12 rounded-none disabled:opacity-40  bg-white/0 text-white hover:bg-white/30 text-base`}
+            type="button"
+            onClick={() =>
+              setLanguage(language === Language.ENG ? Language.ع : Language.ENG)
+            }
+          >
+            {Language[language === Language.ENG ? Language.ع : Language.ENG]}
+          </Button>
+        </div>
+        {/* Zoom */}
+
+        <div className="flex flex-col animate-in zoom-in duration-300 fade-in p-0 rounded-none backdrop-blur-md bg-[#4A4640]/60">
+          <Button
+            className={`w-12 h-16 p-3 rounded-none shadow-none aspect-square bg-white/0 hover:bg-white/30 `}
+            onClick={zoomIn}
+            disabled={zoomedIn}
+          >
+            <LuPlusCircle className="w-full h-full" />
+          </Button>
+          <Button
+            className={`w-12 h-16 p-3 rounded-none shadow-none aspect-square bg-white/0 hover:bg-white/30 `}
+            onClick={zoomOut}
+            disabled={!zoomedIn}
+          >
+            <LuMinusCircle className="w-full h-full" />
+          </Button>
+        </div>
       </div>
 
       <div className="absolute top-0 left-0 right-0 flex flex-col items-center justify-center gap-2 duration-300 sm:top-6 animate-in zoom-in fade-in">

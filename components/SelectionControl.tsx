@@ -133,23 +133,6 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                 </div>
                 {/* Actions */}
                 <div className="flex items-center justify-between gap-1 ">
-                  <Button
-                    variant={"ghost"}
-                    size={"sm"}
-                    className={`px-2 py-0 rounded-none disabled:opacity-40 hover:bg-black/10 text-lg`}
-                    type="button"
-                    onClick={() =>
-                      setLanguage(
-                        language === Language.ENG ? Language.ع : Language.ENG
-                      )
-                    }
-                  >
-                    {
-                      Language[
-                        language === Language.ENG ? Language.ع : Language.ENG
-                      ]
-                    }
-                  </Button>
                   <div className="flex items-center">
                     {/* Close */}
                     <Button
@@ -232,8 +215,8 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
             <div className="flex flex-col h-full gap-1">
               {/* Tenant Header */}
               <div className="flex flex-col">
-                <div className="flex items-center justify-between">
-                  <div className="flex flex-wrap items-center">
+                <div className="flex flex-wrap items-center justify-between">
+                  <div className="flex flex-wrap items-center min-w-fit">
                     {/* Back button */}
                     <Button
                       variant={"ghost"}
@@ -253,7 +236,7 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                   <div className="flex items-center justify-between gap-1 ">
                     <div className="flex items-center gap-1 ">
                       {/* Language Toggle */}
-                      {selectedTenant.description &&
+                      {/* {selectedTenant.description &&
                         selectedTenant.ar_description && (
                           <Button
                             variant={"ghost"}
@@ -276,7 +259,7 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                               ]
                             }
                           </Button>
-                        )}
+                        )} */}
 
                       {openPano && (
                         <Button
