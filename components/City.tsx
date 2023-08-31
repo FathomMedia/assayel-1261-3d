@@ -6,7 +6,6 @@ import {
   Environment,
   useGLTF,
   Sky,
-  Cloud,
 } from "@react-three/drei";
 import Building from "./Building";
 import { IBuilding, useAppContext } from "@/contexts/AppContexts";
@@ -19,7 +18,6 @@ export const City: FC<Props> = ({ onBuildingClick }) => {
     cameraControlRef: cameraRef,
     resetCameraPosition,
     buildings,
-    resetCamera,
   } = useAppContext();
 
   const floorObj = useGLTF("/buildings/FloorGrid.glb");
@@ -41,7 +39,6 @@ export const City: FC<Props> = ({ onBuildingClick }) => {
 
       {/* Controls */}
       <PerspectiveCamera fov={40} makeDefault position={resetCameraPosition} />
-
       <CameraControls
         enabled
         makeDefault
@@ -51,8 +48,10 @@ export const City: FC<Props> = ({ onBuildingClick }) => {
         maxPolarAngle={Math.PI / 2.5}
       />
 
+      {/* Floor */}
       <primitive object={floorObj.scene} position={[0, -1, 0]} />
 
+      {/* Environment */}
       <ambientLight />
       <directionalLight position={[10, 50, 10]} />
       <Sky
@@ -69,7 +68,6 @@ export const City: FC<Props> = ({ onBuildingClick }) => {
         far={1}
         resolution={256}
         blur={0.28}
-        // background
       />
     </group>
   );
@@ -85,23 +83,6 @@ function BuildingContainer({
 }: IBuildingContainer) {
   const { selectedBuildingId } = useAppContext();
 
-  // return (
-  //   <Suspense
-  //     fallback={
-  //       <Building
-  //         building={building}
-  //         url={`buildings/LowPoli/${building.id}.glb`}
-  //         onBuildingClick={() => handleBuildingClick(building)}
-  //       />
-  //     }
-  //   >
-  //     <Building
-  //       building={building}
-  //       url={`buildings/HiPoli/${building.id}.glb`}
-  //       onBuildingClick={() => handleBuildingClick(building)}
-  //     />
-  //   </Suspense>
-  // );
   return selectedBuildingId === building.id ? (
     <Suspense
       fallback={
@@ -127,35 +108,4 @@ function BuildingContainer({
       />
     </group>
   );
-  // return selectedBuildingId === building.id && building.glb_url ? (
-  //   <Suspense
-  //     fallback={
-  //       building.lowpoly_glb_url && (
-  //         <Building
-  //           building={building}
-  //           url={building.lowpoly_glb_url}
-  //           onBuildingClick={() => handleBuildingClick(building)}
-  //         />
-  //       )
-  //     }
-  //   >
-  //     {building.glb_url && (
-  //       <Building
-  //         building={building}
-  //         url={building.glb_url}
-  //         onBuildingClick={() => handleBuildingClick(building)}
-  //       />
-  //     )}
-  //   </Suspense>
-  // ) : (
-  //   building.lowpoly_glb_url && (
-  //     <group>
-  //       <Building
-  //         building={building}
-  //         url={building.lowpoly_glb_url}
-  //         onBuildingClick={() => handleBuildingClick(building)}
-  //       />
-  //     </group>
-  //   )
-  // );
 }
