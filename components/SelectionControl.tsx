@@ -19,7 +19,9 @@ interface Props {
 }
 
 export const SelectionControl: FC<Props> = ({ openPano }) => {
-  const inquiryBaseUrl = "http://1261.fthm.me/contact";
+  const { settings } = useAppContext();
+
+  const inquiryBaseUrl = settings?.inquiry_domain;
 
   const {
     units,
@@ -235,32 +237,6 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                   {/* Actions */}
                   <div className="flex items-center justify-between gap-1 ">
                     <div className="flex items-center gap-1 ">
-                      {/* Language Toggle */}
-                      {/* {selectedTenant.description &&
-                        selectedTenant.ar_description && (
-                          <Button
-                            variant={"ghost"}
-                            size={"sm"}
-                            className={`px-2 py-0 rounded-none disabled:opacity-40 hover:bg-black/10 text-lg`}
-                            type="button"
-                            onClick={() =>
-                              setLanguage(
-                                language === Language.ENG
-                                  ? Language.ع
-                                  : Language.ENG
-                              )
-                            }
-                          >
-                            {
-                              Language[
-                                language === Language.ENG
-                                  ? Language.ع
-                                  : Language.ENG
-                              ]
-                            }
-                          </Button>
-                        )} */}
-
                       {openPano && (
                         <Button
                           variant={"ghost"}
@@ -469,6 +445,20 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                           </Button>
                         ))}
                       </div>
+                      <Link
+                        href={`${inquiryBaseUrl}`}
+                        target="_blank"
+                        className={`${cn(
+                          buttonVariants({ variant: "default", size: "sm" })
+                        )} disabled:opacity-40 w-full !bg-[#4A4640] !hover:bg-[#4A4640]/80 rounded-none px-2 py-1 gap-2`}
+                        type="button"
+                      >
+                        {language === Language.ENG ? (
+                          <span>Custom Enquiry</span>
+                        ) : (
+                          <span>استفسار مخصص</span>
+                        )}
+                      </Link>
                     </div>
                   )
                 }

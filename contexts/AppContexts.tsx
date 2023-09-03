@@ -13,6 +13,10 @@ import {
 } from "react";
 import { Vector3 } from "three";
 
+export interface ISettings {
+  id: string;
+  inquiry_domain: string;
+}
 export interface IUnit {
   id: string;
   building_id: string;
@@ -25,8 +29,6 @@ export interface IUnit {
 
 export interface IBuilding {
   id: string;
-  lowpoly_glb_url: string | null;
-  glb_url: string | null;
   position_x: number | null;
   position_y: number | null;
   position_z: number | null;
@@ -53,6 +55,7 @@ export enum Language {
 // interface for all the values & functions
 interface IUseAppContext {
   cameraControlRef: MutableRefObject<CameraControls | null> | undefined;
+  settings: ISettings | null;
   units: IUnit[];
   buildings: IBuilding[];
   tenants: ITenant[];
@@ -74,9 +77,17 @@ interface IUseAppContext {
 
 // the default state for all the values & functions
 const defaultState: IUseAppContext = {
+  settings: null,
   buildings: [],
+  units: [],
+  tenants: [],
   cameraControlRef: undefined,
-
+  selectedBuildingId: null,
+  selectedFloor: null,
+  selectedUnit: null,
+  selectedTenant: null,
+  resetCameraPosition: new Vector3(),
+  language: Language.ENG,
   focusOn: function (name: string): void {
     throw new Error("Function not implemented.");
   },
@@ -86,26 +97,18 @@ const defaultState: IUseAppContext = {
   resetCamera: function (): void {
     throw new Error("Function not implemented.");
   },
-  resetCameraPosition: new Vector3(),
-  selectedBuildingId: null,
   setSelectedBuildingId: function (id: string | null): void {
     throw new Error("Function not implemented.");
   },
-  selectedFloor: null,
   setSelectedFloor: function (floor: string | null): void {
     throw new Error("Function not implemented.");
   },
-  selectedUnit: null,
   setSelectedUnit: function (unit: IUnit | null): void {
     throw new Error("Function not implemented.");
   },
-  units: [],
-  tenants: [],
-  selectedTenant: null,
   setSelectedTenant: function (tenant: ITenant | null): void {
     throw new Error("Function not implemented.");
   },
-  language: Language.ENG,
   setLanguage: function (language: Language): void {
     throw new Error("Function not implemented.");
   },
@@ -126,26 +129,34 @@ export const AppProvider: FC<PropsWithChildren> = ({ children }) => {
 //NOTE: declare vars and functions here
 function useProviderApp() {
   const cameraControlRef = useRef<CameraControls | null>(null);
-
+  const resetCameraPosition = new Vector3(-50, 200, 250);
   const [language, setLanguage] = useState(Language.ENG);
-
   const [units, setUnits] = useState<IUnit[]>([]);
   const [buildings, setBuildings] = useState<IBuilding[]>([]);
   const [tenants, setTenants] = useState<ITenant[]>([]);
-
-  const [selectedBuildingId, setSelectedBuildingId] = useState<string | null>(
-    null
-  );
+  const [settings, setSettings] = useState<ISettings | null>(null);
   const [selectedFloor, setSelectedFloor] = useState<string | null>(null);
   const [selectedUnit, setSelectedUnit] = useState<IUnit | null>(null);
   const [selectedTenant, setSelectedTenant] = useState<ITenant | null>(null);
-
-  const resetCameraPosition = new Vector3(-50, 200, 250);
+  const [selectedBuildingId, setSelectedBuildingId] = useState<string | null>(
+    null
+  );
 
   /* This code block is making API calls to retrieve data from the Supabase database
   and update the state variables `buildings`, `units`, and `tenants` with the
   fetched data. */
   useEffect(() => {
+    /* This code block is making an API call to the Supabase database to retrieve a single record from
+    the "settings" table. It uses the `from` method to specify the table name, the `select` method
+    with "*" to select all columns, and the `single` method to retrieve a single record. */
+    supabase
+      .from("settings")
+      .select("*")
+      .single()
+      .then((res) => {
+        setSettings(res.data as ISettings);
+      });
+
     /* This code block is making an API call to the Supabase database to retrieve all the data from the
     "buildings" table. It then sorts the data based on the "id" field in ascending order. Finally,
     it updates the state variable "buildings" with the fetched data. */
@@ -251,6 +262,7 @@ function useProviderApp() {
 
   // NOTE: return all the values & functions you want to export
   return {
+    settings,
     buildings,
     units,
     tenants,

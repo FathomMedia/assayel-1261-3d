@@ -59,7 +59,7 @@ export const City: FC<Props> = ({ onBuildingClick }) => {
         turbidity={10}
         rayleigh={0.5}
         inclination={0.6}
-        distance={1000}
+        distance={800}
         sunPosition={[0, 20, 20]}
       />
       <Environment
