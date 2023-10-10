@@ -17,7 +17,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useAppContext } from "@/contexts/AppContexts";
+import { Language, useAppContext } from "@/contexts/AppContexts";
 
 export function SearchBar() {
   const [open, setOpen] = React.useState(false);
@@ -31,6 +31,7 @@ export function SearchBar() {
     selectedUnit,
     setSelectedFloor,
     focusOn,
+    language,
     setSelectedBuildingId,
   } = useAppContext();
 
@@ -52,6 +53,7 @@ export function SearchBar() {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
+          dir={language == Language.ع ? "rtl" : "ltr"}
           variant="outline"
           role="combobox"
           aria-expanded={open}
@@ -61,6 +63,8 @@ export function SearchBar() {
             ? selectedUnit.id
             : selectedTenant
             ? selectedTenant.name
+            : language == Language.ع
+            ? "إبحث..."
             : "Search..."}
           <LuChevronsUpDown className="w-4 h-4 ml-2 opacity-50 shrink-0" />
         </Button>
@@ -68,8 +72,9 @@ export function SearchBar() {
       <PopoverContent className="p-0 rounded-none">
         <Command className="rounded-none max-h-96">
           <CommandInput
+            dir={language == Language.ع ? "rtl" : "ltr"}
             className="rounded-none "
-            placeholder="Search unit..."
+            placeholder={language == Language.ع ? "إبحث" : "Search unit..."}
           />
           <CommandEmpty>No unit found.</CommandEmpty>
           <CommandGroup className="overflow-y-scroll">

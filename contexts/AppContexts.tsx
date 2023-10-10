@@ -42,6 +42,7 @@ export interface ITenant {
   opening_times: string | null;
   description: string | null;
   ar_description: string | null;
+  logo_url: string | null;
   panorama_url: string | null;
   readmore_url: string | null;
   type: string | null;
@@ -50,6 +51,11 @@ export interface ITenant {
 export enum Language {
   ENG,
   ع,
+}
+export enum Floors {
+  GR,
+  F1,
+  F2,
 }
 
 // interface for all the values & functions
@@ -211,7 +217,7 @@ function useProviderApp() {
     setSelectedFloor(null);
     setSelectedUnit(null);
     setSelectedTenant(null);
-    setLanguage(Language.ENG);
+
     b
       ? focusOnPosition(
           new Vector3(b.position_x ?? 0, b.position_y ?? 0, b.position_z ?? 0)
@@ -257,7 +263,6 @@ function useProviderApp() {
     setSelectedFloor(null);
     setSelectedUnit(null);
     setSelectedTenant(null);
-    setLanguage(Language.ENG);
   }
 
   // NOTE: return all the values & functions you want to export

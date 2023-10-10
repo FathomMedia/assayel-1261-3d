@@ -12,8 +12,10 @@ import { IBuilding, useAppContext } from "@/contexts/AppContexts";
 
 interface Props {
   onBuildingClick: (building: IBuilding | null) => void;
+  hq?: boolean;
+  ultra?: boolean;
 }
-export const City: FC<Props> = ({ onBuildingClick }) => {
+export const City: FC<Props> = ({ onBuildingClick, hq, ultra }) => {
   const {
     cameraControlRef: cameraRef,
     resetCameraPosition,
@@ -33,6 +35,8 @@ export const City: FC<Props> = ({ onBuildingClick }) => {
         <BuildingContainer
           key={i}
           building={b}
+          hq={hq}
+          ultra={ultra}
           handleBuildingClick={handleBuildingClick}
         />
       ))}
@@ -76,14 +80,18 @@ export const City: FC<Props> = ({ onBuildingClick }) => {
 interface IBuildingContainer {
   building: IBuilding;
   handleBuildingClick: (building: IBuilding) => void;
+  hq?: boolean;
+  ultra?: boolean;
 }
 function BuildingContainer({
   building,
   handleBuildingClick,
+  hq,
+  ultra,
 }: IBuildingContainer) {
   const { selectedBuildingId } = useAppContext();
 
-  return selectedBuildingId === building.id ? (
+  return ultra ? (
     <Suspense
       fallback={
         <Building
@@ -99,11 +107,53 @@ function BuildingContainer({
         onBuildingClick={() => handleBuildingClick(building)}
       />
     </Suspense>
+  ) : hq ? (
+    selectedBuildingId === building.id ? (
+      <Suspense
+        fallback={
+          <Building
+            building={building}
+            url={`buildings/LowPoli/${building.id}.glb`}
+            onBuildingClick={() => handleBuildingClick(building)}
+          />
+        }
+      >
+        <Building
+          building={building}
+          url={`buildings/HiPoli/${building.id}.glb`}
+          onBuildingClick={() => handleBuildingClick(building)}
+        />
+      </Suspense>
+    ) : (
+      <group>
+        <Building
+          building={building}
+          url={`buildings/LowPoli/${building.id}.glb`}
+          onBuildingClick={() => handleBuildingClick(building)}
+        />
+      </group>
+    )
+  ) : selectedBuildingId === building.id ? (
+    <Suspense
+      fallback={
+        <Building
+          building={building}
+          url={`buildings/VeryLowPoli/${building.id}.glb`}
+          onBuildingClick={() => handleBuildingClick(building)}
+        />
+      }
+    >
+      <Building
+        building={building}
+        url={`buildings/VeryLowPoli/${building.id}.glb`}
+        onBuildingClick={() => handleBuildingClick(building)}
+      />
+    </Suspense>
   ) : (
     <group>
       <Building
         building={building}
-        url={`buildings/LowPoli/${building.id}.glb`}
+        url={`buildings/VeryLowPoli/${building.id}.glb`}
         onBuildingClick={() => handleBuildingClick(building)}
       />
     </group>

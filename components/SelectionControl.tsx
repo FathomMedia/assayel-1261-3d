@@ -11,8 +11,9 @@ import { Button, buttonVariants } from "./ui/button";
 import { LuChevronLeft, LuXCircle } from "react-icons/lu";
 import { Icon360 } from "./icons/Icon360";
 import Link from "next/link";
-import { cn } from "@/src/utils";
+import { cn, getFloorLocal } from "@/src/utils";
 import { Badge } from "./ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 interface Props {
   openPano?: () => void;
@@ -124,7 +125,6 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                     className="px-0 rounded-none hover:bg-black/10"
                     onClick={() => {
                       setSelectedUnit(null);
-                      setLanguage(Language.ENG);
                     }}
                   >
                     <LuChevronLeft className="w-6 h-6 text-foreground" />
@@ -155,14 +155,15 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                     variant={"outline"}
                     className="bg-transparent border-[0.5px] rounded-none min-w-fit hover:bg-transparent border-foreground"
                   >
-                    Floors{": "}
+                    {language === Language.ع ? "الطوابق" : "Floors"}
+                    {": "}
                     {selectedUnit.floors
                       .sort(
                         (a, b) => customFloorsOrder[a] - customFloorsOrder[b]
                       )
                       .map(
                         (f, i) =>
-                          `${f}${
+                          `${getFloorLocal(f, language)}${
                             i < selectedUnit.floors.length - 1 ? " + " : ""
                           }`
                       )}
@@ -214,88 +215,98 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
           )}
           {/* Tenant Card */}
           {selectedTenant && (
-            <div className="flex flex-col h-full gap-1">
+            <div className="flex flex-col h-full gap-3">
               {/* Tenant Header */}
-              <div className="flex flex-col">
-                <div className="flex flex-wrap items-center justify-between">
-                  <div className="flex flex-wrap items-center min-w-fit">
-                    {/* Back button */}
-                    <Button
-                      variant={"ghost"}
-                      className="px-0 rounded-none hover:bg-black/10"
-                      onClick={() => {
-                        setSelectedTenant(null);
-                        setLanguage(Language.ENG);
-                      }}
-                    >
-                      <LuChevronLeft className="w-6 h-6 text-foreground" />
-                    </Button>
-                    <h2 className="text-xl sm:text-2xl font-dax">
-                      {selectedTenant?.name}
-                    </h2>
-                  </div>
-                  {/* Actions */}
-                  <div className="flex items-center justify-between gap-1 ">
-                    <div className="flex items-center gap-1 ">
-                      {openPano && (
+              <div className="flex gap-2 items-end relative">
+                <Avatar className="mx-2 w-16 h-16 bg-[#635E57]">
+                  {selectedTenant?.logo_url && (
+                    <AvatarImage src={selectedTenant?.logo_url} />
+                  )}
+                  <AvatarFallback className="bg-[#635E57] text-white">
+                    {selectedTenant?.name.slice(0, 2) ?? "SP"}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col gap-2 grow">
+                  <div className="flex flex-wrap items-center justify-between">
+                    <div className="flex flex-wrap items-center min-w-fit">
+                      {/* Back button */}
+                      <Button
+                        variant={"ghost"}
+                        className="px-0 rounded-none hover:bg-black/10"
+                        onClick={() => {
+                          setSelectedTenant(null);
+                        }}
+                      >
+                        <LuChevronLeft className="w-6 h-6 text-foreground" />
+                      </Button>
+                      <h2 className="text-xl sm:text-2xl font-dax">
+                        {selectedTenant?.name}
+                      </h2>
+                    </div>
+                    {/* Actions */}
+                    <div className="flex items-center justify-between gap-1 ">
+                      <div className="flex items-center gap-1 ">
+                        {openPano && (
+                          <Button
+                            variant={"ghost"}
+                            size={"sm"}
+                            className={`px-2 py-0 rounded-none disabled:opacity-40 hover:bg-black/10`}
+                            type="button"
+                            onClick={openPano}
+                            disabled={!selectedTenant?.panorama_url}
+                          >
+                            <Icon360
+                              className={`${
+                                !selectedTenant?.panorama_url && "text-gray-400"
+                              } w-10 h-4`}
+                            />
+                          </Button>
+                        )}
+                        {/* Close */}
                         <Button
                           variant={"ghost"}
                           size={"sm"}
-                          className={`px-2 py-0 rounded-none disabled:opacity-40 hover:bg-black/10`}
-                          type="button"
-                          onClick={openPano}
-                          disabled={!selectedTenant?.panorama_url}
+                          className="px-2 rounded-none hover:bg-black/10 "
+                          onClick={resetCamera}
                         >
-                          <Icon360
-                            className={`${
-                              !selectedTenant?.panorama_url && "text-gray-400"
-                            } w-10 h-4`}
-                          />
+                          <LuXCircle className="w-5 h-5 text-secondary" />
                         </Button>
-                      )}
-                      {/* Close */}
-                      <Button
-                        variant={"ghost"}
-                        size={"sm"}
-                        className="px-2 rounded-none hover:bg-black/10 "
-                        onClick={resetCamera}
-                      >
-                        <LuXCircle className="w-5 h-5 text-secondary" />
-                      </Button>
+                      </div>
                     </div>
                   </div>
-                </div>
-                {/* Badges */}
-                <div className="w-full overflow-x-scroll">
-                  <div className="flex w-full gap-2">
-                    <Badge
-                      variant={"outline"}
-                      className="bg-transparent min-w-fit border-[0.5px] rounded-none hover:bg-transparent border-foreground"
-                    >
-                      Floors{": "}
-                      {selectedTenant.floors.map(
-                        (f, i) =>
-                          `${f}${
-                            i < selectedTenant.floors.length - 1 ? " + " : ""
-                          }`
+                  {/* Badges */}
+                  <div className="w-full overflow-x-scroll">
+                    <div className="flex w-full gap-2">
+                      <Badge
+                        variant={"outline"}
+                        className="bg-transparent min-w-fit border-[0.5px] rounded-none hover:bg-transparent border-foreground"
+                      >
+                        {language === Language.ع ? "الطوابق" : "Floors"}
+                        {": "}
+                        {selectedTenant.floors.map(
+                          (f, i) =>
+                            `${getFloorLocal(f, language)}${
+                              i < selectedTenant.floors.length - 1 ? " + " : ""
+                            }`
+                        )}
+                      </Badge>
+                      {selectedTenant.type && (
+                        <Badge
+                          variant={"outline"}
+                          className="bg-transparent min-w-fit border-[0.5px] rounded-none hover:bg-transparent border-foreground"
+                        >
+                          {selectedTenant.type}
+                        </Badge>
                       )}
-                    </Badge>
-                    {selectedTenant.type && (
-                      <Badge
-                        variant={"outline"}
-                        className="bg-transparent min-w-fit border-[0.5px] rounded-none hover:bg-transparent border-foreground"
-                      >
-                        {selectedTenant.type}
-                      </Badge>
-                    )}
-                    {selectedTenant.opening_times && (
-                      <Badge
-                        variant={"outline"}
-                        className="bg-transparent min-w-fit border-[0.5px] rounded-none hover:bg-transparent border-foreground"
-                      >
-                        {selectedTenant.opening_times}
-                      </Badge>
-                    )}
+                      {selectedTenant.opening_times && (
+                        <Badge
+                          variant={"outline"}
+                          className="bg-transparent min-w-fit border-[0.5px] rounded-none hover:bg-transparent border-foreground"
+                        >
+                          {selectedTenant.opening_times}
+                        </Badge>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -343,7 +354,6 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                       className="px-0 rounded-none hover:bg-black/10"
                       onClick={() => {
                         setSelectedFloor(null);
-                        setLanguage(Language.ENG);
                       }}
                     >
                       <LuChevronLeft className="w-6 h-6 text-foreground" />
@@ -365,10 +375,9 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                       className="px-2 rounded-none hover:bg-black/10 "
                       onClick={() => {
                         setSelectedFloor(null);
-                        setLanguage(Language.ENG);
                       }}
                     >
-                      {selectedFloor.toUpperCase()}
+                      {getFloorLocal(selectedFloor.toUpperCase(), language)}
                     </Button>
                   </div>
                 )}
@@ -396,7 +405,7 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                     className="rounded-none bg-foreground hover:bg-secondary"
                     key={i}
                   >
-                    {f}
+                    {getFloorLocal(f, language)}
                   </Button>
                 ))}
             </div>
@@ -429,7 +438,11 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                     <div className="flex flex-col gap-3 ">
                       <div className="flex items-center gap-2">
                         <div className="w-full h-[1px] bg-zinc-400 "></div>
-                        <p className="min-w-fit">Available for Inquiry</p>
+                        <p className="min-w-fit">
+                          {language == Language.ع
+                            ? "متاح للاستفسار"
+                            : "Available for Inquiry"}
+                        </p>
                         <div className="w-full h-[1px] bg-zinc-400 "></div>
                       </div>
 
