@@ -8,10 +8,10 @@ import {
 } from "@/contexts/AppContexts";
 import { Button, buttonVariants } from "./ui/button";
 
-import { LuChevronLeft, LuXCircle } from "react-icons/lu";
+import { LuChevronLeft, LuChevronRight, LuXCircle } from "react-icons/lu";
 import { Icon360 } from "./icons/Icon360";
 import Link from "next/link";
-import { cn, getFloorLocal } from "@/src/utils";
+import { cn, getFloorLocal, getName } from "@/src/utils";
 import { Badge } from "./ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
@@ -110,7 +110,10 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
   }, [selectedBuildingId, selectedFloor, tenants, units]);
 
   return (
-    <div className="flex flex-col justify-end w-full sm:gap-3 font-dax">
+    <div
+      dir={language === Language.ع ? "rtl" : "ltr"}
+      className="flex flex-col justify-end w-full sm:gap-3 font-dax"
+    >
       {selectedBuildingId && (
         <div className="w-full p-6 bg-[#E2DEDC] max-w-4xl  mx-auto text-foreground @container animate-in fade-in flex flex-col">
           {/* Unit Card */}
@@ -222,7 +225,7 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                     <AvatarImage src={selectedTenant?.logo_url} />
                   )}
                   <AvatarFallback className="bg-[#635E57] text-white">
-                    {selectedTenant?.name.slice(0, 2) ?? "SP"}
+                    {getName(selectedTenant, language)?.slice(0, 2) ?? "SP"}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col gap-2 grow">
@@ -236,10 +239,14 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                           setSelectedTenant(null);
                         }}
                       >
-                        <LuChevronLeft className="w-6 h-6 text-foreground" />
+                        {language === Language.ع ? (
+                          <LuChevronRight className="w-6 h-6 text-foreground" />
+                        ) : (
+                          <LuChevronLeft className="w-6 h-6 text-foreground" />
+                        )}
                       </Button>
                       <h2 className="text-xl sm:text-2xl font-dax">
-                        {selectedTenant?.name}
+                        {getName(selectedTenant, language)}
                       </h2>
                     </div>
                     {/* Actions */}
@@ -355,7 +362,11 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                         setSelectedFloor(null);
                       }}
                     >
-                      <LuChevronLeft className="w-6 h-6 text-foreground" />
+                      {language === Language.ع ? (
+                        <LuChevronRight className="w-6 h-6 text-foreground" />
+                      ) : (
+                        <LuChevronLeft className="w-6 h-6 text-foreground" />
+                      )}
                     </Button>
                   )}
                   {selectedBuildingId && (
@@ -421,12 +432,17 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                   <div className="grid grid-cols-1 @xs:grid-cols-2 gap-2 overflow-y-scroll @md:grid-cols-3 @xl:grid-cols-4">
                     {availableTenants.map((t, i) => (
                       <Button
-                        size={"sm"}
                         onClick={() => setSelectedTenant(t)}
-                        className="rounded-none bg-foreground hover:bg-secondary"
+                        className="rounded-none flex text-foreground justify-start px-3 h-auto py-2 bg-neutral-400/30 shadow-none hover:bg-neutral-500/40"
                         key={i}
                       >
-                        {t.name}
+                        <Avatar className={`mx-2 w-8 h-8 bg-[#635E57]`}>
+                          {t?.logo_url && <AvatarImage src={t?.logo_url} />}
+                          <AvatarFallback className="bg-[#635E57] text-white">
+                            {t ? getName(t, language)?.slice(0, 2) : "SP"}
+                          </AvatarFallback>
+                        </Avatar>
+                        <p className="">{getName(t, language)}</p>
                       </Button>
                     ))}
                   </div>

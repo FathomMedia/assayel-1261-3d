@@ -71,6 +71,7 @@ export const SelectFromList: FC<Props> = ({
 
   return (
     <div
+      dir="ltr"
       className={cn(
         `animate-in zoom-in step-3 duration-300 fade-in w-full max-w-4xl mx-auto flex justify-between items-center gap-0 px-0 sm:px-3 h-12 sm:h-14  rounded-none bg-[#E2DEDC] ${className}`
       )}

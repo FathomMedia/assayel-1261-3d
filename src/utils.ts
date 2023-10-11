@@ -1,4 +1,4 @@
-import { Language } from "@/contexts/AppContexts";
+import { ITenant, Language } from "@/contexts/AppContexts";
 import { StepType } from "@reactour/tour";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -49,4 +49,17 @@ export function getSteps(language?: Language) {
   ];
 
   return steps;
+}
+
+export function getName(tenant: ITenant, language: Language) {
+  const en = tenant.name;
+  const ar = tenant.ar_name;
+
+  const isAr = language === Language.ع;
+
+  if (isAr) {
+    return ar || en || "غير معروف";
+  } else {
+    return en || ar || "Unknown";
+  }
 }

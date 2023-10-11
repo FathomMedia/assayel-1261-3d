@@ -3,7 +3,7 @@
 import * as React from "react";
 import { LuCheck, LuChevronsUpDown } from "react-icons/lu";
 
-import { cn } from "@/src/utils";
+import { cn, getName } from "@/src/utils";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -46,7 +46,7 @@ export function SearchBar() {
   const tenantsSearchData: { value: string; label: string }[] = tenants.map(
     (t) => ({
       value: t.id.toString(),
-      label: `${t.building_id} - ${t.name}`,
+      label: `${t.building_id} - ${getName(t, language)}`,
     })
   );
 
@@ -78,7 +78,10 @@ export function SearchBar() {
             placeholder={language == Language.ع ? "إبحث" : "Search unit..."}
           />
           <CommandEmpty>No unit found.</CommandEmpty>
-          <CommandGroup className="overflow-y-scroll">
+          <CommandGroup
+            dir={language == Language.ع ? "rtl" : "ltr"}
+            className="overflow-y-scroll"
+          >
             {tenantsSearchData.map((tenant) => {
               const tempTenant = tenants.find(
                 (t) => t.id.toString() === tenant.value
@@ -109,7 +112,9 @@ export function SearchBar() {
                       <AvatarImage src={tempTenant?.logo_url} />
                     )}
                     <AvatarFallback className="bg-[#635E57] text-white">
-                      {tempTenant?.name.slice(0, 2) ?? "SP"}
+                      {tempTenant
+                        ? getName(tempTenant, language)?.slice(0, 2)
+                        : "SP"}
                     </AvatarFallback>
                   </Avatar>
                   {tenant.label}

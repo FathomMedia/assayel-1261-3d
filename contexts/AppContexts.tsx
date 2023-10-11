@@ -39,7 +39,8 @@ export interface IBuilding {
 
 export interface ITenant {
   id: number;
-  name: string;
+  name: string | null;
+  ar_name: string | null;
   floors: string[];
   building_id: string | null;
   opening_times: string | null;
