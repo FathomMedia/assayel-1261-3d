@@ -19,6 +19,7 @@
     "@radix-ui/react-slot": "^1.0.2",
     "@react-three/drei": "^9.80.0",
     "@react-three/fiber": "^8.13.6",
+    "@reactour/tour": "^3.6.1",
     "@splinetool/react-spline": "^2.2.6",
     "@splinetool/runtime": "^0.9.395",
     "@supabase/supabase-js": "^2.32.0",

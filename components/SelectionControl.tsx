@@ -39,7 +39,6 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
     tenants,
     buildings,
     language,
-    setLanguage,
   } = useAppContext();
   const customFloorsOrder: { [key: string]: number } = { F2: 0, F1: 1, GR: 2 };
 
@@ -113,7 +112,7 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
   return (
     <div className="flex flex-col justify-end w-full sm:gap-3 font-dax">
       {selectedBuildingId && (
-        <div className="w-full p-6 bg-[#E2DEDC] max-w-4xl mx-auto text-foreground @container animate-in fade-in flex flex-col">
+        <div className="w-full p-6 bg-[#E2DEDC] max-w-4xl  mx-auto text-foreground @container animate-in fade-in flex flex-col">
           {/* Unit Card */}
           {selectedUnit && (
             <div className="flex flex-col h-full gap-1">
@@ -217,7 +216,7 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
           {selectedTenant && (
             <div className="flex flex-col h-full gap-3">
               {/* Tenant Header */}
-              <div className="flex gap-2 items-end relative">
+              <div className="relative flex items-end gap-2">
                 <Avatar className="mx-2 w-16 h-16 bg-[#635E57]">
                   {selectedTenant?.logo_url && (
                     <AvatarImage src={selectedTenant?.logo_url} />
@@ -402,7 +401,7 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                   <Button
                     size={"sm"}
                     onClick={() => setSelectedFloor(f)}
-                    className="rounded-none bg-foreground hover:bg-secondary"
+                    className="rounded-none bg-foreground hover:bg-secondary step-2"
                     key={i}
                   >
                     {getFloorLocal(f, language)}

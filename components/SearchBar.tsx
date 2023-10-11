@@ -18,6 +18,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Language, useAppContext } from "@/contexts/AppContexts";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 export function SearchBar() {
   const [open, setOpen] = React.useState(false);
@@ -57,7 +58,7 @@ export function SearchBar() {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="justify-between w-full rounded-none sm:max-w-xs"
+          className="justify-between w-full rounded-none sm:max-w-xs step-4"
         >
           {selectedUnit
             ? selectedUnit.id
@@ -78,34 +79,43 @@ export function SearchBar() {
           />
           <CommandEmpty>No unit found.</CommandEmpty>
           <CommandGroup className="overflow-y-scroll">
-            {tenantsSearchData.map((tenant) => (
-              <CommandItem
-                key={tenant.value}
-                onSelect={() => {
-                  const tempTenant = tenants.find(
-                    (t) => t.id.toString() === tenant.value
-                  );
-                  if (tempTenant) {
-                    tempTenant.building_id && focusOn(tempTenant.building_id);
-                    setSelectedBuildingId(tempTenant.building_id);
-                    setSelectedFloor(tempTenant.floors[0]);
-                    setSelectedTenant(tempTenant);
-                    setSelectedUnit(null);
-                  }
-                  setOpen(false);
-                }}
-              >
-                <LuCheck
-                  className={cn(
-                    "mr-2 h-4 w-4",
-                    (selectedUnit?.id ?? "") === tenant.value
-                      ? "opacity-100"
-                      : "opacity-0"
-                  )}
-                />
-                {tenant.label}
-              </CommandItem>
-            ))}
+            {tenantsSearchData.map((tenant) => {
+              const tempTenant = tenants.find(
+                (t) => t.id.toString() === tenant.value
+              );
+
+              return (
+                <CommandItem
+                  key={tenant.value}
+                  onSelect={() => {
+                    if (tempTenant) {
+                      tempTenant.building_id && focusOn(tempTenant.building_id);
+                      setSelectedBuildingId(tempTenant.building_id);
+                      setSelectedFloor(tempTenant.floors[0]);
+                      setSelectedTenant(tempTenant);
+                      setSelectedUnit(null);
+                    }
+
+                    setOpen(false);
+                  }}
+                >
+                  <Avatar
+                    className={`mx-2 w-8 h-8 bg-[#635E57] ${
+                      (selectedTenant?.id ?? "") === tenant.value &&
+                      "ring ring-primary"
+                    }`}
+                  >
+                    {tempTenant?.logo_url && (
+                      <AvatarImage src={tempTenant?.logo_url} />
+                    )}
+                    <AvatarFallback className="bg-[#635E57] text-white">
+                      {tempTenant?.name.slice(0, 2) ?? "SP"}
+                    </AvatarFallback>
+                  </Avatar>
+                  {tenant.label}
+                </CommandItem>
+              );
+            })}
             {unitsSearchData.map((unit) => (
               <CommandItem
                 key={unit.value}

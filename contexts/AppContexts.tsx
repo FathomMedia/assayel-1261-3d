@@ -1,6 +1,9 @@
 import { supabase } from "@/src/database/supabase";
+import { getSteps } from "@/src/utils";
 
 import { CameraControls } from "@react-three/drei";
+import { StepType, useTour } from "@reactour/tour";
+
 import {
   createContext,
   FC,
@@ -62,6 +65,7 @@ export enum Floors {
 interface IUseAppContext {
   cameraControlRef: MutableRefObject<CameraControls | null> | undefined;
   settings: ISettings | null;
+
   units: IUnit[];
   buildings: IBuilding[];
   tenants: ITenant[];
@@ -79,6 +83,7 @@ interface IUseAppContext {
   resetCameraPosition: Vector3;
   language: Language;
   setLanguage: (language: Language) => void;
+  toggleLanguage: () => void;
 }
 
 // the default state for all the values & functions
@@ -118,6 +123,9 @@ const defaultState: IUseAppContext = {
   setLanguage: function (language: Language): void {
     throw new Error("Function not implemented.");
   },
+  toggleLanguage: function (): void {
+    throw new Error("Function not implemented.");
+  },
 };
 
 // creating the app contexts
@@ -137,6 +145,7 @@ function useProviderApp() {
   const cameraControlRef = useRef<CameraControls | null>(null);
   const resetCameraPosition = new Vector3(-50, 200, 250);
   const [language, setLanguage] = useState(Language.ENG);
+
   const [units, setUnits] = useState<IUnit[]>([]);
   const [buildings, setBuildings] = useState<IBuilding[]>([]);
   const [tenants, setTenants] = useState<ITenant[]>([]);
@@ -147,6 +156,8 @@ function useProviderApp() {
   const [selectedBuildingId, setSelectedBuildingId] = useState<string | null>(
     null
   );
+
+  const { setSteps } = useTour();
 
   /* This code block is making API calls to retrieve data from the Supabase database
   and update the state variables `buildings`, `units`, and `tenants` with the
@@ -265,6 +276,12 @@ function useProviderApp() {
     setSelectedTenant(null);
   }
 
+  function toggleLanguage() {
+    const toLang = language === Language.ENG ? Language.ع : Language.ENG;
+    setLanguage(toLang);
+    setSteps!(getSteps(toLang));
+  }
+
   // NOTE: return all the values & functions you want to export
   return {
     settings,
@@ -286,5 +303,6 @@ function useProviderApp() {
     resetCameraPosition,
     language,
     setLanguage,
+    toggleLanguage,
   };
 }
