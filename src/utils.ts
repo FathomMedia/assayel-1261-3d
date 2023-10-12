@@ -38,7 +38,7 @@ export function getSteps(language?: Language) {
       selector: ".step-3",
       content: isAr
         ? ".يمكنك تحديد مبنى بالضغط على المبنى في الخريطة أو بالضغط على أحد الأزرار التالية"
-        : "You can select a building by clicking on the it in the map or by clicking on one of the buttons bellow.",
+        : "You can select a building by clicking on it in the map or by clicking on one of the buttons bellow.",
     },
     {
       selector: ".step-4",
