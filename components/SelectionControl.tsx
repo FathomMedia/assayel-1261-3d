@@ -14,7 +14,6 @@ import Link from "next/link";
 import { cn, getFloorLocal, getName } from "@/src/utils";
 import { Badge } from "./ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 interface Props {
   openPano?: () => void;
@@ -257,28 +256,20 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                     <div className="flex items-center justify-between gap-1 ">
                       <div className="flex items-center gap-1 ">
                         {openPano && (
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <Button
-                                variant={"ghost"}
-                                size={"sm"}
-                                className={`px-2 py-0 rounded-none disabled:opacity-40 hover:bg-black/10`}
-                                type="button"
-                                onClick={openPano}
-                                disabled={!selectedTenant?.panorama_url}
-                              >
-                                <Icon360
-                                  className={`${
-                                    !selectedTenant?.panorama_url &&
-                                    "text-gray-400"
-                                  } w-10 h-4`}
-                                />
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent side="top">
-                              <p>{isAr ? "٣٦٠ بانوراما" : "360 Panorama"}</p>
-                            </TooltipContent>
-                          </Tooltip>
+                          <Button
+                            variant={"ghost"}
+                            size={"sm"}
+                            className={`px-2 py-0 rounded-none disabled:opacity-40 hover:bg-black/10`}
+                            type="button"
+                            onClick={openPano}
+                            disabled={!selectedTenant?.panorama_url}
+                          >
+                            <Icon360
+                              className={`${
+                                !selectedTenant?.panorama_url && "text-gray-400"
+                              } w-10 h-4`}
+                            />
+                          </Button>
                         )}
                         {/* Close */}
                         <Button

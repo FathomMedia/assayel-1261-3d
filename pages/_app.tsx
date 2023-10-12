@@ -5,7 +5,6 @@ import type { AppProps } from "next/app";
 import { AppProvider } from "@/contexts/AppContexts";
 import { TourProvider } from "@reactour/tour";
 import { getSteps } from "@/src/utils";
-import { TooltipProvider } from "@/components/ui/tooltip";
 
 const daxRegularFont = localFont({
   src: "./fonts/dax-regular.ttf",
