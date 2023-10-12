@@ -167,9 +167,14 @@ export function Map({ hq, ultra }: Props) {
 }
 
 function LoaderUI({ progress }: { progress: number }) {
+  const { language } = useAppContext();
+  const isAr = language === Language.ع;
   return (
-    <div className="w-full max-w-xs bg-[#4A4640]/60 rounded-none gap-3 flex items-center p-2 px-4 mx-auto">
-      <p className="text-white">Loading </p>
+    <div
+      dir={isAr ? "rtl" : "ltr"}
+      className="w-full max-w-xs bg-[#4A4640]/60 rounded-none gap-3 flex items-center p-2 px-4 mx-auto"
+    >
+      <p className="text-white">{isAr ? "تحميل" : "Loading"}</p>
       <Progress className="w-full rounded-none" value={progress} />
     </div>
   );

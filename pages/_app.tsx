@@ -37,9 +37,7 @@ export default function App({ Component, pageProps }: AppProps) {
     >
       <main className={daxRegularFont.variable}>
         <AppProvider>
-          <TooltipProvider>
-            <Component {...pageProps} />
-          </TooltipProvider>
+          <Component {...pageProps} />
         </AppProvider>
       </main>
     </TourProvider>
