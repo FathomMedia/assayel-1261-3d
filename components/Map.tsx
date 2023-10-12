@@ -27,7 +27,7 @@ export function Map({ hq, ultra }: Props) {
   const [zoomedIn, setZoomedIn] = useState(false);
   const [showPano, setShowPano] = useState(false);
 
-  const { isOpen, setIsOpen } = useTour();
+  const { isOpen, setIsOpen, setCurrentStep } = useTour();
 
   const {
     selectedTenant,
@@ -66,7 +66,7 @@ export function Map({ hq, ultra }: Props) {
   }
 
   return (
-    <main className={`flex h-screen flex-col items-center justify-between`}>
+    <main className={`flex h-[100dvh] flex-col items-center justify-between`}>
       <div className="relative w-full h-full bg-[#F1F1F3]">
         <Canvas className="w-full h-full" shadows={"basic"}>
           {
@@ -116,7 +116,10 @@ export function Map({ hq, ultra }: Props) {
           <Button
             className="w-12 h-12 p-3 rounded-none shadow-none aspect-square bg-white/0 hover:bg-white/30"
             size={"icon"}
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={() => {
+              setIsOpen(!isOpen);
+              setCurrentStep(0);
+            }}
           >
             <LuHelpCircle className="w-full h-full" />
           </Button>

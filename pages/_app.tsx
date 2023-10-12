@@ -15,13 +15,6 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <TourProvider
       steps={getSteps()}
-      onClickHighlighted={(e, props) => {
-        const currentStep = props.currentStep;
-        const totalLength = (props.steps ?? []).length;
-        if (currentStep < totalLength) {
-          props.setCurrentStep(currentStep + 1);
-        }
-      }}
       styles={{
         badge: (base) => ({
           ...base,
