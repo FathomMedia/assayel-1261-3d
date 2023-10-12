@@ -158,7 +158,13 @@ function useProviderApp() {
     null
   );
 
-  const { setSteps } = useTour();
+  const { setSteps, setIsOpen } = useTour();
+
+  function openTour() {
+    setIsOpen(true);
+  }
+
+  const openTourGuide = useRef(() => openTour());
 
   /* This code block is making API calls to retrieve data from the Supabase database
   and update the state variables `buildings`, `units`, and `tenants` with the
@@ -282,6 +288,16 @@ function useProviderApp() {
     setLanguage(toLang);
     setSteps!(getSteps(toLang));
   }
+
+  useEffect(() => {
+    const hadTour = localStorage.getItem("hadTour") === "true";
+
+    if (!hadTour) {
+      openTourGuide.current();
+      localStorage.setItem("hadTour", "true");
+    }
+    return () => {};
+  }, []);
 
   // NOTE: return all the values & functions you want to export
   return {
