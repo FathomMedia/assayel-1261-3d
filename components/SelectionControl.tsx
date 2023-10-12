@@ -14,6 +14,7 @@ import Link from "next/link";
 import { cn, getFloorLocal, getName } from "@/src/utils";
 import { Badge } from "./ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 interface Props {
   openPano?: () => void;
@@ -40,6 +41,9 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
     buildings,
     language,
   } = useAppContext();
+
+  const isAr = language === Language.ع;
+
   const customFloorsOrder: { [key: string]: number } = { F2: 0, F1: 1, GR: 2 };
 
   const [availableFloors, setAvailableFloors] = useState<string[]>([]);
@@ -253,20 +257,28 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                     <div className="flex items-center justify-between gap-1 ">
                       <div className="flex items-center gap-1 ">
                         {openPano && (
-                          <Button
-                            variant={"ghost"}
-                            size={"sm"}
-                            className={`px-2 py-0 rounded-none disabled:opacity-40 hover:bg-black/10`}
-                            type="button"
-                            onClick={openPano}
-                            disabled={!selectedTenant?.panorama_url}
-                          >
-                            <Icon360
-                              className={`${
-                                !selectedTenant?.panorama_url && "text-gray-400"
-                              } w-10 h-4`}
-                            />
-                          </Button>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <Button
+                                variant={"ghost"}
+                                size={"sm"}
+                                className={`px-2 py-0 rounded-none disabled:opacity-40 hover:bg-black/10`}
+                                type="button"
+                                onClick={openPano}
+                                disabled={!selectedTenant?.panorama_url}
+                              >
+                                <Icon360
+                                  className={`${
+                                    !selectedTenant?.panorama_url &&
+                                    "text-gray-400"
+                                  } w-10 h-4`}
+                                />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent side="top">
+                              <p>{isAr ? "٣٦٠ بانوراما" : "360 Panorama"}</p>
+                            </TooltipContent>
+                          </Tooltip>
                         )}
                         {/* Close */}
                         <Button
@@ -283,6 +295,12 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                   {/* Badges */}
                   <div className="w-full overflow-x-scroll">
                     <div className="flex w-full gap-2">
+                      <Badge
+                        variant={"outline"}
+                        className="bg-transparent min-w-fit border-[0.5px] rounded-none hover:bg-transparent border-foreground"
+                      >
+                        {selectedTenant.building_id}
+                      </Badge>
                       <Badge
                         variant={"outline"}
                         className="bg-transparent min-w-fit border-[0.5px] rounded-none hover:bg-transparent border-foreground"

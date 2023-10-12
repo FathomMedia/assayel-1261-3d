@@ -26,7 +26,7 @@ export function getSteps(language?: Language) {
   const steps: StepType[] = [
     {
       selector: ".step-1",
-      content: isAr ? `تغيير اللغة (English?)` : `Change language (العربية؟)`,
+      content: isAr ? "تغيير اللغة (English?)" : "Change language (العربية؟)",
     },
     {
       selector: ".step-2",
@@ -37,14 +37,14 @@ export function getSteps(language?: Language) {
     {
       selector: ".step-3",
       content: isAr
-        ? ".يمكنك تحديد مبنى بالنقر فوق المبنى في الخريطة أو بالنقر فوق أحد الأزرار التالية"
-        : "You can select a building by clicking on the building in the map or by clicking on one of the buttons bellow.",
+        ? ".يمكنك تحديد مبنى بالضغط على المبنى في الخريطة أو بالضغط على أحد الأزرار التالية"
+        : "You can select a building by clicking on the it in the map or by clicking on one of the buttons bellow.",
     },
     {
       selector: ".step-4",
       content: isAr
         ? ".يمكنك البحث عن مكان من هنا"
-        : "You can search for a place from here.",
+        : "You can search places here.",
     },
   ];
 

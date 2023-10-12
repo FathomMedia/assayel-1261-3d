@@ -63,7 +63,7 @@ export function SearchBar() {
           {selectedUnit
             ? selectedUnit.id
             : selectedTenant
-            ? selectedTenant.name
+            ? getName(selectedTenant, language)
             : language == Language.ع
             ? "إبحث..."
             : "Search..."}
