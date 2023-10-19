@@ -113,7 +113,7 @@ function BuildingContainer({
         fallback={
           <Building
             building={building}
-            url={`buildings/LowPoli/${building.id}.glb`}
+            url={`buildings/LowPoliWhite/${building.id}.glb`}
             onBuildingClick={() => handleBuildingClick(building)}
           />
         }
@@ -128,7 +128,7 @@ function BuildingContainer({
       <group>
         <Building
           building={building}
-          url={`buildings/LowPoli/${building.id}.glb`}
+          url={`buildings/LowPoliWhite/${building.id}.glb`}
           onBuildingClick={() => handleBuildingClick(building)}
         />
       </group>
