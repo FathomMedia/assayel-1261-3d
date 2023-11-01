@@ -86,7 +86,7 @@ export default function Building({
         font={"/fonts/Dax_Regular.json"}
       >
         {building.id}
-        <meshStandardMaterial color={"#EF3D2F"} />
+        <meshStandardMaterial color={"#3F3B37"} />
       </Text3D>
     </group>
   );
