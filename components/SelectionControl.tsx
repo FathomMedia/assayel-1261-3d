@@ -20,11 +20,8 @@ interface Props {
 }
 
 export const SelectionControl: FC<Props> = ({ openPano }) => {
-  const { settings } = useAppContext();
-
-  const inquiryBaseUrl = settings?.inquiry_domain;
-
   const {
+    settings,
     units,
     selectedBuildingId,
     resetCamera,
@@ -41,6 +38,7 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
     language,
   } = useAppContext();
 
+  const inquiryBaseUrl = settings?.inquiry_domain;
   const isAr = language === Language.ع;
 
   const customFloorsOrder: { [key: string]: number } = { F2: 0, F1: 1, GR: 2 };
@@ -48,6 +46,16 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
   const [availableFloors, setAvailableFloors] = useState<string[]>([]);
   const [availableUnits, setAvailableUnits] = useState<IUnit[]>([]);
   const [availableTenants, setAvailableTenants] = useState<ITenant[]>([]);
+  const [theTenant, setTheTenant] = useState<ITenant | null>();
+  const [theUnit, setTheUnit] = useState<IUnit | null>();
+  const [theFloor, setTheFloor] = useState<string | null>();
+
+  useEffect(() => {
+    setTheTenant(selectedTenant);
+    setTheUnit(selectedUnit);
+    setTheFloor(selectedFloor);
+    return () => {};
+  }, [selectedTenant, selectedBuildingId, selectedFloor, selectedUnit]);
 
   const tempBuildings = buildings.map((b) => ({
     id: b.id,
@@ -120,7 +128,7 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
       {selectedBuildingId && (
         <div className="w-full p-6 bg-[#E2DEDC] max-w-4xl  mx-auto text-foreground @container animate-in fade-in flex flex-col">
           {/* Unit Card */}
-          {selectedUnit && (
+          {theUnit && (
             <div className="flex flex-col h-full gap-1">
               {/* Unit Header */}
               <div className="flex flex-row justify-between gap-1">
@@ -135,7 +143,7 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                     <LuChevronLeft className="w-6 h-6 text-foreground" />
                   </Button>
                   <h2 className="text-xl sm:text-2xl font-dax">
-                    {selectedUnit?.id}
+                    {theUnit?.id}
                   </h2>
                 </div>
                 {/* Actions */}
@@ -162,26 +170,26 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                   >
                     {language === Language.ع ? "الطوابق" : "Floors"}
                     {": "}
-                    {selectedUnit.floors
+                    {theUnit.floors
                       .sort(
                         (a, b) => customFloorsOrder[a] - customFloorsOrder[b]
                       )
                       .map(
                         (f, i) =>
                           `${getFloorLocal(f, language)}${
-                            i < selectedUnit.floors.length - 1 ? " + " : ""
+                            i < theUnit.floors.length - 1 ? " + " : ""
                           }`
                       )}
                   </Badge>
-                  {selectedUnit.type && (
+                  {theUnit.type && (
                     <Badge
                       variant={"outline"}
                       className="bg-transparent border-[0.5px] rounded-none min-w-fit hover:bg-transparent border-foreground"
                     >
-                      {selectedUnit.type}
+                      {theUnit.type}
                     </Badge>
                   )}
-                  {selectedUnit.details?.map((d, i) => (
+                  {theUnit.details?.map((d, i) => (
                     <Badge
                       key={i}
                       variant={"outline"}
@@ -194,14 +202,12 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
               </div>
               {/* content */}
               <div className="flex flex-col gap-2 overflow-y-scroll grow">
-                {selectedUnit.description && (
-                  <p className="text-sm line-clamp-4">
-                    {selectedUnit.description}
-                  </p>
+                {theUnit.description && (
+                  <p className="text-sm line-clamp-4">{theUnit.description}</p>
                 )}
                 {
                   <Link
-                    href={`${inquiryBaseUrl}/?your-message=Inquiry+for:+${selectedUnit.id}`}
+                    href={`${inquiryBaseUrl}/?your-message=Inquiry+for:+${theUnit.id}`}
                     target="_blank"
                     className={`${cn(
                       buttonVariants({ variant: "default", size: "sm" })
@@ -218,8 +224,9 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
               </div>
             </div>
           )}
+
           {/* Tenant Card */}
-          {selectedTenant && (
+          {theTenant && (
             <div className="flex flex-col h-full gap-3">
               {/* Tenant Header */}
               <div className="relative flex items-end gap-2">
@@ -228,7 +235,7 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                     <AvatarImage src={selectedTenant?.logo_url} />
                   )}
                   <AvatarFallback className="bg-[#635E57] text-white">
-                    {getName(selectedTenant, language)?.slice(0, 2) ?? "SP"}
+                    {getName(theTenant, language)?.slice(0, 2) ?? "SP"}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col gap-2 grow">
@@ -249,7 +256,7 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                         )}
                       </Button>
                       <h2 className="text-xl sm:text-2xl font-dax">
-                        {getName(selectedTenant, language)}
+                        {getName(theTenant, language)}
                       </h2>
                     </div>
                     {/* Actions */}
@@ -290,7 +297,7 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                         variant={"outline"}
                         className="bg-transparent min-w-fit border-[0.5px] rounded-none hover:bg-transparent border-foreground"
                       >
-                        {selectedTenant.building_id}
+                        {theTenant.building_id}
                       </Badge>
                       <Badge
                         variant={"outline"}
@@ -298,27 +305,27 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                       >
                         {language === Language.ع ? "الطوابق" : "Floors"}
                         {": "}
-                        {selectedTenant.floors.map(
+                        {theTenant.floors.map(
                           (f, i) =>
                             `${getFloorLocal(f, language)}${
-                              i < selectedTenant.floors.length - 1 ? " + " : ""
+                              i < theTenant.floors.length - 1 ? " + " : ""
                             }`
                         )}
                       </Badge>
-                      {selectedTenant.type && (
+                      {theTenant.type && (
                         <Badge
                           variant={"outline"}
                           className="bg-transparent min-w-fit border-[0.5px] rounded-none hover:bg-transparent border-foreground"
                         >
-                          {selectedTenant.type}
+                          {theTenant.type}
                         </Badge>
                       )}
-                      {selectedTenant.opening_times && (
+                      {theTenant.opening_times && (
                         <Badge
                           variant={"outline"}
                           className="bg-transparent min-w-fit border-[0.5px] rounded-none hover:bg-transparent border-foreground"
                         >
-                          {selectedTenant.opening_times}
+                          {theTenant.opening_times}
                         </Badge>
                       )}
                     </div>
@@ -331,19 +338,19 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                 className={` grow`}
               >
                 {language === Language.ENG
-                  ? selectedTenant.description && (
+                  ? theTenant.description && (
                       <p className="text-sm line-clamp-3">
-                        {selectedTenant.description}
+                        {theTenant.description}
                       </p>
                     )
-                  : selectedTenant.ar_description && (
+                  : theTenant.ar_description && (
                       <p dir="rtl" className="text-sm line-clamp-3 ">
-                        {selectedTenant.ar_description}
+                        {theTenant.ar_description}
                       </p>
                     )}
-                {selectedTenant.readmore_url && (
+                {theTenant.readmore_url && (
                   <Link
-                    href={selectedTenant.readmore_url}
+                    href={theTenant.readmore_url}
                     target="_blank"
                     className={`text-sm underline`}
                   >
@@ -359,7 +366,7 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
           )}
 
           {/* Breadcrumb */}
-          {!selectedUnit && !selectedTenant && (
+          {!theUnit && !theTenant && (
             <div className="flex justify-between mb-3 font-dax">
               <div className="flex items-center gap-2 rounded-none">
                 <div className="flex items-center rounded-none">
@@ -413,7 +420,7 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
           )}
           {/* Floor/Unit selector */}
           {/* Select a floor */}
-          {selectedBuildingId && !selectedFloor && (
+          {selectedBuildingId && !theFloor && (
             <div className="grid grid-cols-1 gap-2">
               {availableFloors
                 .sort((a, b) => customFloorsOrder[a] - customFloorsOrder[b])
@@ -421,7 +428,7 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                   <Button
                     size={"sm"}
                     onClick={() => setSelectedFloor(f)}
-                    className="rounded-none bg-foreground hover:bg-secondary step-2"
+                    className="rounded-none bg-foreground hover:bg-secondary"
                     key={i}
                   >
                     {getFloorLocal(f, language)}
@@ -441,8 +448,14 @@ export const SelectionControl: FC<Props> = ({ openPano }) => {
                   <div className="grid grid-cols-1 @xs:grid-cols-2 gap-2 overflow-y-scroll @md:grid-cols-3 @xl:grid-cols-4">
                     {availableTenants.map((t, i) => (
                       <Button
-                        onClick={() => setSelectedTenant(t)}
-                        className="rounded-none flex text-foreground justify-start px-3 h-auto py-2 bg-neutral-400/30 shadow-none hover:bg-neutral-500/40"
+                        onClick={() => {
+                          t.building_id && focusOn(t.building_id);
+                          setSelectedBuildingId(t.building_id);
+                          setSelectedFloor(t.floors[0]);
+                          setSelectedTenant(t);
+                          setSelectedUnit(null);
+                        }}
+                        className="flex justify-start h-auto px-3 py-2 rounded-none shadow-none text-foreground bg-neutral-400/30 hover:bg-neutral-500/40"
                         key={i}
                       >
                         <Avatar className={`mx-2 w-8 h-8 bg-[#635E57]`}>

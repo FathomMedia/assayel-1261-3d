@@ -78,6 +78,7 @@ interface IUseAppContext {
   setSelectedUnit: (unit: IUnit | null) => void;
   selectedTenant: ITenant | null;
   setSelectedTenant: (tenant: ITenant | null) => void;
+  updateSelectedTenant: (tenant: ITenant) => void;
   focusOn: (name: string) => void;
   focusOnPosition: (position: Vector3) => void;
   resetCamera: () => void;
@@ -125,6 +126,9 @@ const defaultState: IUseAppContext = {
     throw new Error("Function not implemented.");
   },
   toggleLanguage: function (): void {
+    throw new Error("Function not implemented.");
+  },
+  updateSelectedTenant: function (tenant: ITenant): void {
     throw new Error("Function not implemented.");
   },
 };
@@ -299,6 +303,10 @@ function useProviderApp() {
     return () => {};
   }, []);
 
+  function updateSelectedTenant(t: ITenant) {
+    setSelectedTenant(t);
+  }
+
   // NOTE: return all the values & functions you want to export
   return {
     settings,
@@ -321,5 +329,6 @@ function useProviderApp() {
     language,
     setLanguage,
     toggleLanguage,
+    updateSelectedTenant,
   };
 }
